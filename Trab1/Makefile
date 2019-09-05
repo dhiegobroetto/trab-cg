@@ -1,5 +1,5 @@
 CC = g++ -std=c++11
-DOMAIN_FILES = trab1.cpp circulo.cpp
+DOMAIN_FILES = main.cpp circulo.cpp
 TINYXML_FOLDER = tinyxml
 TINYXML_FILES = $(TINYXML_FOLDER)/tinyxml.cpp 		\
 				$(TINYXML_FOLDER)/tinyxmlparser.cpp \

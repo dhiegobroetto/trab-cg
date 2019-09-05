@@ -5,8 +5,8 @@
 #include "math.h"
 #include "circulo.h"
 
-float delX;
-float delY;
+float globalX;
+float globalY;
 int vetFlags[256];
 float raioUltCirc, ultCircR, ultCircG, ultCircB, ultCircX, ultCircY;
 float raioCirculo;
@@ -17,21 +17,15 @@ float fundoR, fundoG, fundoB;
 bool sobreposicao = false;
 bool moverCirculo = false;
 bool botaoDireitoMouse = false;
+bool desenhaCirculo = false;
+float compensacaoX, compensacaoY;
 list<Circulo*> listaCirculos;
 Circulo* circuloModeloMouse;
 Circulo* circulo = NULL;
 Circulo* circuloMover = NULL;
 
-void keyPress(unsigned char key, int x, int y){
-    vetFlags[key] = 1;
-}
-
-void keyup(unsigned char key, int x, int y){
-    vetFlags[key] = 0;
-}
-
 void criaCirculo() {
-    circulo = new Circulo(raioCirculo, delX, delY, circuloR, circuloG, circuloB);
+    circulo = new Circulo(raioCirculo, globalX, globalY, circuloR, circuloG, circuloB);
     listaCirculos.push_back(circulo);
 }
 
@@ -40,11 +34,11 @@ float distanciaCirculos(Circulo *c, float x, float y){
 }
 
 void mouse(int button, int state, int x, int y){
-    // Subtraindo y do tamanho do Y da janela.
+    // Manter a origem no bottom
     y = alturaDimensao - y;
 
-    delX = x/larguraDimensao;
-    delY = y/alturaDimensao;
+    globalX = x;
+    globalY = y;
     if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && !sobreposicao){
         criaCirculo();
         sobreposicao = true;
@@ -54,15 +48,19 @@ void mouse(int button, int state, int x, int y){
     }
     if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && moverCirculo){
         botaoDireitoMouse = true;
+        desenhaCirculo = false;
         for(list<Circulo*>::iterator c = listaCirculos.begin(); c != listaCirculos.end(); ++c){
-        if((*c)->getRaio()/larguraDimensao >= distanciaCirculos((*c), delX, delY)){
-            circuloMover = (*c);
-            break;
+            if((*c)->getRaio() >= distanciaCirculos((*c), globalX, globalY)){
+                circuloMover = (*c);
+                compensacaoX = x - circuloMover->getX();
+                compensacaoY = y - circuloMover->getY();
+                break;
+            }
         }
-    }
     }else{
         botaoDireitoMouse = false;
         circuloMover = NULL;
+        desenhaCirculo = true;
     }
     glutPostRedisplay();
 }
@@ -70,29 +68,32 @@ void mouse(int button, int state, int x, int y){
 void motionFunc(int x, int y){
     // Manter a origem no bottom
     y = alturaDimensao - y;
-    delX = x/larguraDimensao;
-    delY = y/alturaDimensao;
+    globalX = x;
+    globalY = y;
     if(botaoDireitoMouse){
-        circuloMover->setX(delX);
-        circuloMover->setY(delY);
+        float aux = globalX - compensacaoX;
+        circuloMover->setX(aux);
+        aux = globalY - compensacaoY;
+        circuloMover->setY(aux);
     }
     glutPostRedisplay();
 }
 
 void passiveMotionFunc(int x, int y){
     // Manter a origem no bottom
+    desenhaCirculo = true;
     y = alturaDimensao - y;
     sobreposicao = moverCirculo = false;
-    delX = x/larguraDimensao;
-    delY = y/alturaDimensao;
+    globalX = x;
+    globalY = y;
     for(list<Circulo*>::iterator c = listaCirculos.begin(); c != listaCirculos.end(); ++c){
-        if((circuloModeloMouse->getRaio() + (*c)->getRaio())/larguraDimensao >= distanciaCirculos((*c), delX, delY)){
+        if((circuloModeloMouse->getRaio() + (*c)->getRaio()) >= distanciaCirculos((*c), globalX, globalY)){
             circuloModeloMouse->setCorR(circuloModeloSobreposicaoR);
             circuloModeloMouse->setCorG(circuloModeloSobreposicaoG);
             circuloModeloMouse->setCorB(circuloModeloSobreposicaoB);
             sobreposicao = true;
         }
-        if((*c)->getRaio()/larguraDimensao >= distanciaCirculos((*c), delX, delY) && !moverCirculo){
+        if((*c)->getRaio() >= distanciaCirculos((*c), globalX, globalY) && !moverCirculo){
             moverCirculo = true;
             break;
         }
@@ -120,21 +121,22 @@ void display(void){
                     theta = (i * M_PI) / 180.0;
                     px = cos(theta) * (*c)->getRaio();
                     py = sin(theta) * (*c)->getRaio();
-                    glVertex2f(px/500.0 + (*c)->getX(), py/500.0 + (*c)->getY());
+                    glVertex2f(px + (*c)->getX(), py + (*c)->getY());
                 }
             glEnd();
         }
     }
-
-    glColor3f(circuloModeloMouse->getCorR(), circuloModeloMouse->getCorG(), circuloModeloMouse->getCorB());
-    glBegin(GL_LINE_LOOP);
-        for (int i = 0; i < 360; i++) {
-            theta = (i * M_PI) / 180.0;
-            px = cos(theta) * circuloModeloMouse->getRaio();
-            py = sin(theta) * circuloModeloMouse->getRaio();
-            glVertex2f(px/500.0 + delX, py/500.0 + delY);
-        }
-    glEnd();
+    if(desenhaCirculo){
+        glColor3f(circuloModeloMouse->getCorR(), circuloModeloMouse->getCorG(), circuloModeloMouse->getCorB());
+        glBegin(GL_LINE_LOOP);
+            for (int i = 0; i < 360; i++) {
+                theta = (i * M_PI) / 180.0;
+                px = cos(theta) * circuloModeloMouse->getRaio();
+                py = sin(theta) * circuloModeloMouse->getRaio();
+                glVertex2f(px + globalX, py + globalY);
+            }
+        glEnd();
+    }
     // Não esperar
     glFlush();
 }
@@ -146,11 +148,11 @@ void init (float fundoR, float fundoG, float fundoB){
     // Iniciar sistema de viz
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0.0, 1.0, 0.0, 1.0, -3.0, 3.0);
+    glOrtho(0.0, larguraDimensao, 0.0, alturaDimensao, -1.0, 1.0);
 }
 
 int main(int argc, char** argv){
-    TiXmlDocument doc( "Test_1/config.xml" );
+    TiXmlDocument doc( strcat(argv[1], "config.xml") );
     doc.LoadFile();
 
     TiXmlElement *aplicacao = doc.RootElement();
@@ -163,6 +165,7 @@ int main(int argc, char** argv){
         TiXmlElement *fundo = NULL;
         TiXmlElement *titulo = NULL;
 
+        // Atribui valores
         circulo = aplicacao->FirstChildElement( "circulo" );
         circuloModelo = aplicacao->FirstChildElement( "circuloModelo" );
         janela = aplicacao->FirstChildElement( "janela" );
@@ -194,16 +197,16 @@ int main(int argc, char** argv){
         glutInitWindowSize(larguraDimensao, alturaDimensao);
         glutInitWindowPosition(50, 50);
         glutCreateWindow(titulo->GetText());
-        delX = delY = 0;
-        circuloModeloMouse = new Circulo(raioCirculo, delX, delY, circuloModeloR, circuloModeloG, circuloModeloB);
+        globalX = globalY = 0;
+        circuloModeloMouse = new Circulo(raioCirculo, globalX, globalY, circuloModeloR, circuloModeloG, circuloModeloB);
         init(fundoR, fundoG, fundoB);
         glutDisplayFunc(display);
-        glutKeyboardUpFunc(keyup);
-        glutKeyboardFunc(keyPress);
         glutMouseFunc(mouse);
         glutPassiveMotionFunc(passiveMotionFunc);
         glutMotionFunc(motionFunc);
         glutMainLoop();
+    }else{
+        printf("Arquivo nao encontrado!\n");
     }
 
     // C ANSI requer que main retorne um inteiro
