@@ -5,7 +5,7 @@ TINYXML_FILES = $(TINYXML_FOLDER)/tinyxml.cpp 		\
 				$(TINYXML_FOLDER)/tinyxmlparser.cpp \
 				$(TINYXML_FOLDER)/tinyxmlerror.cpp 	\
 				$(TINYXML_FOLDER)/tinystr.cpp
-OUTPUT_FILE = trab1
+OUTPUT_FILE = trabalhocg
 FLAGS = -lGL -lGLU -lglut -lm
 
 all: g++

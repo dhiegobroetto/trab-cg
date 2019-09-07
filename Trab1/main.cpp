@@ -5,25 +5,31 @@
 #include "math.h"
 #include "circulo.h"
 
+// Variáveis globais de configuração
 float globalX;
 float globalY;
-int vetFlags[256];
-float raioUltCirc, ultCircR, ultCircG, ultCircB, ultCircX, ultCircY;
 float raioCirculo;
 float circuloR, circuloG, circuloB;
-float circuloModeloR, circuloModeloG, circuloModeloB, circuloModeloSobreposicaoR, circuloModeloSobreposicaoG, circuloModeloSobreposicaoB;
+float circuloModeloR, circuloModeloG, circuloModeloB, circuloModeloSobreposicaoR, 
+circuloModeloSobreposicaoG, circuloModeloSobreposicaoB;
 float larguraDimensao, alturaDimensao;
 float fundoR, fundoG, fundoB;
+
+// Flags
 bool sobreposicao = false;
 bool moverCirculo = false;
 bool botaoDireitoMouse = false;
 bool desenhaCirculo = false;
 float compensacaoX, compensacaoY;
+
+// Objetos auxiliares de círculos
 list<Circulo*> listaCirculos;
 Circulo* circuloModeloMouse;
 Circulo* circulo = NULL;
 Circulo* circuloMover = NULL;
 
+
+// ---- Métodos ---- //
 void criaCirculo() {
     circulo = new Circulo(raioCirculo, globalX, globalY, circuloR, circuloG, circuloB);
     listaCirculos.push_back(circulo);
@@ -113,6 +119,7 @@ void display(void){
     // Limpar todos os pixels
     glClear(GL_COLOR_BUFFER_BIT);
 
+    // Círculos criados
     if(circulo != NULL){
         for(list<Circulo*>::iterator c = listaCirculos.begin(); c != listaCirculos.end(); ++c){
             glColor3f((*c)->getCorR(), (*c)->getCorG(), (*c)->getCorB());
@@ -126,8 +133,11 @@ void display(void){
             glEnd();
         }
     }
+
+    // Círculo aro que acompanha o mouse
     if(desenhaCirculo){
-        glColor3f(circuloModeloMouse->getCorR(), circuloModeloMouse->getCorG(), circuloModeloMouse->getCorB());
+        glColor3f(circuloModeloMouse->getCorR(), circuloModeloMouse->getCorG(), 
+            circuloModeloMouse->getCorB());
         glBegin(GL_LINE_LOOP);
             for (int i = 0; i < 360; i++) {
                 theta = (i * M_PI) / 180.0;
@@ -137,7 +147,6 @@ void display(void){
             }
         glEnd();
     }
-    // Não esperar
     glFlush();
 }
 
@@ -152,61 +161,68 @@ void init (float fundoR, float fundoG, float fundoB){
 }
 
 int main(int argc, char** argv){
-    TiXmlDocument doc( strcat(argv[1], "config.xml") );
-    doc.LoadFile();
+    if(argv[1] != NULL){
+        TiXmlDocument doc( strcat(argv[1], "config.xml") );
+        doc.LoadFile();
 
-    TiXmlElement *aplicacao = doc.RootElement();
-    if(aplicacao !=  NULL){
-        // Declaração de variáveis
-        TiXmlElement *circulo = NULL;
-        TiXmlElement *circuloModelo = NULL;
-        TiXmlElement *janela = NULL;
-        TiXmlElement *dimensao = NULL;
-        TiXmlElement *fundo = NULL;
-        TiXmlElement *titulo = NULL;
+        TiXmlElement *aplicacao = doc.RootElement();
+        if(aplicacao !=  NULL){
+            // Declaração de variáveis
+            TiXmlElement *circulo = NULL;
+            TiXmlElement *circuloModelo = NULL;
+            TiXmlElement *janela = NULL;
+            TiXmlElement *dimensao = NULL;
+            TiXmlElement *fundo = NULL;
+            TiXmlElement *titulo = NULL;
 
-        // Atribui valores
-        circulo = aplicacao->FirstChildElement( "circulo" );
-        circuloModelo = aplicacao->FirstChildElement( "circuloModelo" );
-        janela = aplicacao->FirstChildElement( "janela" );
-        if(janela != NULL){
-            dimensao = janela->FirstChildElement( "dimensao" );
-            fundo = janela->FirstChildElement( "fundo" );
-            titulo = janela->FirstChildElement( "titulo" );
+            // Atribui valores
+            circulo = aplicacao->FirstChildElement( "circulo" );
+            circuloModelo = aplicacao->FirstChildElement( "circuloModelo" );
+            janela = aplicacao->FirstChildElement( "janela" );
+            if(janela != NULL){
+                dimensao = janela->FirstChildElement( "dimensao" );
+                fundo = janela->FirstChildElement( "fundo" );
+                titulo = janela->FirstChildElement( "titulo" );
+            }
+            raioCirculo = atof(circulo->Attribute("raio"));
+            circuloR = atof(circulo->Attribute("corR"));
+            circuloG = atof(circulo->Attribute("corG"));
+            circuloB = atof(circulo->Attribute("corB"));
+
+            circuloModeloR = atof(circuloModelo->Attribute("corR"));
+            circuloModeloG = atof(circuloModelo->Attribute("corG"));
+            circuloModeloB = atof(circuloModelo->Attribute("corB"));
+            circuloModeloSobreposicaoR = atof(circuloModelo->Attribute("corSobreposicaoR"));
+            circuloModeloSobreposicaoG = atof(circuloModelo->Attribute("corSobreposicaoG"));
+            circuloModeloSobreposicaoB = atof(circuloModelo->Attribute("corSobreposicaoB"));
+
+            larguraDimensao = atof(dimensao->Attribute("largura"));
+            alturaDimensao = atof(dimensao->Attribute("altura"));
+
+            fundoR = atof(fundo->Attribute("corR"));
+            fundoG = atof(fundo->Attribute("corG"));
+            fundoB = atof(fundo->Attribute("corB"));
+
+            // Inicializa
+            glutInit(&argc, argv);
+            glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+            glutInitWindowSize(larguraDimensao, alturaDimensao);
+            glutInitWindowPosition(50, 50);
+            glutCreateWindow(titulo->GetText());
+            globalX = globalY = 0;
+            circuloModeloMouse = new Circulo(raioCirculo, globalX, globalY, 
+                circuloModeloR, circuloModeloG, circuloModeloB);
+            init(fundoR, fundoG, fundoB);
+            glutDisplayFunc(display);
+            glutMouseFunc(mouse);
+            glutPassiveMotionFunc(passiveMotionFunc);
+            glutMotionFunc(motionFunc);
+            glutMainLoop();
+        }else{
+            printf("Arquivo config.xml não encontrado!\n");
         }
-        raioCirculo = atof(circulo->Attribute("raio"));
-        circuloR = atof(circulo->Attribute("corR"));
-        circuloG = atof(circulo->Attribute("corG"));
-        circuloB = atof(circulo->Attribute("corB"));
-
-        circuloModeloR = atof(circuloModelo->Attribute("corR"));
-        circuloModeloG = atof(circuloModelo->Attribute("corG"));
-        circuloModeloB = atof(circuloModelo->Attribute("corB"));
-        circuloModeloSobreposicaoR = atof(circuloModelo->Attribute("corSobreposicaoR"));
-        circuloModeloSobreposicaoG = atof(circuloModelo->Attribute("corSobreposicaoG"));
-        circuloModeloSobreposicaoB = atof(circuloModelo->Attribute("corSobreposicaoB"));
-
-        larguraDimensao = atof(dimensao->Attribute("largura"));
-        alturaDimensao = atof(dimensao->Attribute("altura"));
-
-        fundoR = atof(fundo->Attribute("corR"));
-        fundoG = atof(fundo->Attribute("corG"));
-        fundoB = atof(fundo->Attribute("corB"));
-        glutInit(&argc, argv);
-        glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-        glutInitWindowSize(larguraDimensao, alturaDimensao);
-        glutInitWindowPosition(50, 50);
-        glutCreateWindow(titulo->GetText());
-        globalX = globalY = 0;
-        circuloModeloMouse = new Circulo(raioCirculo, globalX, globalY, circuloModeloR, circuloModeloG, circuloModeloB);
-        init(fundoR, fundoG, fundoB);
-        glutDisplayFunc(display);
-        glutMouseFunc(mouse);
-        glutPassiveMotionFunc(passiveMotionFunc);
-        glutMotionFunc(motionFunc);
-        glutMainLoop();
     }else{
-        printf("Arquivo nao encontrado!\n");
+        printf("Localização do arquivo config.xml não foi informada.\n");
     }
 
     // C ANSI requer que main retorne um inteiro
