@@ -174,6 +174,7 @@ int main(int argc, char** argv){
             TiXmlElement *caminho = NULL;
             TiXmlElement *jogador = NULL;
 
+
             // Atribui valores
             arquivoDaArena = aplicacao->FirstChildElement( "arquivoDaArena" );
             nome = arquivoDaArena->FirstChildElement( "nome" );
