@@ -162,61 +162,69 @@ void init (float fundoR, float fundoG, float fundoB){
 
 int main(int argc, char** argv){
     if(argv[1] != NULL){
-        TiXmlDocument doc( strcat(argv[1], "/config.xml") );
-        doc.LoadFile();
+        // TiXmlDocument doc( strcat(argv[1], "config.xml") );
+        TiXmlDocument arena("Test_1/arena.svg" );
+        // doc.LoadFile();
+        arena.LoadFile();
 
-        TiXmlElement *aplicacao = doc.RootElement();
-        if(aplicacao !=  NULL){
+        // TiXmlElement *aplicacao = doc.RootElement();
+        TiXmlElement *svg = arena.RootElement();
+        if(svg !=  NULL){
             // Declaração de variáveis
-            TiXmlElement *arquivoDaArena = NULL;
-            TiXmlElement *nome = NULL;
-            TiXmlElement *tipo = NULL;
-            TiXmlElement *caminho = NULL;
-            TiXmlElement *jogador = NULL;
+            // TiXmlElement *arquivoDaArena = NULL;
+            // TiXmlElement *nome = NULL;
+            // TiXmlElement *tipo = NULL;
+            // TiXmlElement *caminho = NULL;
+            // TiXmlElement *jogador = NULL;
 
+            TiXmlElement *circulo = NULL;
+
+            circulo = svg->FirstChildElement( "circle" );
+
+            printf("%s\n", circulo->Attribute("fill"));
 
             // Atribui valores
-            arquivoDaArena = aplicacao->FirstChildElement( "arquivoDaArena" );
-            nome = arquivoDaArena->FirstChildElement( "nome" );
-            tipo = arquivoDaArena->FirstChildElement( "tipo" );
-            caminho = arquivoDaArena->FirstChildElement( "caminho" );
-            jogador = aplicacao->FirstChildElement( "jogador" );
+            // arquivoDaArena = aplicacao->FirstChildElement( "arquivoDaArena" );
+            // nome = arquivoDaArena->FirstChildElement( "nome" );
+            // tipo = arquivoDaArena->FirstChildElement( "tipo" );
+            // caminho = arquivoDaArena->FirstChildElement( "caminho" );
+            // jogador = aplicacao->FirstChildElement( "jogador" );
             
            
-            raioCirculo = atof(circulo->Attribute("raio"));
-            circuloR = atof(circulo->Attribute("corR"));
-            circuloG = atof(circulo->Attribute("corG"));
-            circuloB = atof(circulo->Attribute("corB"));
+            // raioCirculo = atof(circulo->Attribute("raio"));
+            // circuloR = atof(circulo->Attribute("corR"));
+            // circuloG = atof(circulo->Attribute("corG"));
+            // circuloB = atof(circulo->Attribute("corB"));
 
-            circuloModeloR = atof(circuloModelo->Attribute("corR"));
-            circuloModeloG = atof(circuloModelo->Attribute("corG"));
-            circuloModeloB = atof(circuloModelo->Attribute("corB"));
-            circuloModeloSobreposicaoR = atof(circuloModelo->Attribute("corSobreposicaoR"));
-            circuloModeloSobreposicaoG = atof(circuloModelo->Attribute("corSobreposicaoG"));
-            circuloModeloSobreposicaoB = atof(circuloModelo->Attribute("corSobreposicaoB"));
+            // circuloModeloR = atof(circuloModelo->Attribute("corR"));
+            // circuloModeloG = atof(circuloModelo->Attribute("corG"));
+            // circuloModeloB = atof(circuloModelo->Attribute("corB"));
+            // circuloModeloSobreposicaoR = atof(circuloModelo->Attribute("corSobreposicaoR"));
+            // circuloModeloSobreposicaoG = atof(circuloModelo->Attribute("corSobreposicaoG"));
+            // circuloModeloSobreposicaoB = atof(circuloModelo->Attribute("corSobreposicaoB"));
 
-            larguraDimensao = atof(dimensao->Attribute("largura"));
-            alturaDimensao = atof(dimensao->Attribute("altura"));
+            // larguraDimensao = atof(dimensao->Attribute("largura"));
+            // alturaDimensao = atof(dimensao->Attribute("altura"));
 
-            fundoR = atof(fundo->Attribute("corR"));
-            fundoG = atof(fundo->Attribute("corG"));
-            fundoB = atof(fundo->Attribute("corB"));
+            // fundoR = atof(fundo->Attribute("corR"));
+            // fundoG = atof(fundo->Attribute("corG"));
+            // fundoB = atof(fundo->Attribute("corB"));
 
             // Inicializa
-            glutInit(&argc, argv);
-            glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-            glutInitWindowSize(larguraDimensao, alturaDimensao);
-            glutInitWindowPosition(50, 50);
-            glutCreateWindow(titulo->GetText());
-            globalX = globalY = 0;
-            circuloModeloMouse = new Circulo(raioCirculo, globalX, globalY, 
-                circuloModeloR, circuloModeloG, circuloModeloB);
-            init(fundoR, fundoG, fundoB);
-            glutDisplayFunc(display);
-            glutMouseFunc(mouse);
-            glutPassiveMotionFunc(passiveMotionFunc);
-            glutMotionFunc(motionFunc);
-            glutMainLoop();
+            // glutInit(&argc, argv);
+            // glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+            // glutInitWindowSize(larguraDimensao, alturaDimensao);
+            // glutInitWindowPosition(50, 50);
+            // glutCreateWindow(titulo->GetText());
+            // globalX = globalY = 0;
+            // circuloModeloMouse = new Circulo(raioCirculo, globalX, globalY, 
+            //     circuloModeloR, circuloModeloG, circuloModeloB);
+            // init(fundoR, fundoG, fundoB);
+            // glutDisplayFunc(display);
+            // glutMouseFunc(mouse);
+            // glutPassiveMotionFunc(passiveMotionFunc);
+            // glutMotionFunc(motionFunc);
+            // glutMainLoop();
         }else{
             printf("Arquivo config.xml não encontrado!\n");
         }
