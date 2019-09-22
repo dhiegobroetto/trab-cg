@@ -1,35 +1,40 @@
 #ifndef CIRCULO_H
 #define CIRCULO_H
 
+#include <GL/glut.h>
+
 using namespace std;
 
 class Circulo
 {
     private:
-        float raio;
-        float x;
-        float y;
-        float corR;
-        float corG;
-        float corB;
+        GLint id;
+        GLfloat raio;
+        GLfloat x;
+        GLfloat y;
+        GLfloat corR;
+        GLfloat corG;
+        GLfloat corB;
 
     public:
     	// ------------ Construtor ------------ //
-        Circulo(float& raio, float& x, float& y, float& corR, float& corG, float& corB);
+        Circulo(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR, GLfloat& corG, GLfloat& corB);
 
         // ------------ Getters e Setters ------------ //
-        float getRaio();
-        void setRaio(float& raio);
-        float getX();
-        void setX(float& x);
-        float getY();
-        void setY(float& y);
-        float getCorR();
-        void setCorR(float& corR);
-        float getCorG();
-        void setCorG(float& corG);
-        float getCorB();
-        void setCorB(float& corB);
+        GLint getId();
+        void setId(GLint& id);
+        GLfloat getRaio();
+        void setRaio(GLfloat& raio);
+        GLfloat getX();
+        void setX(GLfloat& x);
+        GLfloat getY();
+        void setY(GLfloat& y);
+        GLfloat getCorR();
+        void setCorR(GLfloat& corR);
+        GLfloat getCorG();
+        void setCorG(GLfloat& corG);
+        GLfloat getCorB();
+        void setCorB(GLfloat& corB);
 
 };
 

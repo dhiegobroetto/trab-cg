@@ -1,6 +1,7 @@
 #include "circulo.h"
 
-Circulo::Circulo(float& raio, float& x, float& y, float& corR, float& corG, float& corB){
+Circulo::Circulo(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR, GLfloat& corG, GLfloat& corB){
+	this->id = id;
     this->raio = raio;
     this->x = x;
     this->y = y;
@@ -9,41 +10,48 @@ Circulo::Circulo(float& raio, float& x, float& y, float& corR, float& corG, floa
     this->corB = corB;
 }
 
-float Circulo::getRaio() {
+GLint Circulo::getId(){
+	return this->id;
+}
+void Circulo::setId(GLint& id){
+	this->id = id;
+}
+
+GLfloat Circulo::getRaio() {
     return this->raio;
 }
 
-void Circulo::setRaio(float& raio) {
+void Circulo::setRaio(GLfloat& raio) {
     this->raio = raio;
 }
 
-float Circulo::getX(){
+GLfloat Circulo::getX(){
 	return this->x;
 }
-void Circulo::setX(float& x){
+void Circulo::setX(GLfloat& x){
 	this->x = x;
 }
-float Circulo::getY(){
+GLfloat Circulo::getY(){
 	return this->y;
 }
-void Circulo::setY(float& y){
+void Circulo::setY(GLfloat& y){
 	this->y = y;
 }
-float Circulo::getCorR(){
+GLfloat Circulo::getCorR(){
 	return this->corR;
 }
-void Circulo::setCorR(float& corR){
+void Circulo::setCorR(GLfloat& corR){
 	this->corR = corR;
 }
-float Circulo::getCorG(){
+GLfloat Circulo::getCorG(){
 	return this->corG;
 }
-void Circulo::setCorG(float& corG){
+void Circulo::setCorG(GLfloat& corG){
 	this->corG = corG;
 }
-float Circulo::getCorB(){
+GLfloat Circulo::getCorB(){
 	return this->corB;
 }
-void Circulo::setCorB(float& corB){
+void Circulo::setCorB(GLfloat& corB){
 	this->corB = corB;
 }
