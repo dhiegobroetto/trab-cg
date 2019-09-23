@@ -58,14 +58,19 @@ void Circulo::setCorB(GLfloat& corB){
 GLfloat Circulo::getVelocidade(){
 	return this->velocidade;
 }
-void Circulo::setVelocidade(GLfloat velocidade){
+void Circulo::setVelocidade(GLfloat& velocidade){
 	this->velocidade = velocidade;
 }
 
-void Circulo::desenhaCirculo(){
+void Circulo::desenha(){
 	glPushMatrix();
+	desenhaCirculo(this->raio, this->x, this->y, this->corR, this->corG, this->corB);
+	glPopMatrix();
+}
+
+void Circulo::desenhaCirculo(GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR, GLfloat& corG, GLfloat& corB){
 	float theta, px, py;
-    glTranslatef(this->x, this->y, 0);
+    glTranslatef(x, y, 0);
 	glColor3f(this->getCorR(), this->getCorG(), this->getCorB());
 	glBegin(GL_POLYGON);
 		for (int i = 0; i < 360; i++) {
@@ -75,7 +80,6 @@ void Circulo::desenhaCirculo(){
 			glVertex2f(px, py);
 		}
 	glEnd();
-	glPopMatrix();
 }	
 void Circulo::moveX(GLfloat x){
     this->x += x;
@@ -84,19 +88,7 @@ void Circulo::moveY(GLfloat y){
     this->y += y;
 }
 void Circulo::decola(Linha* linha){
-	GLfloat x, y;
-	if(this->x >= linha->getX2()){
-		x = 1;
-	}else{
-		x = -1;
-	}
-	if(this->y >= linha->getY2()){
-		y = 1;
-	}else{
-		y = -1;
-	}
-	while(this->x <= linha->getX2()){
-		this->x += 0.01;
-		this->desenhaCirculo();
-	}
+	std::cout << this->x << endl;
+	this->moveX(1.0);
+	this->desenhaCirculo(this->raio, this->x, this->y, this->corR, this->corG, this->corB);
 }

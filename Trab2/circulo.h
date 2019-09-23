@@ -41,8 +41,9 @@ class Circulo
         GLfloat getCorB();
         void setCorB(GLfloat& corB);
         GLfloat getVelocidade();
-        void setVelocidade(GLfloat velocidade);
-        void desenhaCirculo();
+        void setVelocidade(GLfloat& velocidade);
+        void desenha();
+        void desenhaCirculo(GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR, GLfloat& corG, GLfloat& corB);
         void moveX(GLfloat x);
         void moveY(GLfloat y);
         void decola(Linha* linha);

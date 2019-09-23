@@ -6,6 +6,7 @@
 #include "circulo.h"
 #include "linha.h"
 #include <iostream>
+#include <sstream>
 #include <string>
 
 GLfloat red[] = {1.0, 0.0, 0.0};
@@ -21,6 +22,7 @@ int vetFlags[256];
 
 // Flags
 bool decolagem = false;
+bool teste = false;
 
 // Objetos auxiliares de círculos
 list<Circulo*> listaInimigosAereos;
@@ -29,7 +31,6 @@ Circulo* circuloArena = NULL;
 Circulo* jogador = NULL;
 Circulo* circulo = NULL;
 Linha* linha = NULL;
-// Circulo* circuloMover = NULL;
 
 
 // ---- Métodos ---- //
@@ -84,7 +85,7 @@ void keyup(unsigned char key, int x, int y){
 //     }
 //     if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && moverCirculo){
 //         botaoDireitoMouse = true;
-//         desenhaCirculo = false;
+//         desenha = false;
 //         for(list<Circulo*>::iterator c = listaInimigosAereos.begin(); c != listaInimigosAereos.end(); ++c){
 //             if((*c)->getRaio() >= distanciaCirculos((*c), globalX, globalY)){
 //                 circuloMover = (*c);
@@ -96,7 +97,7 @@ void keyup(unsigned char key, int x, int y){
 //     }else{
 //         botaoDireitoMouse = false;
 //         circuloMover = NULL;
-//         desenhaCirculo = true;
+//         desenha = true;
 //     }
 //     glutPostRedisplay();
 // }
@@ -117,7 +118,7 @@ void keyup(unsigned char key, int x, int y){
 
 // void passiveMotionFunc(int x, int y){
 //     // Manter a origem no bottom
-//     desenhaCirculo = true;
+//     desenha = true;
 //     y = alturaDimensao - y;
 //     sobreposicao = moverCirculo = false;
 //     globalX = x;
@@ -150,29 +151,43 @@ void display(void){
     glClear(GL_COLOR_BUFFER_BIT);
 
     if(circuloArena != NULL){
-        circuloArena->desenhaCirculo();
+        circuloArena->desenha();
     }
     if(linha != NULL){
         linha->desenhaLinha();
     }
     // Círculos criados
     for(list<Circulo*>::iterator c = listaInimigosAereos.begin(); c != listaInimigosAereos.end(); ++c){
-        (*c)->desenhaCirculo();
+        (*c)->desenha();
     }
      for(list<Circulo*>::iterator c = listaInimigosTerrestres.begin(); c != listaInimigosTerrestres.end(); ++c){
-        (*c)->desenhaCirculo();
+        (*c)->desenha();
     }
     if(jogador != NULL){
-        jogador->desenhaCirculo();
+        jogador->desenha();
     }
     glutSwapBuffers();
 }
 
 void idle(void){
-    if(vetFlags['u'] && !decolagem){
-        decolagem = true;
+    if(vetFlags['u'] && !teste){
+        teste = true;
+	    // jogador->moveX(1.0);
         // jogador->decola(linha);
+
     }
+    //x = xo + vot + 1/2at^2
+    if(teste){
+        while(jogador->getY() <= linha->getY2()){
+            jogador->moveX(0.1);
+            jogador->moveY(0.1);
+            glutPostRedisplay();
+            for(int i = 0; i < 100000; i++);
+        }
+        teste = false;
+        decolagem = true;
+    }
+
     if(decolagem){
         if(vetFlags['w']){
             jogador->moveY(jogador->getVelocidade());
@@ -186,8 +201,8 @@ void idle(void){
         if(vetFlags['d']){
             jogador->moveX(jogador->getVelocidade());
         }
+        glutPostRedisplay();
     }
-    glutPostRedisplay();
 }
 
 void init(float fundoR, float fundoG, float fundoB){
@@ -253,7 +268,8 @@ int main(int argc, char** argv){
                         if(((std::string)circulo->Attribute("fill")).compare("green") == 0){
                             std::cout << cx << "; " << cy << endl;
                             jogador = new Circulo(id, r, cx, cy, cores[0], cores[1], cores[2]);
-                            jogador->setVelocidade(atof(jogadorElemento->Attribute("vel")));
+                            GLfloat vel = atof(jogadorElemento->Attribute("vel"));
+                            jogador->setVelocidade(vel);
                         }else if(((std::string)circulo->Attribute("fill")).compare("red") == 0){
                             criaInimigosAereos(id, r, cx, cy, cores[0], cores[1], cores[2]);
                         }else if(((std::string)circulo->Attribute("fill")).compare("orange") == 0){
@@ -278,10 +294,13 @@ int main(int argc, char** argv){
                     GLfloat y1 = alturaDimensao - atof(linhaElemento->Attribute("y1"));
                     GLfloat x2 = atof(linhaElemento->Attribute("x2"));
                     GLfloat y2 = alturaDimensao - atof(linhaElemento->Attribute("y2"));
-                    GLfloat linhaR = (GLfloat)coresLinha[0];
-                    GLfloat linhaG = (GLfloat)coresLinha[2];
-                    GLfloat linhaB = (GLfloat)coresLinha[4];
-                    linha = new Linha(id, x1, y1, x2, y2, linhaR, linhaB, linhaG);
+                    std::stringstream coresStream(coresLinha);
+                    GLfloat cor[3];
+                    int i = 0;
+                    while(std::getline(coresStream,coresLinha,',')){
+                        cor[i++] = stof(coresLinha);
+                    }
+                    linha = new Linha(id, x1, y1, x2, y2, cor[0], cor[1], cor[2]);
                 }
             }
             fundoR = 1.0;
