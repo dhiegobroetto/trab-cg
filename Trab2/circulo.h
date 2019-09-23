@@ -2,6 +2,10 @@
 #define CIRCULO_H
 
 #include <GL/glut.h>
+#include "math.h"
+#include "linha.h"
+#include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -15,6 +19,7 @@ class Circulo
         GLfloat corR;
         GLfloat corG;
         GLfloat corB;
+        GLfloat velocidade;
 
     public:
     	// ------------ Construtor ------------ //
@@ -35,6 +40,12 @@ class Circulo
         void setCorG(GLfloat& corG);
         GLfloat getCorB();
         void setCorB(GLfloat& corB);
+        GLfloat getVelocidade();
+        void setVelocidade(GLfloat velocidade);
+        void desenhaCirculo();
+        void moveX(GLfloat x);
+        void moveY(GLfloat y);
+        void decola(Linha* linha);
 
 };
 

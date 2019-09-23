@@ -4,6 +4,7 @@
 #include "tinyxml/tinyxml.h"
 #include "math.h"
 #include "circulo.h"
+#include "linha.h"
 #include <iostream>
 #include <string>
 
@@ -13,34 +14,32 @@ GLfloat blue[] = {0.0, 0.0, 1.0};
 GLfloat orange[] = {1.0, 0.7, 0.0};
 
 // Variáveis globais de configuração
-float globalX;
-float globalY;
-float raioCirculo;
-float circuloR, circuloG, circuloB;
-float circuloModeloR, circuloModeloG, circuloModeloB, circuloModeloSobreposicaoR, 
-circuloModeloSobreposicaoG, circuloModeloSobreposicaoB;
 float larguraDimensao, alturaDimensao;
 float fundoR, fundoG, fundoB;
+int vetFlags[256];
 
 
 // Flags
-bool sobreposicao = false;
-bool moverCirculo = false;
-bool botaoDireitoMouse = false;
-bool desenhaCirculo = false;
-float compensacaoX, compensacaoY;
+bool decolagem = false;
 
 // Objetos auxiliares de círculos
-list<Circulo*> listaCirculos;
-Circulo* circuloModeloMouse;
+list<Circulo*> listaInimigosAereos;
+list<Circulo*> listaInimigosTerrestres;
+Circulo* circuloArena = NULL;
+Circulo* jogador = NULL;
 Circulo* circulo = NULL;
-Circulo* circuloMover = NULL;
+Linha* linha = NULL;
+// Circulo* circuloMover = NULL;
 
 
 // ---- Métodos ---- //
-void criaCirculo(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b) {
+void criaInimigosAereos(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b) {
     circulo = new Circulo(id, raioCirculo, x, y, r, g, b);
-    listaCirculos.push_back(circulo);
+    listaInimigosAereos.push_back(circulo);
+}
+void criaInimigosTerrestres(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b) {
+    circulo = new Circulo(id, raioCirculo, x, y, r, g, b);
+    listaInimigosTerrestres.push_back(circulo);
 }
 
 GLfloat* retornaCor(std::string fill){
@@ -58,9 +57,17 @@ GLfloat* retornaCor(std::string fill){
     }
 }
 
-// float distanciaCirculos(Circulo *c, float x, float y){
-//     return sqrt(pow((c->getX() - x), 2) + pow((c->getY() - y), 2));
-// }
+float distanciaCirculos(Circulo *c, float x, float y){
+    return sqrt(pow((c->getX() - x), 2) + pow((c->getY() - y), 2));
+}
+
+void keyPress(unsigned char key, int x, int y){
+  vetFlags[key] = 1;
+}
+
+void keyup(unsigned char key, int x, int y){
+  vetFlags[key] = 0;
+}
 
 // void mouse(int button, int state, int x, int y){
 //     // Manter a origem no bottom
@@ -69,7 +76,7 @@ GLfloat* retornaCor(std::string fill){
 //     globalX = x;
 //     globalY = y;
 //     if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && !sobreposicao){
-//         criaCirculo();
+//         criaInimigosAereos();
 //         sobreposicao = true;
 //         circuloModeloMouse->setCorR(circuloModeloSobreposicaoR);
 //         circuloModeloMouse->setCorG(circuloModeloSobreposicaoG);
@@ -78,7 +85,7 @@ GLfloat* retornaCor(std::string fill){
 //     if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && moverCirculo){
 //         botaoDireitoMouse = true;
 //         desenhaCirculo = false;
-//         for(list<Circulo*>::iterator c = listaCirculos.begin(); c != listaCirculos.end(); ++c){
+//         for(list<Circulo*>::iterator c = listaInimigosAereos.begin(); c != listaInimigosAereos.end(); ++c){
 //             if((*c)->getRaio() >= distanciaCirculos((*c), globalX, globalY)){
 //                 circuloMover = (*c);
 //                 compensacaoX = x - circuloMover->getX();
@@ -115,7 +122,7 @@ GLfloat* retornaCor(std::string fill){
 //     sobreposicao = moverCirculo = false;
 //     globalX = x;
 //     globalY = y;
-//     for(list<Circulo*>::iterator c = listaCirculos.begin(); c != listaCirculos.end(); ++c){
+//     for(list<Circulo*>::iterator c = listaInimigosAereos.begin(); c != listaInimigosAereos.end(); ++c){
 //         if((circuloModeloMouse->getRaio() + (*c)->getRaio()) >= distanciaCirculos((*c), globalX, globalY)){
 //             circuloModeloMouse->setCorR(circuloModeloSobreposicaoR);
 //             circuloModeloMouse->setCorG(circuloModeloSobreposicaoG);
@@ -142,33 +149,63 @@ void display(void){
     // Limpar todos os pixels
     glClear(GL_COLOR_BUFFER_BIT);
 
+    if(circuloArena != NULL){
+        circuloArena->desenhaCirculo();
+    }
+    if(linha != NULL){
+        linha->desenhaLinha();
+    }
     // Círculos criados
-    for(list<Circulo*>::iterator c = listaCirculos.begin(); c != listaCirculos.end(); ++c){
-        glColor3f((*c)->getCorR(), (*c)->getCorG(), (*c)->getCorB());
-        glBegin(GL_POLYGON);
-            for (int i = 0; i < 360; i++) {
-                theta = (i * M_PI) / 180.0;
-                px = cos(theta) * (*c)->getRaio();
-                py = sin(theta) * (*c)->getRaio();
-                glVertex2f(px + (*c)->getX(), py + (*c)->getY());
-            }
-        glEnd();
+    for(list<Circulo*>::iterator c = listaInimigosAereos.begin(); c != listaInimigosAereos.end(); ++c){
+        (*c)->desenhaCirculo();
+    }
+     for(list<Circulo*>::iterator c = listaInimigosTerrestres.begin(); c != listaInimigosTerrestres.end(); ++c){
+        (*c)->desenhaCirculo();
+    }
+    if(jogador != NULL){
+        jogador->desenhaCirculo();
     }
     glutSwapBuffers();
 }
 
-void init (float fundoR, float fundoG, float fundoB){
+void idle(void){
+    if(vetFlags['u'] && !decolagem){
+        decolagem = true;
+        // jogador->decola(linha);
+    }
+    if(decolagem){
+        if(vetFlags['w']){
+            jogador->moveY(jogador->getVelocidade());
+        }
+        if(vetFlags['a']){
+            jogador->moveX(-jogador->getVelocidade());
+        }
+        if(vetFlags['s']){
+            jogador->moveY(-jogador->getVelocidade());
+        }
+        if(vetFlags['d']){
+            jogador->moveX(jogador->getVelocidade());
+        }
+    }
+    glutPostRedisplay();
+}
+
+void init(float fundoR, float fundoG, float fundoB){
     glClearColor(fundoR, fundoG, fundoB, 0.0);
 
     // Iniciar sistema de viz
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(200, 800, 200, 800, -1.0, 1.0);
+    glOrtho(circuloArena->getX() - circuloArena->getRaio(), 
+        circuloArena->getX() + circuloArena->getRaio(), 
+        circuloArena->getY() - circuloArena->getRaio(), 
+        circuloArena->getY() + circuloArena->getRaio(), 
+        -1.0, 1.0);
 }
 
 int main(int argc, char** argv){
     if(argv[1] != NULL){
-        TiXmlDocument doc( strcat(argv[1], "/config.xml") );
+        TiXmlDocument doc(strcat(argv[1], "/config.xml"));
         doc.LoadFile();
         TiXmlElement *aplicacao = doc.RootElement();
         if(aplicacao !=  NULL){
@@ -177,48 +214,76 @@ int main(int argc, char** argv){
             TiXmlElement *nome = NULL;
             TiXmlElement *tipo = NULL;
             TiXmlElement *caminho = NULL;
-            TiXmlElement *jogador = NULL;
+            TiXmlElement *jogadorElemento = NULL;
 
             // Atribui valores
-            arquivoDaArena = aplicacao->FirstChildElement( "arquivoDaArena" );
-            nome = arquivoDaArena->FirstChildElement( "nome" );
-            tipo = arquivoDaArena->FirstChildElement( "tipo" );
-            caminho = arquivoDaArena->FirstChildElement( "caminho" );
-            jogador = aplicacao->FirstChildElement( "jogador" );
+            arquivoDaArena = aplicacao->FirstChildElement("arquivoDaArena");
+            nome = arquivoDaArena->FirstChildElement("nome");
+            tipo = arquivoDaArena->FirstChildElement("tipo");
+            caminho = arquivoDaArena->FirstChildElement("caminho");
+            jogadorElemento = aplicacao->FirstChildElement("jogador");
             std::string arquivoSVG = "";
             arquivoSVG = (std::string)caminho->GetText() + '/' + (std::string)nome->GetText() + '.' + (std::string)tipo->GetText();
             const char *abrirArquivo = arquivoSVG.c_str();
             TiXmlDocument svgFile(abrirArquivo);
             svgFile.LoadFile();
             TiXmlElement *arena = svgFile.RootElement();
+            
             if(arena != NULL) {
                 TiXmlElement *circulo = NULL;
-                circulo = arena->FirstChildElement( "circle" );
+                circulo = arena->FirstChildElement("circle");
+                GLint id;
+                GLfloat cx, r, cy, *cores;
                 while(circulo){
-                    GLint id = atoi(circulo->Attribute("id"));
-                    GLfloat cx = atof(circulo->Attribute("cx"));
-                    GLfloat cy = atof(circulo->Attribute("cy"));
-                    GLfloat r = atof(circulo->Attribute("r"));
-                    GLfloat *cores = retornaCor(circulo->Attribute("fill"));
-                    criaCirculo(id, r, cx, cy, cores[0], cores[1], cores[2]);
+                    if(((std::string)circulo->Attribute("fill")).compare("blue") == 0){
+                        r = atof(circulo->Attribute("r"));
+                        larguraDimensao = r * 2;
+                        alturaDimensao = r * 2;
+                        id = atoi(circulo->Attribute("id"));
+                        cx = atof(circulo->Attribute("cx"));
+                        cy = alturaDimensao - atof(circulo->Attribute("cy"));
+                        cores = retornaCor(circulo->Attribute("fill"));
+                        circuloArena = new Circulo(id, r, cx, cy, cores[0], cores[1], cores[2]);
+                    }else{
+                        id = atoi(circulo->Attribute("id"));
+                        r = atof(circulo->Attribute("r"));
+                        cx = atof(circulo->Attribute("cx"));
+                        cy = alturaDimensao - atof(circulo->Attribute("cy"));
+                        cores = retornaCor(circulo->Attribute("fill"));
+                        if(((std::string)circulo->Attribute("fill")).compare("green") == 0){
+                            std::cout << cx << "; " << cy << endl;
+                            jogador = new Circulo(id, r, cx, cy, cores[0], cores[1], cores[2]);
+                            jogador->setVelocidade(atof(jogadorElemento->Attribute("vel")));
+                        }else if(((std::string)circulo->Attribute("fill")).compare("red") == 0){
+                            criaInimigosAereos(id, r, cx, cy, cores[0], cores[1], cores[2]);
+                        }else if(((std::string)circulo->Attribute("fill")).compare("orange") == 0){
+                            criaInimigosTerrestres(id, r, cx, cy, cores[0], cores[1], cores[2]);
+                        }
+                    }
                     circulo = circulo->NextSiblingElement("circle");
                 }
+                TiXmlElement *linhaElemento = NULL;
+                linhaElemento = arena->FirstChildElement("line");
+                if(linhaElemento != NULL){
+                    // Parse das cores
+                    std::string estiloLinha = linhaElemento->Attribute("style");
+                    int inicio, fim;
+                    inicio = estiloLinha.find("(") + 1;
+                    fim = estiloLinha.find(")") - inicio;
+                    std::string coresLinha = estiloLinha.substr(inicio, fim);
+
+                    // Atribuindo valores
+                    GLint id = atoi(linhaElemento->Attribute("id"));
+                    GLfloat x1 = atof(linhaElemento->Attribute("x1"));
+                    GLfloat y1 = alturaDimensao - atof(linhaElemento->Attribute("y1"));
+                    GLfloat x2 = atof(linhaElemento->Attribute("x2"));
+                    GLfloat y2 = alturaDimensao - atof(linhaElemento->Attribute("y2"));
+                    GLfloat linhaR = (GLfloat)coresLinha[0];
+                    GLfloat linhaG = (GLfloat)coresLinha[2];
+                    GLfloat linhaB = (GLfloat)coresLinha[4];
+                    linha = new Linha(id, x1, y1, x2, y2, linhaR, linhaB, linhaG);
+                }
             }
-            // raioCirculo = atof(circulo->Attribute("raio"));
-            // circuloR = atof(circulo->Attribute("corR"));
-            // circuloG = atof(circulo->Attribute("corG"));
-            // circuloB = atof(circulo->Attribute("corB"));
-
-            // circuloModeloR = atof(circuloModelo->Attribute("corR"));
-            // circuloModeloG = atof(circuloModelo->Attribute("corG"));
-            // circuloModeloB = atof(circuloModelo->Attribute("corB"));
-            // circuloModeloSobreposicaoR = atof(circuloModelo->Attribute("corSobreposicaoR"));
-            // circuloModeloSobreposicaoG = atof(circuloModelo->Attribute("corSobreposicaoG"));
-            // circuloModeloSobreposicaoB = atof(circuloModelo->Attribute("corSobreposicaoB"));
-
-            larguraDimensao = 500.0;
-            alturaDimensao = 500.0;
-
             fundoR = 1.0;
             fundoG = 1.0;
             fundoB = 1.0;
@@ -231,6 +296,9 @@ int main(int argc, char** argv){
             glutCreateWindow("Airplane Combat");
             init(fundoR, fundoG, fundoB);
             glutDisplayFunc(display);
+            glutKeyboardUpFunc(keyup);
+            glutKeyboardFunc(keyPress);
+            glutIdleFunc(idle);
             // glutMotionFunc(motionFunc);
             glutMainLoop();
         }else{
