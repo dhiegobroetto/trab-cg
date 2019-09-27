@@ -5,6 +5,9 @@
 #include "math.h"
 #include "circulo.h"
 #include "linha.h"
+#include "arena.h"
+#include "jogador.h"
+#include <chrono>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -18,17 +21,19 @@ GLfloat orange[] = {1.0, 0.7, 0.0};
 float larguraDimensao, alturaDimensao;
 float fundoR, fundoG, fundoB;
 int vetFlags[256];
+std::chrono::high_resolution_clock::time_point tempoAntigo, tempoNovo;
+GLfloat tempoMultiplicador;
 
 
 // Flags
 bool decolagem = false;
 bool teste = false;
 
-// Objetos auxiliares de círculos
+// Objetos auxiliares
 list<Circulo*> listaInimigosAereos;
 list<Circulo*> listaInimigosTerrestres;
-Circulo* circuloArena = NULL;
-Circulo* jogador = NULL;
+Arena* circuloArena = NULL;
+Jogador* jogador = NULL;
 Circulo* circulo = NULL;
 Linha* linha = NULL;
 
@@ -70,80 +75,6 @@ void keyup(unsigned char key, int x, int y){
   vetFlags[key] = 0;
 }
 
-// void mouse(int button, int state, int x, int y){
-//     // Manter a origem no bottom
-//     y = alturaDimensao - y;
-
-//     globalX = x;
-//     globalY = y;
-//     if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && !sobreposicao){
-//         criaInimigosAereos();
-//         sobreposicao = true;
-//         circuloModeloMouse->setCorR(circuloModeloSobreposicaoR);
-//         circuloModeloMouse->setCorG(circuloModeloSobreposicaoG);
-//         circuloModeloMouse->setCorB(circuloModeloSobreposicaoB);
-//     }
-//     if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && moverCirculo){
-//         botaoDireitoMouse = true;
-//         desenha = false;
-//         for(list<Circulo*>::iterator c = listaInimigosAereos.begin(); c != listaInimigosAereos.end(); ++c){
-//             if((*c)->getRaio() >= distanciaCirculos((*c), globalX, globalY)){
-//                 circuloMover = (*c);
-//                 compensacaoX = x - circuloMover->getX();
-//                 compensacaoY = y - circuloMover->getY();
-//                 break;
-//             }
-//         }
-//     }else{
-//         botaoDireitoMouse = false;
-//         circuloMover = NULL;
-//         desenha = true;
-//     }
-//     glutPostRedisplay();
-// }
-
-// void motionFunc(int x, int y){
-//     // Manter a origem no bottom
-//     y = alturaDimensao - y;
-//     globalX = x;
-//     globalY = y;
-//     if(botaoDireitoMouse){
-//         float aux = globalX - compensacaoX;
-//         circuloMover->setX(aux);
-//         aux = globalY - compensacaoY;
-//         circuloMover->setY(aux);
-//     }
-//     glutPostRedisplay();
-// }
-
-// void passiveMotionFunc(int x, int y){
-//     // Manter a origem no bottom
-//     desenha = true;
-//     y = alturaDimensao - y;
-//     sobreposicao = moverCirculo = false;
-//     globalX = x;
-//     globalY = y;
-//     for(list<Circulo*>::iterator c = listaInimigosAereos.begin(); c != listaInimigosAereos.end(); ++c){
-//         if((circuloModeloMouse->getRaio() + (*c)->getRaio()) >= distanciaCirculos((*c), globalX, globalY)){
-//             circuloModeloMouse->setCorR(circuloModeloSobreposicaoR);
-//             circuloModeloMouse->setCorG(circuloModeloSobreposicaoG);
-//             circuloModeloMouse->setCorB(circuloModeloSobreposicaoB);
-//             sobreposicao = true;
-//         }
-//         if((*c)->getRaio() >= distanciaCirculos((*c), globalX, globalY) && !moverCirculo){
-//             moverCirculo = true;
-//             break;
-//         }
-//     }
-//     if(!sobreposicao){
-//         circuloModeloMouse->setCorR(circuloModeloR);
-//         circuloModeloMouse->setCorG(circuloModeloG);
-//         circuloModeloMouse->setCorB(circuloModeloB);
-//     }
-    
-//     glutPostRedisplay();
-// }
-
 void display(void){
     float theta, px, py;
 
@@ -151,7 +82,7 @@ void display(void){
     glClear(GL_COLOR_BUFFER_BIT);
 
     if(circuloArena != NULL){
-        circuloArena->desenha();
+        circuloArena->desenhaArena();
     }
     if(linha != NULL){
         linha->desenhaLinha();
@@ -164,7 +95,7 @@ void display(void){
         (*c)->desenha();
     }
     if(jogador != NULL){
-        jogador->desenha();
+        jogador->desenhaJogador();
     }
     glutSwapBuffers();
 }
@@ -172,17 +103,20 @@ void display(void){
 void idle(void){
     if(vetFlags['u'] && !teste){
         teste = true;
+        tempoNovo = std::chrono::high_resolution_clock::now();
 	    // jogador->moveX(1.0);
         // jogador->decola(linha);
 
     }
+    tempoAntigo = tempoNovo;
+    GLfloat t = std::chrono::duration_cast<std::chrono::seconds>(tempoNovo - tempoAntigo).count();
+    jogador->setTempoMultiplicador(t);
     //x = xo + vot + 1/2at^2
     if(teste){
         while(jogador->getY() <= linha->getY2()){
-            jogador->moveX(0.1);
-            jogador->moveY(0.1);
-            glutPostRedisplay();
-            for(int i = 0; i < 100000; i++);
+            GLfloat tempoDecolagem = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - tempoAntigo).count();
+            jogador->decola(linha);
+            std::cout << jogador->getX() << std::endl;
         }
         teste = false;
         decolagem = true;
@@ -203,6 +137,8 @@ void idle(void){
         }
         glutPostRedisplay();
     }
+    tempoNovo = std::chrono::high_resolution_clock::now();
+    
 }
 
 void init(float fundoR, float fundoG, float fundoB){
@@ -258,7 +194,7 @@ int main(int argc, char** argv){
                         cx = atof(circulo->Attribute("cx"));
                         cy = alturaDimensao - atof(circulo->Attribute("cy"));
                         cores = retornaCor(circulo->Attribute("fill"));
-                        circuloArena = new Circulo(id, r, cx, cy, cores[0], cores[1], cores[2]);
+                        circuloArena = new Arena(id, r, cx, cy, cores[0], cores[1], cores[2]);
                     }else{
                         id = atoi(circulo->Attribute("id"));
                         r = atof(circulo->Attribute("r"));
@@ -266,8 +202,7 @@ int main(int argc, char** argv){
                         cy = alturaDimensao - atof(circulo->Attribute("cy"));
                         cores = retornaCor(circulo->Attribute("fill"));
                         if(((std::string)circulo->Attribute("fill")).compare("green") == 0){
-                            std::cout << cx << "; " << cy << endl;
-                            jogador = new Circulo(id, r, cx, cy, cores[0], cores[1], cores[2]);
+                            jogador = new Jogador(id, r, cx, cy, cores[0], cores[1], cores[2]);
                             GLfloat vel = atof(jogadorElemento->Attribute("vel"));
                             jogador->setVelocidade(vel);
                         }else if(((std::string)circulo->Attribute("fill")).compare("red") == 0){
@@ -306,7 +241,7 @@ int main(int argc, char** argv){
             fundoR = 1.0;
             fundoG = 1.0;
             fundoB = 1.0;
-
+            tempoAntigo = std::chrono::high_resolution_clock::now();
             // Inicializa
             glutInit(&argc, argv);
             glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);

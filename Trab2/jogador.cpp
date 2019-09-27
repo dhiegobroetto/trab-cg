@@ -55,6 +55,12 @@ GLfloat Jogador::getCorB(){
 void Jogador::setCorB(GLfloat& corB){
 	this->corB = corB;
 }
+GLfloat Jogador::getTempoMultiplicador(){
+	return this->tempoMultiplicador;
+}
+void Jogador::setTempoMultiplicador(GLfloat& tempoMultiplicador){
+	this->tempoMultiplicador = tempoMultiplicador;
+}
 GLfloat Jogador::getVelocidade(){
 	return this->velocidade;
 }
@@ -81,6 +87,7 @@ void Jogador::desenhaJogador(){
 	desenhaCirculo(this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB());
 	glPopMatrix();
 }	
+
 void Jogador::moveX(GLfloat x){
     this->x += x;
 }
@@ -88,19 +95,17 @@ void Jogador::moveY(GLfloat y){
     this->y += y;
 }
 void Jogador::decola(Linha* linha){
-	GLfloat x, y;
-	if(this->x >= linha->getX2()){
-		x = 1;
-	}else{
-		x = -1;
-	}
-	if(this->y >= linha->getY2()){
-		y = 1;
-	}else{
-		y = -1;
-	}
-	while(this->x <= linha->getX2()){
-		this->x += 0.01;
-		this->desenhaJogador();
-	}
+	// S = So + Vo * t + (a * t^2)/2
+    GLfloat tempo = 4.0;
+
+    GLfloat dy = linha->getY2() - linha->getY1();
+    GLfloat y = 2 * dy / pow(tempo, 2);
+
+    GLfloat dx = linha->getX2() - linha->getX1();
+    GLfloat x = 2 * dx / pow(tempo, 2);
+
+	GLfloat y1 = linha->getY1() + (y * pow(this->tempoMultiplicador / 1000.0, 2)) / 2;
+	GLfloat x1 = linha->getX1() + (x * pow(this->tempoMultiplicador / 1000.0, 2)) / 2;
+    this->setY(y1);
+    this->setX(x1);
 }

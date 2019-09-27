@@ -20,6 +20,7 @@ class Jogador
         GLfloat corG;
         GLfloat corB;
         GLfloat velocidade;
+        GLfloat tempoMultiplicador;
 
     public:
     	// ------------ Construtor ------------ //
@@ -40,6 +41,8 @@ class Jogador
         void setCorG(GLfloat& corG);
         GLfloat getCorB();
         void setCorB(GLfloat& corB);
+        GLfloat getTempoMultiplicador();
+        void setTempoMultiplicador(GLfloat& tempoMultiplicador);
         GLfloat getVelocidade();
         void setVelocidade(GLfloat velocidade);
         void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
