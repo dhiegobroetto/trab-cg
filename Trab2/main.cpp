@@ -30,23 +30,23 @@ bool decolagem = false;
 bool teste = false;
 
 // Objetos auxiliares
-list<Circulo*> listaInimigosAereos;
-list<Circulo*> listaInimigosTerrestres;
+// list<Circulo*> listaInimigosAereos;
+// list<Circulo*> listaInimigosTerrestres;
 Arena* circuloArena = NULL;
-Jogador* jogador = NULL;
 Circulo* circulo = NULL;
-Linha* linha = NULL;
+// Jogador* jogador = NULL;
+// Linha* linha = NULL;
 
 
 // ---- Métodos ---- //
-void criaInimigosAereos(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b) {
-    circulo = new Circulo(id, raioCirculo, x, y, r, g, b);
-    listaInimigosAereos.push_back(circulo);
-}
-void criaInimigosTerrestres(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b) {
-    circulo = new Circulo(id, raioCirculo, x, y, r, g, b);
-    listaInimigosTerrestres.push_back(circulo);
-}
+// void criaInimigosAereos(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b) {
+//     circulo = new Circulo(id, raioCirculo, x, y, r, g, b);
+//     listaInimigosAereos.push_back(circulo);
+// }
+// void criaInimigosTerrestres(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b) {
+//     circulo = new Circulo(id, raioCirculo, x, y, r, g, b);
+//     listaInimigosTerrestres.push_back(circulo);
+// }
 
 GLfloat* retornaCor(std::string fill){
     if(fill.compare("red") == 0){
@@ -61,10 +61,6 @@ GLfloat* retornaCor(std::string fill){
     if(fill.compare("orange") == 0){
         return orange;
     }
-}
-
-float distanciaCirculos(Circulo *c, float x, float y){
-    return sqrt(pow((c->getX() - x), 2) + pow((c->getY() - y), 2));
 }
 
 void keyPress(unsigned char key, int x, int y){
@@ -178,11 +174,11 @@ int main(int argc, char** argv){
             const char *abrirArquivo = arquivoSVG.c_str();
             TiXmlDocument svgFile(abrirArquivo);
             svgFile.LoadFile();
-            TiXmlElement *arena = svgFile.RootElement();
+            TiXmlElement *arenaElement = svgFile.RootElement();
             
-            if(arena != NULL) {
+            if(arenaElement != NULL) {
                 TiXmlElement *circulo = NULL;
-                circulo = arena->FirstChildElement("circle");
+                circulo = arenaElement->FirstChildElement("circle");
                 GLint id;
                 GLfloat cx, r, cy, *cores;
                 while(circulo){
@@ -214,7 +210,7 @@ int main(int argc, char** argv){
                     circulo = circulo->NextSiblingElement("circle");
                 }
                 TiXmlElement *linhaElemento = NULL;
-                linhaElemento = arena->FirstChildElement("line");
+                linhaElemento = arenaElement->FirstChildElement("line");
                 if(linhaElemento != NULL){
                     // Parse das cores
                     std::string estiloLinha = linhaElemento->Attribute("style");

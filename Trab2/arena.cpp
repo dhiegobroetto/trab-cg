@@ -55,13 +55,9 @@ GLfloat Arena::getCorB(){
 void Arena::setCorB(GLfloat& corB){
 	this->corB = corB;
 }
-GLfloat Arena::getVelocidade(){
-	return this->velocidade;
+Jogador* Arena::getJogador(){
+	return this->jogador;
 }
-void Arena::setVelocidade(GLfloat velocidade){
-	this->velocidade = velocidade;
-}
-
 void Arena::desenhaArena(){
 	glPushMatrix();
 	float theta, px, py;
@@ -76,27 +72,15 @@ void Arena::desenhaArena(){
 		}
 	glEnd();
 	glPopMatrix();
-}	
-void Arena::moveX(GLfloat x){
-    this->x += x;
 }
-void Arena::moveY(GLfloat y){
-    this->y += y;
+void Arena::criaInimigosAereos(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b) {
+    Circulo* circulo = new Circulo(id, raioCirculo, x, y, r, g, b);
+    this->listaInimigosAereos.push_back(circulo);
 }
-void Arena::decola(Linha* linha){
-	GLfloat x, y;
-	if(this->x >= linha->getX2()){
-		x = 1;
-	}else{
-		x = -1;
-	}
-	if(this->y >= linha->getY2()){
-		y = 1;
-	}else{
-		y = -1;
-	}
-	while(this->x <= linha->getX2()){
-		this->x += 0.01;
-		this->desenhaArena();
-	}
+void Arena::criaInimigosTerrestres(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b) {
+    Circulo* circulo = new Circulo(id, raioCirculo, x, y, r, g, b);
+    this->listaInimigosTerrestres.push_back(circulo);
+}
+float Arena::distanciaCirculos(Circulo *c, float x, float y){
+    return sqrt(pow((c->getX() - x), 2) + pow((c->getY() - y), 2));
 }

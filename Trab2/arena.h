@@ -4,8 +4,11 @@
 #include <GL/glut.h>
 #include "math.h"
 #include "linha.h"
+#include "jogador.h"
+#include "circulo.h"
 #include <iostream>
 #include <string>
+#include <list>
 
 using namespace std;
 
@@ -20,6 +23,10 @@ class Arena
         GLfloat corG;
         GLfloat corB;
         GLfloat velocidade;
+        list<Circulo*> listaInimigosAereos;
+        list<Circulo*> listaInimigosTerrestres;
+        Jogador* jogador;
+        Linha* linha;
 
     public:
     	// ------------ Construtor ------------ //
@@ -40,13 +47,8 @@ class Arena
         void setCorG(GLfloat& corG);
         GLfloat getCorB();
         void setCorB(GLfloat& corB);
-        GLfloat getVelocidade();
-        void setVelocidade(GLfloat velocidade);
+        Jogador* getJogador();
         void desenhaArena();
-        void moveX(GLfloat x);
-        void moveY(GLfloat y);
-        void decola(Linha* linha);
-
 };
 
 #endif /* ARENA_H */
