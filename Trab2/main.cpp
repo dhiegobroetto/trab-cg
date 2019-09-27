@@ -26,13 +26,12 @@ GLfloat tempoMultiplicador;
 
 
 // Flags
-bool decolagem = false;
-bool teste = false;
+// bool decolagem = false;
 
 // Objetos auxiliares
-// list<Circulo*> listaInimigosAereos;
-// list<Circulo*> listaInimigosTerrestres;
-Arena* circuloArena = NULL;
+// list<Circulo*> inimigosAereos;
+// list<Circulo*> inimigosTerrestres;
+Arena* arena = NULL;
 Circulo* circulo = NULL;
 // Jogador* jogador = NULL;
 // Linha* linha = NULL;
@@ -41,11 +40,11 @@ Circulo* circulo = NULL;
 // ---- Métodos ---- //
 // void criaInimigosAereos(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b) {
 //     circulo = new Circulo(id, raioCirculo, x, y, r, g, b);
-//     listaInimigosAereos.push_back(circulo);
+//     inimigosAereos.push_back(circulo);
 // }
 // void criaInimigosTerrestres(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b) {
 //     circulo = new Circulo(id, raioCirculo, x, y, r, g, b);
-//     listaInimigosTerrestres.push_back(circulo);
+//     inimigosTerrestres.push_back(circulo);
 // }
 
 GLfloat* retornaCor(std::string fill){
@@ -72,22 +71,26 @@ void keyup(unsigned char key, int x, int y){
 }
 
 void display(void){
+    // Inicialização das variáveis
     float theta, px, py;
+    Jogador* jogador = arena->getJogador();
+    Linha* linha = arena->getLinha();
+    list<Circulo*> inimigosAereos = arena->getInimigosAereos();
+    list<Circulo*> inimigosTerrestres = arena->getInimigosTerrestres();
 
     // Limpar todos os pixels
     glClear(GL_COLOR_BUFFER_BIT);
 
-    if(circuloArena != NULL){
-        circuloArena->desenhaArena();
+    if(arena != NULL){
+        arena->desenhaArena();
     }
     if(linha != NULL){
         linha->desenhaLinha();
     }
-    // Círculos criados
-    for(list<Circulo*>::iterator c = listaInimigosAereos.begin(); c != listaInimigosAereos.end(); ++c){
+    for(list<Circulo*>::iterator c = inimigosAereos.begin(); c != inimigosAereos.end(); ++c){
         (*c)->desenha();
     }
-     for(list<Circulo*>::iterator c = listaInimigosTerrestres.begin(); c != listaInimigosTerrestres.end(); ++c){
+     for(list<Circulo*>::iterator c = inimigosTerrestres.begin(); c != inimigosTerrestres.end(); ++c){
         (*c)->desenha();
     }
     if(jogador != NULL){
@@ -97,28 +100,30 @@ void display(void){
 }
 
 void idle(void){
-    if(vetFlags['u'] && !teste){
-        teste = true;
-        tempoNovo = std::chrono::high_resolution_clock::now();
+    Jogador* jogador = arena->getJogador();
+    if(vetFlags['u'] && !jogador->isLigado()){
+        jogador->setLigado(true);
 	    // jogador->moveX(1.0);
         // jogador->decola(linha);
 
     }
-    tempoAntigo = tempoNovo;
-    GLfloat t = std::chrono::duration_cast<std::chrono::seconds>(tempoNovo - tempoAntigo).count();
-    jogador->setTempoMultiplicador(t);
-    //x = xo + vot + 1/2at^2
-    if(teste){
-        while(jogador->getY() <= linha->getY2()){
-            GLfloat tempoDecolagem = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - tempoAntigo).count();
-            jogador->decola(linha);
-            std::cout << jogador->getX() << std::endl;
-        }
-        teste = false;
-        decolagem = true;
+    if(jogador->isLigado() && !jogador->isVoando()){
+        jogador->decola(arena->getLinha());
     }
+    // tempoAntigo = tempoNovo;
+    
+    // //x = xo + vot + 1/2at^2
+    // if(decolagem){
+    //     while(jogador->getY() <= linha->getY2()){
+    //         GLfloat tempoDecolagem = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - tempoAntigo).count();
+    //         jogador->decola(linha);
+    //         std::cout << jogador->getX() << std::endl;
+    //     }
+    //     decolagem = false;
+    //     decolagem = true;
+    // }
 
-    if(decolagem){
+    if(jogador->isLigado() && !jogador->isVoando()){
         if(vetFlags['w']){
             jogador->moveY(jogador->getVelocidade());
         }
@@ -134,6 +139,9 @@ void idle(void){
         glutPostRedisplay();
     }
     tempoNovo = std::chrono::high_resolution_clock::now();
+    GLfloat t = (std::chrono::duration_cast<std::chrono::microseconds>(tempoNovo - tempoAntigo).count()/100000.0);
+    tempoAntigo = tempoNovo;
+    jogador->setTempoMultiplicador(t);
     
 }
 
@@ -143,97 +151,132 @@ void init(float fundoR, float fundoG, float fundoB){
     // Iniciar sistema de viz
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(circuloArena->getX() - circuloArena->getRaio(), 
-        circuloArena->getX() + circuloArena->getRaio(), 
-        circuloArena->getY() - circuloArena->getRaio(), 
-        circuloArena->getY() + circuloArena->getRaio(), 
+    glOrtho(arena->getX() - arena->getRaio(), 
+        arena->getX() + arena->getRaio(), 
+        arena->getY() - arena->getRaio(), 
+        arena->getY() + arena->getRaio(), 
         -1.0, 1.0);
+}
+
+bool lerXML(char* caminhoArquivo){
+    TiXmlDocument doc(strcat(caminhoArquivo, "/config.xml"));
+    doc.LoadFile();
+    TiXmlElement *aplicacao = doc.RootElement();
+    if(aplicacao !=  NULL){
+        // Declaração de variáveis
+        TiXmlElement *arquivoDaArena = NULL;
+        TiXmlElement *nome = NULL;
+        TiXmlElement *tipo = NULL;
+        TiXmlElement *caminho = NULL;
+        TiXmlElement *jogadorElemento = NULL;
+
+        // Atribui valores
+        arquivoDaArena = aplicacao->FirstChildElement("arquivoDaArena");
+        nome = arquivoDaArena->FirstChildElement("nome");
+        tipo = arquivoDaArena->FirstChildElement("tipo");
+        caminho = arquivoDaArena->FirstChildElement("caminho");
+        jogadorElemento = aplicacao->FirstChildElement("jogador");
+
+        // Abre arquivo SVG
+        std::string arquivoSVG = (std::string)caminho->GetText() + '/' + (std::string)nome->GetText() + '.' + (std::string)tipo->GetText();
+        const char *abrirArquivo = arquivoSVG.c_str();
+        TiXmlDocument svgFile(abrirArquivo);
+        svgFile.LoadFile();
+        
+        // Leitura da arena
+        TiXmlElement *arenaElement = svgFile.RootElement();
+        if(arenaElement != NULL) {
+            TiXmlElement *circuloElemento = NULL;
+            circuloElemento = arenaElement->FirstChildElement("circle");
+
+            GLint id;
+            GLfloat cx, r, cy, *cores;
+
+            // Leitura de círculos
+            while(circuloElemento){
+                
+                // Leitura da arena
+                if(((std::string)circuloElemento->Attribute("fill")).compare("blue") == 0){
+                    r = atof(circuloElemento->Attribute("r"));
+                    larguraDimensao = r * 2;
+                    alturaDimensao = r * 2;
+                    id = atoi(circuloElemento->Attribute("id"));
+                    cx = atof(circuloElemento->Attribute("cx"));
+                    cy = alturaDimensao - atof(circuloElemento->Attribute("cy"));
+                    cores = retornaCor(circuloElemento->Attribute("fill"));
+                    arena = new Arena(id, r, cx, cy, cores[0], cores[1], cores[2]);
+                }else{
+
+                    // Leitura dos demais círculos
+                    id = atoi(circuloElemento->Attribute("id"));
+                    r = atof(circuloElemento->Attribute("r"));
+                    cx = atof(circuloElemento->Attribute("cx"));
+                    cy = alturaDimensao - atof(circuloElemento->Attribute("cy"));
+                    cores = retornaCor(circuloElemento->Attribute("fill"));
+
+                    // Leitura do jogador
+                    if(((std::string)circuloElemento->Attribute("fill")).compare("green") == 0){
+                        Jogador* jogador = new Jogador(id, r, cx, cy, cores[0], cores[1], cores[2]);
+                        GLfloat vel = atof(jogadorElemento->Attribute("vel"));
+
+                        // Velocidade no final da decolagem
+                        GLfloat velocidadeFinal = 50;
+                        jogador->setVelocidade(velocidadeFinal * vel);
+                        arena->setJogador(jogador);
+
+                        // Leitura dos inimigos aéreos
+                    }else if(((std::string)circuloElemento->Attribute("fill")).compare("red") == 0){
+                        arena->criaInimigosAereos(id, r, cx, cy, cores[0], cores[1], cores[2]);
+
+                        // Leitura dos inimigos terrestres
+                    }else if(((std::string)circuloElemento->Attribute("fill")).compare("orange") == 0){
+                        arena->criaInimigosTerrestres(id, r, cx, cy, cores[0], cores[1], cores[2]);
+                    }
+                }
+                // circulo++
+                circuloElemento = circuloElemento->NextSiblingElement("circle");
+            }
+
+            TiXmlElement *linhaElemento = NULL;
+            linhaElemento = arenaElement->FirstChildElement("line");
+
+            // Leitura da pista de lançamento (linha)
+            if(linhaElemento != NULL){
+                
+                // Parse das cores
+                std::string estiloLinha = linhaElemento->Attribute("style");
+                int inicio, fim;
+                inicio = estiloLinha.find("(") + 1;
+                fim = estiloLinha.find(")") - inicio;
+                std::string coresLinha = estiloLinha.substr(inicio, fim);
+
+                // Atribuindo valores
+                GLint id = atoi(linhaElemento->Attribute("id"));
+                GLfloat x1 = atof(linhaElemento->Attribute("x1"));
+                GLfloat y1 = alturaDimensao - atof(linhaElemento->Attribute("y1"));
+                GLfloat x2 = atof(linhaElemento->Attribute("x2"));
+                GLfloat y2 = alturaDimensao - atof(linhaElemento->Attribute("y2"));
+                std::stringstream coresStream(coresLinha);
+                GLfloat cor[3];
+                int i = 0;
+                while(std::getline(coresStream,coresLinha,',')){
+                    cor[i++] = stof(coresLinha);
+                }
+                Linha* linha = new Linha(id, x1, y1, x2, y2, cor[0], cor[1], cor[2]);
+                arena->setLinha(linha);
+            }
+            return true;
+        }else{
+            return false;
+        }
+    }else{
+        return false;
+    }
 }
 
 int main(int argc, char** argv){
     if(argv[1] != NULL){
-        TiXmlDocument doc(strcat(argv[1], "/config.xml"));
-        doc.LoadFile();
-        TiXmlElement *aplicacao = doc.RootElement();
-        if(aplicacao !=  NULL){
-            // Declaração de variáveis
-            TiXmlElement *arquivoDaArena = NULL;
-            TiXmlElement *nome = NULL;
-            TiXmlElement *tipo = NULL;
-            TiXmlElement *caminho = NULL;
-            TiXmlElement *jogadorElemento = NULL;
-
-            // Atribui valores
-            arquivoDaArena = aplicacao->FirstChildElement("arquivoDaArena");
-            nome = arquivoDaArena->FirstChildElement("nome");
-            tipo = arquivoDaArena->FirstChildElement("tipo");
-            caminho = arquivoDaArena->FirstChildElement("caminho");
-            jogadorElemento = aplicacao->FirstChildElement("jogador");
-            std::string arquivoSVG = "";
-            arquivoSVG = (std::string)caminho->GetText() + '/' + (std::string)nome->GetText() + '.' + (std::string)tipo->GetText();
-            const char *abrirArquivo = arquivoSVG.c_str();
-            TiXmlDocument svgFile(abrirArquivo);
-            svgFile.LoadFile();
-            TiXmlElement *arenaElement = svgFile.RootElement();
-            
-            if(arenaElement != NULL) {
-                TiXmlElement *circulo = NULL;
-                circulo = arenaElement->FirstChildElement("circle");
-                GLint id;
-                GLfloat cx, r, cy, *cores;
-                while(circulo){
-                    if(((std::string)circulo->Attribute("fill")).compare("blue") == 0){
-                        r = atof(circulo->Attribute("r"));
-                        larguraDimensao = r * 2;
-                        alturaDimensao = r * 2;
-                        id = atoi(circulo->Attribute("id"));
-                        cx = atof(circulo->Attribute("cx"));
-                        cy = alturaDimensao - atof(circulo->Attribute("cy"));
-                        cores = retornaCor(circulo->Attribute("fill"));
-                        circuloArena = new Arena(id, r, cx, cy, cores[0], cores[1], cores[2]);
-                    }else{
-                        id = atoi(circulo->Attribute("id"));
-                        r = atof(circulo->Attribute("r"));
-                        cx = atof(circulo->Attribute("cx"));
-                        cy = alturaDimensao - atof(circulo->Attribute("cy"));
-                        cores = retornaCor(circulo->Attribute("fill"));
-                        if(((std::string)circulo->Attribute("fill")).compare("green") == 0){
-                            jogador = new Jogador(id, r, cx, cy, cores[0], cores[1], cores[2]);
-                            GLfloat vel = atof(jogadorElemento->Attribute("vel"));
-                            jogador->setVelocidade(vel);
-                        }else if(((std::string)circulo->Attribute("fill")).compare("red") == 0){
-                            criaInimigosAereos(id, r, cx, cy, cores[0], cores[1], cores[2]);
-                        }else if(((std::string)circulo->Attribute("fill")).compare("orange") == 0){
-                            criaInimigosTerrestres(id, r, cx, cy, cores[0], cores[1], cores[2]);
-                        }
-                    }
-                    circulo = circulo->NextSiblingElement("circle");
-                }
-                TiXmlElement *linhaElemento = NULL;
-                linhaElemento = arenaElement->FirstChildElement("line");
-                if(linhaElemento != NULL){
-                    // Parse das cores
-                    std::string estiloLinha = linhaElemento->Attribute("style");
-                    int inicio, fim;
-                    inicio = estiloLinha.find("(") + 1;
-                    fim = estiloLinha.find(")") - inicio;
-                    std::string coresLinha = estiloLinha.substr(inicio, fim);
-
-                    // Atribuindo valores
-                    GLint id = atoi(linhaElemento->Attribute("id"));
-                    GLfloat x1 = atof(linhaElemento->Attribute("x1"));
-                    GLfloat y1 = alturaDimensao - atof(linhaElemento->Attribute("y1"));
-                    GLfloat x2 = atof(linhaElemento->Attribute("x2"));
-                    GLfloat y2 = alturaDimensao - atof(linhaElemento->Attribute("y2"));
-                    std::stringstream coresStream(coresLinha);
-                    GLfloat cor[3];
-                    int i = 0;
-                    while(std::getline(coresStream,coresLinha,',')){
-                        cor[i++] = stof(coresLinha);
-                    }
-                    linha = new Linha(id, x1, y1, x2, y2, cor[0], cor[1], cor[2]);
-                }
-            }
+        if(lerXML(argv[1])){
             fundoR = 1.0;
             fundoG = 1.0;
             fundoB = 1.0;

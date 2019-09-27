@@ -8,6 +8,8 @@ Jogador::Jogador(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
     this->corR = corR;
     this->corG = corG;
     this->corB = corB;
+	this->ligado = false;
+	this->voando = false;
 }
 
 GLint Jogador::getId(){
@@ -67,7 +69,18 @@ GLfloat Jogador::getVelocidade(){
 void Jogador::setVelocidade(GLfloat velocidade){
 	this->velocidade = velocidade;
 }
-
+bool Jogador::isLigado(){
+	return this->ligado;
+}
+void Jogador::setLigado(bool ligado){
+	this->ligado = ligado;
+}
+bool Jogador::isVoando(){
+	return this->voando;
+}
+void Jogador::setVoando(bool voando){
+	this->voando = voando;
+}
 void Jogador::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
     float theta, px, py;
     glColor3f(corR, corG, corB);
@@ -89,23 +102,34 @@ void Jogador::desenhaJogador(){
 }	
 
 void Jogador::moveX(GLfloat x){
-    this->x += x;
+    this->x += x * this->tempoMultiplicador;
 }
 void Jogador::moveY(GLfloat y){
-    this->y += y;
+    this->y += y * this->tempoMultiplicador;
 }
 void Jogador::decola(Linha* linha){
-	// S = So + Vo * t + (a * t^2)/2
-    GLfloat tempo = 4.0;
+	if(this->ligado && !this->voando){
+		// S = So + Vo * t + (a * t^2)/2
+		GLfloat tempo = 4.0;
 
-    GLfloat dy = linha->getY2() - linha->getY1();
-    GLfloat y = 2 * dy / pow(tempo, 2);
+		GLfloat dy = linha->getY2() - linha->getY1();
+		GLfloat y = 2 * dy / pow(tempo, 2);
 
-    GLfloat dx = linha->getX2() - linha->getX1();
-    GLfloat x = 2 * dx / pow(tempo, 2);
+		GLfloat dx = linha->getX2() - linha->getX1();
+		GLfloat x = 2 * dx / pow(tempo, 2);
 
-	GLfloat y1 = linha->getY1() + (y * pow(this->tempoMultiplicador / 1000.0, 2)) / 2;
-	GLfloat x1 = linha->getX1() + (x * pow(this->tempoMultiplicador / 1000.0, 2)) / 2;
-    this->setY(y1);
-    this->setX(x1);
+		GLfloat y1 = linha->getY1() + (y * pow(this->tempoMultiplicador / 10000.0, 2)) / 2;
+		GLfloat x1 = linha->getX1() + (x * pow(this->tempoMultiplicador / 10000.0, 2)) / 2;
+		this->moveY(y1);
+		this->moveX(x1);
+		if(distanciaPontos(x1, y1, this->x, this->y)){
+			this->setVoando(true);
+		}
+	}
+}
+GLfloat Jogador::distanciaCirculos(Circulo *c, GLfloat x, GLfloat y){
+    return sqrt(pow((c->getX() - x), 2) + pow((c->getY() - y), 2));
+}
+GLfloat Jogador::distanciaPontos(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2){
+	return sqrt(pow((x2 - x1), 2) + pow((y2 - y1), 2));
 }
