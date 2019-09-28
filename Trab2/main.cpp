@@ -21,8 +21,8 @@ GLfloat orange[] = {1.0, 0.7, 0.0};
 float larguraDimensao, alturaDimensao;
 float fundoR, fundoG, fundoB;
 int vetFlags[256];
-std::chrono::high_resolution_clock::time_point tempoAntigo, tempoNovo;
-GLfloat tempoMultiplicador;
+std::chrono::high_resolution_clock::time_point tempoAntigo, tempoNovo, tempoAntigoDecolagem;
+GLfloat tempoNovoDecolagem;
 
 
 // Flags
@@ -103,11 +103,14 @@ void idle(void){
     Jogador* jogador = arena->getJogador();
     if(vetFlags['u'] && !jogador->isLigado()){
         jogador->setLigado(true);
+        tempoAntigoDecolagem = std::chrono::high_resolution_clock::now();
 	    // jogador->moveX(1.0);
         // jogador->decola(linha);
 
     }
     if(jogador->isLigado() && !jogador->isVoando()){
+        tempoNovoDecolagem = (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - tempoAntigoDecolagem).count()/1000000.0);
+        jogador->setTempoDecolagem(tempoNovoDecolagem);
         jogador->decola(arena->getLinha());
     }
     // tempoAntigo = tempoNovo;
@@ -123,7 +126,7 @@ void idle(void){
     //     decolagem = true;
     // }
 
-    if(jogador->isLigado() && !jogador->isVoando()){
+    if(jogador->isLigado() && jogador->isVoando()){
         if(vetFlags['w']){
             jogador->moveY(jogador->getVelocidade());
         }
@@ -136,13 +139,12 @@ void idle(void){
         if(vetFlags['d']){
             jogador->moveX(jogador->getVelocidade());
         }
-        glutPostRedisplay();
     }
     tempoNovo = std::chrono::high_resolution_clock::now();
-    GLfloat t = (std::chrono::duration_cast<std::chrono::microseconds>(tempoNovo - tempoAntigo).count()/100000.0);
+    GLfloat t = (std::chrono::duration_cast<std::chrono::microseconds>(tempoNovo - tempoAntigo).count()/1000000.0);
     tempoAntigo = tempoNovo;
     jogador->setTempoMultiplicador(t);
-    
+    glutPostRedisplay();
 }
 
 void init(float fundoR, float fundoG, float fundoB){
@@ -264,6 +266,7 @@ bool lerXML(char* caminhoArquivo){
                 }
                 Linha* linha = new Linha(id, x1, y1, x2, y2, cor[0], cor[1], cor[2]);
                 arena->setLinha(linha);
+                arena->getJogador()->calculaPontoCrescimento(linha);
             }
             return true;
         }else{
