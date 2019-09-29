@@ -88,41 +88,37 @@ void idle(void){
         jogador->decola(arena->getLinha(), tempoAntigoDecolagem, tempoDecolagem);
     }
     if(jogador->isLigado() && jogador->isVoando()){
-        bool diagonal = false;
         GLfloat vel = jogador->getVelocidade();
-        if (teclasTeclado['w'] && teclasTeclado['a']) {
-            diagonal = true;
-            jogador->moveXY(-vel, vel);
-        }
-
-        if (teclasTeclado['w'] && teclasTeclado['d']) {
-            diagonal = true;
+        if (teclasTeclado['w'] && teclasTeclado['a'] && teclasTeclado['d']) {
+            jogador->moveY(vel);
+        }else if (teclasTeclado['a'] && teclasTeclado['s'] && teclasTeclado['d']) {
+            jogador->moveY(-vel);
+        }else if (teclasTeclado['w'] && teclasTeclado['d']) {
             jogador->moveXY(vel, vel);
-        }
-
-        if (teclasTeclado['a'] && teclasTeclado['s']) {
-            diagonal = true;
+        }else if (teclasTeclado['w'] && teclasTeclado['a']) {
+            jogador->moveXY(-vel, vel);
+        }else if (teclasTeclado['w'] && teclasTeclado['d']) {
+            jogador->moveXY(vel, vel);
+        }else if (teclasTeclado['a'] && teclasTeclado['s']) {
             jogador->moveXY(-vel, -vel);
-        }
-
-        if (teclasTeclado['s'] && teclasTeclado['d']) {
-            diagonal = true;
+        }else if (teclasTeclado['s'] && teclasTeclado['d']) {
             jogador->moveXY(vel, -vel);
-        }
-
-        if(!diagonal){
-            if(teclasTeclado['w']){
-                jogador->moveY(vel);
-            }
-            if(teclasTeclado['a']){
-                jogador->moveX(-vel);
-            }
-            if(teclasTeclado['s']){
-                jogador->moveY(-vel);
-            }
-            if(teclasTeclado['d']){
-                jogador->moveX(vel);
-            }
+        }else if (teclasTeclado['w'] && teclasTeclado['a']) {
+            jogador->moveXY(-vel, vel);
+        }else if (teclasTeclado['w'] && teclasTeclado['d']) {
+            jogador->moveXY(vel, vel);
+        }else if (teclasTeclado['a'] && teclasTeclado['s']) {
+            jogador->moveXY(-vel, -vel);
+        }else if (teclasTeclado['s'] && teclasTeclado['d']) {
+            jogador->moveXY(vel, -vel);
+        }else if(teclasTeclado['w']){
+            jogador->moveY(vel);
+        }else if(teclasTeclado['a']){
+            jogador->moveX(-vel);
+        }else if(teclasTeclado['s']){
+            jogador->moveY(-vel);
+        }else if(teclasTeclado['d']){
+            jogador->moveX(vel);
         }
     }
     tempoNovo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;

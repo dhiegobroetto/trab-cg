@@ -161,7 +161,6 @@ void Jogador::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat c
 }
 
 void Jogador::exibeTexto(GLfloat x, GLfloat y){
-
     // Cria string para printar na tela.
     char *strTemporaria;
     sprintf(str, "X: %.2f; Y: %.2f; Raio: %.2f", this->getX(), this->getY(), this->getRaio());
@@ -173,7 +172,6 @@ void Jogador::exibeTexto(GLfloat x, GLfloat y){
         glutBitmapCharacter(fonte, *strTemporaria);
         strTemporaria++;
     }
-
 }
 
 void Jogador::desenhaJogador(){
@@ -247,7 +245,7 @@ void Jogador::decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem){
 		this->setY(y1);
 		this->distanciaPontos = this->distanciaEntrePontos(this->x, this->y, linha->getX2(), linha->getY2());
 
-		// Subindo voo
+		// Subindo voo (dobrando o raio)
 		if(this->distanciaPontos <= this->pontoCrescimento and this->ligado and !this->voando){
 			GLfloat	velocidadeRaio = 0.0;
 			if(this->tempoRaio == 0.0){
