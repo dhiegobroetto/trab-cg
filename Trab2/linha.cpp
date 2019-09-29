@@ -14,6 +14,7 @@ Linha::Linha(GLint& id, GLfloat& x1, GLfloat& y1, GLfloat& x2, GLfloat& y2, GLfl
 GLint Linha::getId(){
 	return this->id;
 }
+
 void Linha::setId(GLint& id){
 	this->id = id;
 }
@@ -29,36 +30,47 @@ void Linha::setX1(GLfloat& x1) {
 GLfloat Linha::getX2(){
 	return this->x2;
 }
+
 void Linha::setX2(GLfloat& x2){
 	this->x2 = x2;
 }
+
 GLfloat Linha::getY1(){
 	return this->y1;
 }
+
 void Linha::setY1(GLfloat& y1){
 	this->y1 = y1;
 }
+
 GLfloat Linha::getY2(){
 	return this->y2;
 }
+
 void Linha::setY2(GLfloat& y2){
 	this->y2 = y2;
 }
+
 GLfloat Linha::getCorR(){
 	return this->corR;
 }
+
 void Linha::setCorR(GLfloat& corR){
 	this->corR = corR;
 }
+
 GLfloat Linha::getCorG(){
 	return this->corG;
 }
+
 void Linha::setCorG(GLfloat& corG){
 	this->corG = corG;
 }
+
 GLfloat Linha::getCorB(){
 	return this->corB;
 }
+
 void Linha::setCorB(GLfloat& corB){
 	this->corB = corB;
 }

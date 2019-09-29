@@ -12,6 +12,8 @@
 
 using namespace std;
 
+class Jogador;
+
 class Arena
 {
     private:

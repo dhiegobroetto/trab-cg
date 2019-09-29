@@ -7,67 +7,48 @@
 #include "linha.h"
 #include "arena.h"
 #include "jogador.h"
-#include <chrono>
-#include <iostream>
 #include <sstream>
 #include <string>
 
-GLfloat red[] = {1.0, 0.0, 0.0};
-GLfloat green[] = {0.0, 1.0, 0.0};
-GLfloat blue[] = {0.0, 0.0, 1.0};
-GLfloat orange[] = {1.0, 0.7, 0.0};
+GLfloat vermelho[] = {1.0, 0.0, 0.0};
+GLfloat verde[] = {0.0, 1.0, 0.0};
+GLfloat azul[] = {0.0, 0.0, 1.0};
+GLfloat laranja[] = {1.0, 0.7, 0.0};
 
 // Variáveis globais de configuração
 float larguraDimensao, alturaDimensao;
 float fundoR, fundoG, fundoB;
-int vetFlags[256];
-GLfloat tempoAntigo, tempoNovo, tempoAntigoDecolagem;
-GLfloat tempoNovoDecolagem;
-
+int teclasTeclado[256];
+GLfloat tempoAntigo, tempoNovo, tempoAntigoDecolagem, tempoDecolagem;
 
 // Flags
 // bool decolagem = false;
 
 // Objetos auxiliares
-// list<Circulo*> inimigosAereos;
-// list<Circulo*> inimigosTerrestres;
 Arena* arena = NULL;
-Circulo* circulo = NULL;
-// Jogador* jogador = NULL;
-// Linha* linha = NULL;
-
 
 // ---- Métodos ---- //
-// void criaInimigosAereos(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b) {
-//     circulo = new Circulo(id, raioCirculo, x, y, r, g, b);
-//     inimigosAereos.push_back(circulo);
-// }
-// void criaInimigosTerrestres(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b) {
-//     circulo = new Circulo(id, raioCirculo, x, y, r, g, b);
-//     inimigosTerrestres.push_back(circulo);
-// }
-
 GLfloat* retornaCor(std::string fill){
     if(fill.compare("red") == 0){
-        return red;
+        return vermelho;
     }
     if(fill.compare("green") == 0){
-        return green;
+        return verde;
     }
     if(fill.compare("blue") == 0){
-        return blue;
+        return azul;
     }
     if(fill.compare("orange") == 0){
-        return orange;
+        return laranja;
     }
 }
 
 void keyPress(unsigned char key, int x, int y){
-  vetFlags[key] = 1;
+  teclasTeclado[key] = 1;
 }
 
 void keyup(unsigned char key, int x, int y){
-  vetFlags[key] = 0;
+  teclasTeclado[key] = 0;
 }
 
 void display(void){
@@ -101,43 +82,50 @@ void display(void){
 
 void idle(void){
     Jogador* jogador = arena->getJogador();
-    if(vetFlags['u'] && !jogador->isLigado()){
+    if(teclasTeclado['u'] && !jogador->isLigado()){
         jogador->setLigado(true);
         tempoAntigoDecolagem = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
-	    // jogador->moveX(1.0);
-        // jogador->decola(linha);
-
     }
     if(jogador->isLigado() && !jogador->isVoando()){
-        tempoNovoDecolagem = (glutGet(GLUT_ELAPSED_TIME) / 1000.0) - tempoAntigoDecolagem;
-        jogador->setTempoDecolagem(tempoNovoDecolagem);
-        jogador->decola(arena->getLinha(), tempoAntigoDecolagem);
+        tempoDecolagem = (glutGet(GLUT_ELAPSED_TIME) / 1000.0) - tempoAntigoDecolagem;
+        jogador->decola(arena->getLinha(), tempoAntigoDecolagem, tempoDecolagem);
     }
-    // tempoAntigo = tempoNovo;
-    
-    // //x = xo + vot + 1/2at^2
-    // if(decolagem){
-    //     while(jogador->getY() <= linha->getY2()){
-    //         GLfloat tempoDecolagem = std::chrono::duration_cast<std::chrono::seconds>(glutGet(GLUT_ELAPSED_TIME) / 1000.0 - tempoAntigo).count();
-    //         jogador->decola(linha);
-    //         std::cout << jogador->getX() << std::endl;
-    //     }
-    //     decolagem = false;
-    //     decolagem = true;
-    // }
-
     if(jogador->isLigado() && jogador->isVoando()){
-        if(vetFlags['w']){
-            jogador->moveY(jogador->getVelocidade());
+        bool diagonal = false;
+        GLfloat vel = jogador->getVelocidade();
+        if (teclasTeclado['w'] && teclasTeclado['a']) {
+            diagonal = true;
+            jogador->moveXY(-vel, vel);
         }
-        if(vetFlags['a']){
-            jogador->moveX(-jogador->getVelocidade());
+
+        if (teclasTeclado['w'] && teclasTeclado['d']) {
+            diagonal = true;
+            jogador->moveXY(vel, vel);
         }
-        if(vetFlags['s']){
-            jogador->moveY(-jogador->getVelocidade());
+
+        if (teclasTeclado['a'] && teclasTeclado['s']) {
+            diagonal = true;
+            jogador->moveXY(-vel, -vel);
         }
-        if(vetFlags['d']){
-            jogador->moveX(jogador->getVelocidade());
+
+        if (teclasTeclado['s'] && teclasTeclado['d']) {
+            diagonal = true;
+            jogador->moveXY(vel, -vel);
+        }
+
+        if(!diagonal){
+            if(teclasTeclado['w']){
+                jogador->moveY(vel);
+            }
+            if(teclasTeclado['a']){
+                jogador->moveX(-vel);
+            }
+            if(teclasTeclado['s']){
+                jogador->moveY(-vel);
+            }
+            if(teclasTeclado['d']){
+                jogador->moveX(vel);
+            }
         }
     }
     tempoNovo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
@@ -218,7 +206,7 @@ bool lerXML(char* caminhoArquivo){
 
                     // Leitura do jogador
                     if(((std::string)circuloElemento->Attribute("fill")).compare("green") == 0){
-                        Jogador* jogador = new Jogador(id, r, cx, cy, cores[0], cores[1], cores[2]);
+                        Jogador* jogador = new Jogador(id, r, cx, cy, cores[0], cores[1], cores[2], arena);
                         GLfloat vel = atof(jogadorElemento->Attribute("vel"));
 
                         // Velocidade no final da decolagem

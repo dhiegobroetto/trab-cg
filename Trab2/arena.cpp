@@ -13,6 +13,7 @@ Arena::Arena(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR, GL
 GLint Arena::getId(){
 	return this->id;
 }
+
 void Arena::setId(GLint& id){
 	this->id = id;
 }
@@ -28,51 +29,67 @@ void Arena::setRaio(GLfloat& raio) {
 GLfloat Arena::getX(){
 	return this->x;
 }
+
 void Arena::setX(GLfloat& x){
 	this->x = x;
 }
+
 GLfloat Arena::getY(){
 	return this->y;
 }
+
 void Arena::setY(GLfloat& y){
 	this->y = y;
 }
+
 GLfloat Arena::getCorR(){
 	return this->corR;
 }
+
 void Arena::setCorR(GLfloat& corR){
 	this->corR = corR;
 }
+
 GLfloat Arena::getCorG(){
 	return this->corG;
 }
+
 void Arena::setCorG(GLfloat& corG){
 	this->corG = corG;
 }
+
 GLfloat Arena::getCorB(){
 	return this->corB;
 }
+
 void Arena::setCorB(GLfloat& corB){
 	this->corB = corB;
 }
+
 Jogador* Arena::getJogador(){
 	return this->jogador;
 }
+
 void Arena::setJogador(Jogador* jogador){
 	this->jogador = jogador;
 }
+
 Linha* Arena::getLinha(){
 	return this->linha;
 }
+
 void Arena::setLinha(Linha* linha){
 	this->linha = linha;
 }
+
 list<Circulo*> Arena::getInimigosAereos(){
 	return this->inimigosAereos;
 }
+
 list<Circulo*> Arena::getInimigosTerrestres(){
 	return this->inimigosTerrestres;
 }
+
 void Arena::desenhaArena(){
 	glPushMatrix();
 	float theta, px, py;
@@ -88,10 +105,12 @@ void Arena::desenhaArena(){
 	glEnd();
 	glPopMatrix();
 }
+
 void Arena::criaInimigosAereos(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b) {
     Circulo* circulo = new Circulo(id, raioCirculo, x, y, r, g, b);
     this->inimigosAereos.push_back(circulo);
 }
+
 void Arena::criaInimigosTerrestres(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b) {
     Circulo* circulo = new Circulo(id, raioCirculo, x, y, r, g, b);
     this->inimigosTerrestres.push_back(circulo);
