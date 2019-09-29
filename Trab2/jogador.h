@@ -80,6 +80,7 @@ class Jogador
         void decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem);
         GLfloat distanciaEntrePontos(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
         void calculaPontoCrescimento(Linha* linha);
+        void exibeTexto(GLfloat x, GLfloat y);
 };
 
 #endif /* JOGADOR_H */

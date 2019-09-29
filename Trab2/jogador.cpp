@@ -15,7 +15,8 @@ Jogador::Jogador(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
 	this->tempoRaio = 0.0;
 	this->arena = arena;
 }
-
+static char str[2000];
+void * fonte = GLUT_BITMAP_TIMES_ROMAN_24;
 
 GLint Jogador::getId(){
 	return this->id;
@@ -159,11 +160,28 @@ void Jogador::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat c
 	glEnd();
 }
 
+void Jogador::exibeTexto(GLfloat x, GLfloat y){
+
+    // Cria string para printar na tela.
+    char *strTemporaria;
+    sprintf(str, "X: %.2f; Y: %.2f; Raio: %.2f", this->getX(), this->getY(), this->getRaio());
+    // Posição do texto na tela
+    glRasterPos2f(x, y);
+    strTemporaria = str;
+    // Printa cada caractere na tela através da função glutBitmapCharacter.
+    while( *strTemporaria ){
+        glutBitmapCharacter(fonte, *strTemporaria);
+        strTemporaria++;
+    }
+
+}
+
 void Jogador::desenhaJogador(){
 	glPushMatrix();
     glTranslatef(this->x, this->y, 0);
 	desenhaCirculo(this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB());
 	glPopMatrix();
+	exibeTexto(200.0, -200.0);
 }	
 
 void Jogador::moveX(GLfloat x){
@@ -185,8 +203,8 @@ void Jogador::moveY(GLfloat y){
 }
 
 void Jogador::moveXY(GLfloat x, GLfloat y) {
-    GLfloat cx = this->getX() + (cos(45) * x * this->tempoMultiplicador * this->tempoAjustador);
-    GLfloat cy = this->getY() + (sin(45) * y * this->tempoMultiplicador * this->tempoAjustador);
+    GLfloat cx = this->getX() + (cos(M_PI / 4) * x * this->tempoMultiplicador * this->tempoAjustador);
+    GLfloat cy = this->getY() + (sin(M_PI / 4) * y * this->tempoMultiplicador * this->tempoAjustador);
 
     if(verificaColisao(cx, cy)){
     	this->setX(cx);

@@ -21,9 +21,6 @@ float fundoR, fundoG, fundoB;
 int teclasTeclado[256];
 GLfloat tempoAntigo, tempoNovo, tempoAntigoDecolagem, tempoDecolagem;
 
-// Flags
-// bool decolagem = false;
-
 // Objetos auxiliares
 Arena* arena = NULL;
 
@@ -132,6 +129,9 @@ void idle(void){
     GLfloat t = tempoNovo - tempoAntigo;
     tempoAntigo = tempoNovo;
     jogador->setTempoAjustador(t);
+    for(int i = 0; i < 1000; i++){
+        for(int j = 0; j < 1000; j++);
+    }
     glutPostRedisplay();
 }
 
@@ -184,7 +184,6 @@ bool lerXML(char* caminhoArquivo){
 
             // Leitura de círculos
             while(circuloElemento){
-                
                 // Leitura da arena
                 if(((std::string)circuloElemento->Attribute("fill")).compare("blue") == 0){
                     r = atof(circuloElemento->Attribute("r"));
@@ -195,33 +194,37 @@ bool lerXML(char* caminhoArquivo){
                     cy = alturaDimensao - atof(circuloElemento->Attribute("cy"));
                     cores = retornaCor(circuloElemento->Attribute("fill"));
                     arena = new Arena(id, r, cx, cy, cores[0], cores[1], cores[2]);
-                }else{
-
-                    // Leitura dos demais círculos
-                    id = atoi(circuloElemento->Attribute("id"));
-                    r = atof(circuloElemento->Attribute("r"));
-                    cx = atof(circuloElemento->Attribute("cx"));
-                    cy = alturaDimensao - atof(circuloElemento->Attribute("cy"));
-                    cores = retornaCor(circuloElemento->Attribute("fill"));
-
-                    // Leitura do jogador
-                    if(((std::string)circuloElemento->Attribute("fill")).compare("green") == 0){
-                        Jogador* jogador = new Jogador(id, r, cx, cy, cores[0], cores[1], cores[2], arena);
-                        GLfloat vel = atof(jogadorElemento->Attribute("vel"));
-
-                        // Velocidade no final da decolagem
-                        jogador->setTempoMultiplicador(vel);
-                        arena->setJogador(jogador);
-
-                        // Leitura dos inimigos aéreos
-                    }else if(((std::string)circuloElemento->Attribute("fill")).compare("red") == 0){
-                        arena->criaInimigosAereos(id, r, cx, cy, cores[0], cores[1], cores[2]);
-
-                        // Leitura dos inimigos terrestres
-                    }else if(((std::string)circuloElemento->Attribute("fill")).compare("orange") == 0){
-                        arena->criaInimigosTerrestres(id, r, cx, cy, cores[0], cores[1], cores[2]);
-                    }
+                    break;
                 }
+                circuloElemento = circuloElemento->NextSiblingElement("circle");
+            }
+            circuloElemento = arenaElement->FirstChildElement("circle");
+            while(circuloElemento){
+                // Leitura dos demais círculos
+                id = atoi(circuloElemento->Attribute("id"));
+                r = atof(circuloElemento->Attribute("r"));
+                cx = atof(circuloElemento->Attribute("cx"));
+                cy = alturaDimensao - atof(circuloElemento->Attribute("cy"));
+                cores = retornaCor(circuloElemento->Attribute("fill"));
+
+                // Leitura do jogador
+                if(((std::string)circuloElemento->Attribute("fill")).compare("green") == 0){
+                    Jogador* jogador = new Jogador(id, r, cx, cy, cores[0], cores[1], cores[2], arena);
+                    GLfloat vel = atof(jogadorElemento->Attribute("vel"));
+
+                    // Velocidade no final da decolagem
+                    jogador->setTempoMultiplicador(vel);
+                    arena->setJogador(jogador);
+
+                    // Leitura dos inimigos aéreos
+                }else if(((std::string)circuloElemento->Attribute("fill")).compare("red") == 0){
+                    arena->criaInimigosAereos(id, r, cx, cy, cores[0], cores[1], cores[2]);
+
+                    // Leitura dos inimigos terrestres
+                }else if(((std::string)circuloElemento->Attribute("fill")).compare("orange") == 0){
+                    arena->criaInimigosTerrestres(id, r, cx, cy, cores[0], cores[1], cores[2]);
+                }
+                
                 // circulo++
                 circuloElemento = circuloElemento->NextSiblingElement("circle");
             }
@@ -282,7 +285,6 @@ int main(int argc, char** argv){
             glutKeyboardUpFunc(keyup);
             glutKeyboardFunc(keyPress);
             glutIdleFunc(idle);
-            // glutMotionFunc(motionFunc);
             glutMainLoop();
         }else{
             printf("Arquivo config.xml não encontrado!\n");
@@ -291,6 +293,5 @@ int main(int argc, char** argv){
         printf("Localização do arquivo config.xml não foi informada.\n");
     }
 
-    // C ANSI requer que main retorne um inteiro
     return 0;
 }
