@@ -9,7 +9,7 @@ OUTPUT_FILE = trabalhocg
 FLAGS = -lGL -lGLU -lglut -lm
 
 all: g++
-	@echo "Done."
+	@echo "Compilado. Agora execute o código com ./trabalhocg <caminho do config.xml>"
 
 g++:
 	@$(CC) $(DOMAIN_FILES) $(TINYXML_FILES) -o $(OUTPUT_FILE) $(FLAGS)
