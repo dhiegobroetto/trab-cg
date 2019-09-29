@@ -163,7 +163,7 @@ void Jogador::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat c
 void Jogador::exibeTexto(GLfloat x, GLfloat y){
     // Cria string para printar na tela.
     char *strTemporaria;
-    sprintf(str, "X: %.2f; Y: %.2f; Raio: %.2f", this->getX(), this->getY(), this->getRaio());
+    sprintf(str, "Raio: %.2f", this->getRaio());
     // Posição do texto na tela
     glRasterPos2f(x, y);
     strTemporaria = str;

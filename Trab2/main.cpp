@@ -121,6 +121,8 @@ void idle(void){
             jogador->moveX(vel);
         }
     }
+    
+    // Cálculo do tempo de sincronização.
     tempoNovo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
     GLfloat t = tempoNovo - tempoAntigo;
     tempoAntigo = tempoNovo;
@@ -253,15 +255,17 @@ bool lerXML(char* caminhoArquivo){
             }
             return true;
         }else{
+            std::cout << "Arquivo arena.svg não encontrado! Certifique-se de colocar o caminho do arquivo arena.svg no config.xml." << std::endl;
             return false;
         }
     }else{
+        std::cout << "Arquivo config.xml não encontrado!" << std::endl;
         return false;
     }
 }
 
 int main(int argc, char** argv){
-    if(argv[1] != NULL){
+    if(argc > 1){
         if(lerXML(argv[1])){
             fundoR = 1.0;
             fundoG = 1.0;
@@ -279,11 +283,9 @@ int main(int argc, char** argv){
             glutKeyboardFunc(keyPress);
             glutIdleFunc(idle);
             glutMainLoop();
-        }else{
-            printf("Arquivo config.xml não encontrado!\n");
         }
     }else{
-        printf("Localização do arquivo config.xml não foi informada.\n");
+        std::cout << "Localização do arquivo config.xml não foi informada." << std::endl;
     }
 
     return 0;
