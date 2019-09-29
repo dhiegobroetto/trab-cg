@@ -21,7 +21,7 @@ GLfloat orange[] = {1.0, 0.7, 0.0};
 float larguraDimensao, alturaDimensao;
 float fundoR, fundoG, fundoB;
 int vetFlags[256];
-std::chrono::high_resolution_clock::time_point tempoAntigo, tempoNovo, tempoAntigoDecolagem;
+GLfloat tempoAntigo, tempoNovo, tempoAntigoDecolagem;
 GLfloat tempoNovoDecolagem;
 
 
@@ -103,22 +103,22 @@ void idle(void){
     Jogador* jogador = arena->getJogador();
     if(vetFlags['u'] && !jogador->isLigado()){
         jogador->setLigado(true);
-        tempoAntigoDecolagem = std::chrono::high_resolution_clock::now();
+        tempoAntigoDecolagem = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
 	    // jogador->moveX(1.0);
         // jogador->decola(linha);
 
     }
     if(jogador->isLigado() && !jogador->isVoando()){
-        tempoNovoDecolagem = (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - tempoAntigoDecolagem).count()/1000000.0);
+        tempoNovoDecolagem = (glutGet(GLUT_ELAPSED_TIME) / 1000.0) - tempoAntigoDecolagem;
         jogador->setTempoDecolagem(tempoNovoDecolagem);
-        jogador->decola(arena->getLinha());
+        jogador->decola(arena->getLinha(), tempoAntigoDecolagem);
     }
     // tempoAntigo = tempoNovo;
     
     // //x = xo + vot + 1/2at^2
     // if(decolagem){
     //     while(jogador->getY() <= linha->getY2()){
-    //         GLfloat tempoDecolagem = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - tempoAntigo).count();
+    //         GLfloat tempoDecolagem = std::chrono::duration_cast<std::chrono::seconds>(glutGet(GLUT_ELAPSED_TIME) / 1000.0 - tempoAntigo).count();
     //         jogador->decola(linha);
     //         std::cout << jogador->getX() << std::endl;
     //     }
@@ -140,10 +140,10 @@ void idle(void){
             jogador->moveX(jogador->getVelocidade());
         }
     }
-    tempoNovo = std::chrono::high_resolution_clock::now();
-    GLfloat t = (std::chrono::duration_cast<std::chrono::microseconds>(tempoNovo - tempoAntigo).count()/1000000.0);
+    tempoNovo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
+    GLfloat t = tempoNovo - tempoAntigo;
     tempoAntigo = tempoNovo;
-    jogador->setTempoMultiplicador(t);
+    jogador->setTempoAjustador(t);
     glutPostRedisplay();
 }
 
@@ -222,8 +222,7 @@ bool lerXML(char* caminhoArquivo){
                         GLfloat vel = atof(jogadorElemento->Attribute("vel"));
 
                         // Velocidade no final da decolagem
-                        GLfloat velocidadeFinal = 50;
-                        jogador->setVelocidade(velocidadeFinal * vel);
+                        jogador->setTempoMultiplicador(vel);
                         arena->setJogador(jogador);
 
                         // Leitura dos inimigos aéreos
@@ -283,7 +282,7 @@ int main(int argc, char** argv){
             fundoR = 1.0;
             fundoG = 1.0;
             fundoB = 1.0;
-            tempoAntigo = std::chrono::high_resolution_clock::now();
+            tempoAntigo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
             // Inicializa
             glutInit(&argc, argv);
             glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);

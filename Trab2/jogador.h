@@ -22,9 +22,12 @@ class Jogador
         GLfloat corB;
         GLfloat velocidade;
         GLfloat tempoMultiplicador;
+        GLfloat tempoAjustador;
         GLfloat pontoCrescimento;
         GLfloat tempoDecolagem;
         GLfloat distanciaPontos;
+        GLfloat raioInicial;
+        GLfloat tempoRaio;
         bool ligado;
         bool voando;
 
@@ -49,6 +52,8 @@ class Jogador
         void setCorB(GLfloat& corB);
         GLfloat getTempoMultiplicador();
         void setTempoMultiplicador(GLfloat& tempoMultiplicador);
+        GLfloat getTempoAjustador();
+        void setTempoAjustador(GLfloat& tempoAjustador);
         GLfloat getVelocidade();
         void setVelocidade(GLfloat velocidade);
         GLfloat getPontoCrescimento();
@@ -57,6 +62,8 @@ class Jogador
         void setTempoDecolagem(GLfloat tempoDecolagem);
         GLfloat getDistanciaPontos();
         void setDistanciaPontos(GLfloat distanciaPontos);
+        GLfloat getRaioInicial();
+        void setRaioInicial(GLfloat& raioInicial);
         bool isLigado();
         void setLigado(bool ligado);
         bool isVoando();
@@ -65,7 +72,7 @@ class Jogador
         void desenhaJogador();
         void moveX(GLfloat x);
         void moveY(GLfloat y);
-        void decola(Linha* linha);
+        void decola(Linha* linha, GLfloat tempoAntigo);
         GLfloat distanciaCirculos(Circulo *c, GLfloat x, GLfloat y);
         GLfloat distanciaEntrePontos(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
         void calculaPontoCrescimento(Linha* linha);

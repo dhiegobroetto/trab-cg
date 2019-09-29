@@ -10,8 +10,10 @@ Jogador::Jogador(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
     this->corB = corB;
 	this->ligado = false;
 	this->voando = false;
-	this->tempoDecolagem = 0;
-	this->distanciaPontos = 0;
+	this->tempoDecolagem = 0.0;
+	this->distanciaPontos = 0.0;
+	this->raioInicial = raio;
+	this->tempoRaio = 0.0;
 }
 
 GLint Jogador::getId(){
@@ -24,11 +26,9 @@ void Jogador::setId(GLint& id){
 GLfloat Jogador::getRaio() {
     return this->raio;
 }
-
 void Jogador::setRaio(GLfloat& raio) {
     this->raio = raio;
 }
-
 GLfloat Jogador::getX(){
 	return this->x;
 }
@@ -65,6 +65,12 @@ GLfloat Jogador::getTempoMultiplicador(){
 void Jogador::setTempoMultiplicador(GLfloat& tempoMultiplicador){
 	this->tempoMultiplicador = tempoMultiplicador;
 }
+GLfloat Jogador::getTempoAjustador(){
+	return this->tempoAjustador;
+}
+void Jogador::setTempoAjustador(GLfloat& tempoAjustador){
+	this->tempoAjustador = tempoAjustador;
+}
 GLfloat Jogador::getVelocidade(){
 	return this->velocidade;
 }
@@ -88,6 +94,12 @@ GLfloat Jogador::getDistanciaPontos(){
 }
 void Jogador::setDistanciaPontos(GLfloat distanciaPontos){
 	this->distanciaPontos = distanciaPontos;
+}
+GLfloat Jogador::getRaioInicial() {
+    return this->raioInicial;
+}
+void Jogador::setRaioInicial(GLfloat& raioInicial) {
+    this->raioInicial = raioInicial;
 }
 bool Jogador::isLigado(){
 	return this->ligado;
@@ -117,40 +129,54 @@ void Jogador::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat c
 void Jogador::desenhaJogador(){
 	glPushMatrix();
     glTranslatef(this->x, this->y, 0);
-	if(this->distanciaPontos <= this->pontoCrescimento and this->ligado and !this->voando){
-		GLfloat raio = this->getRaio();
-		raio += 0.15;
-		this->setRaio(raio);
-	}
 	desenhaCirculo(this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB());
 	glPopMatrix();
 }	
 
 void Jogador::moveX(GLfloat x){
-    this->x += x * this->tempoMultiplicador;
+    this->x += x * this->tempoMultiplicador * this->tempoAjustador;
 }
 void Jogador::moveY(GLfloat y){
-    this->y += y * this->tempoMultiplicador;
+    this->y += y * this->tempoMultiplicador * this->tempoAjustador;
 }
-void Jogador::decola(Linha* linha){
+void Jogador::decola(Linha* linha, GLfloat tempoAntigo){
 	if(this->ligado && !this->voando){
 		// S = So + Vo * t + (a * t^2)/2
 		GLfloat tempo = 4.0;
 
-		GLfloat dy = linha->getY2() - linha->getY1();
-		GLfloat y = 2 * dy / pow(tempo, 2);
-
 		GLfloat dx = linha->getX2() - linha->getX1();
 		GLfloat x = 2 * dx / pow(tempo, 2);
 
-		GLfloat y1 = linha->getY1() + (y * pow(this->tempoDecolagem, 2)) / 2;
+		GLfloat dy = linha->getY2() - linha->getY1();
+		GLfloat y = 2 * dy / pow(tempo, 2);
+
 		GLfloat x1 = linha->getX1() + (x * pow(this->tempoDecolagem, 2)) / 2;
-		this->setY(y1);
+		GLfloat y1 = linha->getY1() + (y * pow(this->tempoDecolagem, 2)) / 2;
 		this->setX(x1);
+		this->setY(y1);
 		this->distanciaPontos = this->distanciaEntrePontos(this->x, this->y, linha->getX2(), linha->getY2());
+		if(this->distanciaPontos <= this->pontoCrescimento and this->ligado and !this->voando){
+			GLfloat	velocidadeRaio = 0.0;
+			if(this->tempoRaio == 0.0){
+				this->tempoRaio = (glutGet(GLUT_ELAPSED_TIME) / 1000.0) - tempoAntigo;
+			}
+			if(this->tempoDecolagem > this->tempoRaio){
+				// V = S / t
+				velocidadeRaio = this->raioInicial / (tempo - this->tempoRaio);
+			}
+			
+			// s = so + vt
+			GLfloat passoRaio = velocidadeRaio * (this->tempoDecolagem - this->tempoRaio);
+			GLfloat raioCrescente = this->raioInicial + passoRaio;
+			this->setRaio(raioCrescente);
+		}
+	
 		if(this->distanciaPontos <= 1 or this->tempoDecolagem >= 4.0){
-		std::cout << x1 << " : " << y1 << std::endl;
+			GLfloat vel = sqrt(pow(x, 2) + pow(y, 2)) * 4.0;
+			this->setVelocidade(vel);
 			this->setVoando(true);
+			GLfloat raioFinal = this->raioInicial * 2;
+			this->setRaio(raioFinal);
 		}
 	}
 }
