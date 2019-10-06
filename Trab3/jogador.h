@@ -31,6 +31,9 @@ class Jogador
         GLfloat raioInicial;
         GLfloat tempoRaio;
         Arena* arena;
+        GLfloat anguloJogador;
+        GLfloat anguloCanhao;
+        GLfloat anguloHelice;
         bool ligado;
         bool voando;
 
@@ -72,9 +75,15 @@ class Jogador
         Arena* getArena();
         void setArena(Arena* arena);
         void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
-        void desenhaQuadrado(GLfloat xRightUp, GLfloat yRightUp, GLfloat xRightDown, GLfloat yRightDown, GLfloat xLeftDown, GLfloat yLeftDown, GLfloat xLeftUp, GLfloat yLeftUp);
+        // void desenhaQuadrado(GLfloat xRightUp, GLfloat yRightUp, GLfloat xRightDown, GLfloat yRightDown, GLfloat xLeftDown, GLfloat yLeftDown, GLfloat xLeftUp, GLfloat yLeftUp);
+        void desenhaQuadrado(GLfloat base, GLfloat altura);
+        void desenhaTriangulo(GLfloat tamanho);
+        void desenhaElipse(GLfloat cx, GLfloat cy);
         void desenhaBase();
-        void desenhaAsa(GLfloat x, GLfloat y);
+        void desenhaAsas(int asa);
+        void desenhaAsa(int asa);
+        void desenhaHelice(int asa);
+        void desenhaCanhao();
         void desenhaJogador();
         void moveX(GLfloat x);
         void moveY(GLfloat y);

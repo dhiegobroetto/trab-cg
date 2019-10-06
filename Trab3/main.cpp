@@ -138,7 +138,8 @@ void init(float fundoR, float fundoG, float fundoB){
     // Iniciar sistema de viz
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(arena->getX() - arena->getRaio(), 
+    glOrtho(
+        arena->getX() - arena->getRaio(), 
         arena->getX() + arena->getRaio(), 
         arena->getY() - arena->getRaio(), 
         arena->getY() + arena->getRaio(), 
