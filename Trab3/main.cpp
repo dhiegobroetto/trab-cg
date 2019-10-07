@@ -126,6 +126,7 @@ void idle(void){
         }else if(teclasTeclado['d']){
             jogador->moveX(-3.0);
         }
+        jogador->voa(vel);
     }
     
     // Cálculo do tempo de sincronização.

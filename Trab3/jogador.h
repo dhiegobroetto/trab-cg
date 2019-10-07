@@ -74,6 +74,8 @@ class Jogador
         void setVoando(bool voando);
         Arena* getArena();
         void setArena(Arena* arena);
+        GLfloat getAnguloJogador();
+        void setAnguloJogador(GLfloat anguloJogador);
         void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaQuadrado(GLfloat base, GLfloat altura);
         void desenhaTriangulo(GLfloat tamanho);
@@ -86,6 +88,7 @@ class Jogador
         void desenhaJogador();
         void moveX(GLfloat x);
         void moveY(GLfloat y);
+        void voa(GLfloat velocidade);
         void moveXY(GLfloat x, GLfloat y);
         bool verificaColisao(GLfloat x, GLfloat y);
         void decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem);

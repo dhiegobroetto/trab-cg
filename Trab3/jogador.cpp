@@ -149,6 +149,14 @@ void Jogador::setArena(Arena* arena){
 	this->arena = arena;
 }
 
+GLfloat Jogador::getAnguloJogador(){
+	return this->anguloJogador + 90;
+}
+
+void Jogador::setAnguloJogador(GLfloat anguloJogador){
+	this->anguloJogador = anguloJogador;
+}
+
 void Jogador::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
     float theta, px, py;
     glColor3f(1.0, 1.0, 1.0);
@@ -292,7 +300,6 @@ void Jogador::desenhaJogador(){
 	glPushMatrix();
 		glTranslatef(this->x, this->y, 0);
 		glRotatef(this->anguloJogador, 0.0, 0.0, 1.0);
-		// desenhaCirculo(this->getRaio(), 0.0, 0.0, 0.0);
 		desenhaAsas(0);
 		desenhaAsas(1);
 		desenhaCanhao();
@@ -317,6 +324,17 @@ void Jogador::moveY(GLfloat y){
 
     if(verificaColisao(cx, cy)){
     	this->setY(cy);
+		this->anguloHelice += 5;
+	}
+}
+
+void Jogador::voa(GLfloat velocidade){
+	GLfloat cx = this->getX() + (cos(((this->getAnguloJogador()) * (M_PI / 180))) * velocidade * this->tempoMultiplicador * this->tempoAjustador);
+    GLfloat cy = this->getY() + (sin(((this->getAnguloJogador()) * (M_PI / 180))) * velocidade * this->tempoMultiplicador * this->tempoAjustador);
+	if(verificaColisao(cx, cy)){
+    	this->setX(cx);
+		this->setY(cy);
+		this->anguloHelice += 5;
 	}
 }
 
