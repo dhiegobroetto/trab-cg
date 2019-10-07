@@ -264,7 +264,6 @@ void Jogador::desenhaElipse(GLfloat cx, GLfloat cy){
 
 void Jogador::desenhaBase(){
 	glPushMatrix();
-		glRotatef(this->anguloJogador, 0.0, 0.0, 1.0);
 		desenhaElipse((this->getRaio()/3), this->getRaio());
 	glPopMatrix();
 }
@@ -292,6 +291,7 @@ void Jogador::desenhaCanhao(){
 void Jogador::desenhaJogador(){
 	glPushMatrix();
 		glTranslatef(this->x, this->y, 0);
+		glRotatef(this->anguloJogador, 0.0, 0.0, 1.0);
 		// desenhaCirculo(this->getRaio(), 0.0, 0.0, 0.0);
 		desenhaAsas(0);
 		desenhaAsas(1);
@@ -302,13 +302,13 @@ void Jogador::desenhaJogador(){
 }	
 
 void Jogador::moveX(GLfloat x){
-	GLfloat cx = this->getX() + (x * this->tempoMultiplicador * this->tempoAjustador);
-    GLfloat cy = this->getY();
+	// GLfloat cx = this->getX() + (x * this->tempoMultiplicador * this->tempoAjustador);
+    // GLfloat cy = this->getY();
 
-    if(verificaColisao(cx, cy)){
-    	this->setX(cx);
-		// this->anguloHelice += 5.0;
-	}
+    // if(verificaColisao(cx, cy)){
+    	// this->setX(cx);
+		this->anguloJogador += x;
+	// }
 }
 
 void Jogador::moveY(GLfloat y){

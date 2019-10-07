@@ -75,7 +75,6 @@ class Jogador
         Arena* getArena();
         void setArena(Arena* arena);
         void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
-        // void desenhaQuadrado(GLfloat xRightUp, GLfloat yRightUp, GLfloat xRightDown, GLfloat yRightDown, GLfloat xLeftDown, GLfloat yLeftDown, GLfloat xLeftUp, GLfloat yLeftUp);
         void desenhaQuadrado(GLfloat base, GLfloat altura);
         void desenhaTriangulo(GLfloat tamanho);
         void desenhaElipse(GLfloat cx, GLfloat cy);

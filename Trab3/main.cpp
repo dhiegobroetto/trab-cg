@@ -50,6 +50,10 @@ void keyup(unsigned char key, int x, int y){
   teclasTeclado[key] = 0;
 }
 
+void mouseMove(int x, int y){
+    
+}
+
 void display(void){
     // Inicialização das variáveis
     float theta, px, py;
@@ -116,11 +120,11 @@ void idle(void){
         }else if(teclasTeclado['w']){
             jogador->moveY(vel);
         }else if(teclasTeclado['a']){
-            jogador->moveX(-vel);
+            jogador->moveX(3.0);
         }else if(teclasTeclado['s']){
             jogador->moveY(-vel);
         }else if(teclasTeclado['d']){
-            jogador->moveX(vel);
+            jogador->moveX(-3.0);
         }
     }
     
@@ -284,6 +288,7 @@ int main(int argc, char** argv){
             glutDisplayFunc(display);
             glutKeyboardUpFunc(keyup);
             glutKeyboardFunc(keyPress);
+            glutPassiveMotionFunc(mouseMove);
             glutIdleFunc(idle);
             glutMainLoop();
         }
