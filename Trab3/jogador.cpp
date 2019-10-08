@@ -17,6 +17,7 @@ Jogador::Jogador(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
 	this->anguloJogador = 0.0;
 	this->anguloCanhao = 0.0;
 	this->anguloHelice = 0.0;
+	this->mouseX = 0.0;
 }
 static char str[2000];
 void * fonte = GLUT_BITMAP_TIMES_ROMAN_24;
@@ -157,6 +158,22 @@ void Jogador::setAnguloJogador(GLfloat anguloJogador){
 	this->anguloJogador = anguloJogador;
 }
 
+GLfloat Jogador::getAnguloCanhao(){
+	return this->anguloCanhao;
+}
+
+void Jogador::setAnguloCanhao(GLfloat anguloCanhao){
+	this->anguloCanhao = anguloCanhao;
+}
+
+GLfloat Jogador::getMouseX(){
+	return this->mouseX;
+}
+
+void Jogador::setMouseX(GLfloat mouseX){
+	this->mouseX = mouseX;
+}
+
 void Jogador::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
     float theta, px, py;
     glColor3f(1.0, 1.0, 1.0);
@@ -173,7 +190,7 @@ void Jogador::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat c
 void Jogador::exibeTexto(GLfloat x, GLfloat y){
     // Cria string para printar na tela.
     char *strTemporaria;
-    sprintf(str, "Raio: %.2f", this->getRaio());
+    sprintf(str, "Raio: %.2f X: %.2f Y: %.2f", this->getRaio(), this->getMouseX(), this->getY());
     // Posição do texto na tela
     glRasterPos2f(x, y);
     strTemporaria = str;
@@ -305,7 +322,7 @@ void Jogador::desenhaJogador(){
 		desenhaCanhao();
 		desenhaBase();
 	glPopMatrix();
-	exibeTexto(200.0, -200.0);
+	exibeTexto(0.0, 0.0);
 }	
 
 void Jogador::moveX(GLfloat x){
@@ -352,7 +369,9 @@ bool Jogador::verificaColisao(GLfloat x, GLfloat y){
 	GLfloat distanciaBorda = this->distanciaEntrePontos(this->arena->getX(), this->arena->getY(), x, y);
 	
 	// Verifica colisão da borda
-    if ((distanciaBorda + this->raio) > this->arena->getRaio()) {
+    if ((distanciaBorda) > this->arena->getRaio()) {
+		this->x *= -1;
+		this->y *= -1;
         return false;
     }
 

@@ -34,6 +34,7 @@ class Jogador
         GLfloat anguloJogador;
         GLfloat anguloCanhao;
         GLfloat anguloHelice;
+        GLfloat mouseX;
         bool ligado;
         bool voando;
 
@@ -68,6 +69,10 @@ class Jogador
         void setDistanciaPontos(GLfloat distanciaPontos);
         GLfloat getRaioInicial();
         void setRaioInicial(GLfloat& raioInicial);
+        GLfloat getMouseX();
+        void setMouseX(GLfloat mouseX);
+        GLfloat getAnguloCanhao();
+        void setAnguloCanhao(GLfloat anguloCanhao);
         bool isLigado();
         void setLigado(bool ligado);
         bool isVoando();

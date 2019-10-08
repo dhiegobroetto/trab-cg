@@ -18,6 +18,7 @@ GLfloat amarelo[] = {1.0, 1.0, 0.0};
 GLfloat preto[] = {0.0, 0.0, 0.0};
 
 // Variáveis globais de configuração
+Jogador* jogador;
 float larguraDimensao, alturaDimensao;
 float fundoR, fundoG, fundoB;
 int teclasTeclado[256];
@@ -51,13 +52,36 @@ void keyup(unsigned char key, int x, int y){
 }
 
 void mouseMove(int x, int y){
+    if(jogador->getMouseX() == 0.0){
+        jogador->setMouseX(x);
+    }
+    if(jogador->getAnguloCanhao() == -45 && x >= jogador->getMouseX()){
+        std::cout << "Direita" << std::endl;
+        jogador->setMouseX(x);
+    }else if(jogador->getAnguloCanhao() == 45 && x <= jogador->getMouseX()){
+        std::cout << "Esquerda" << std::endl;
+        jogador->setMouseX(x);
+    }else{
+        GLfloat angulo = (jogador->getMouseX() - x) / 2.0;
+        std::cout << jogador->getAnguloCanhao() << " " << jogador->getMouseX() << " " << x << std::endl;
+        if(angulo >= -45 && angulo <= 45){
+            jogador->setAnguloCanhao(angulo);
+        }else {
+            if(angulo < -45){
+                jogador->setAnguloCanhao(-45);
+            }else if(angulo > 45){
+                jogador->setAnguloCanhao(45);
+            }
+        }
+    }
+    
     
 }
 
 void display(void){
     // Inicialização das variáveis
     float theta, px, py;
-    Jogador* jogador = arena->getJogador();
+    jogador = arena->getJogador();
     Linha* linha = arena->getLinha();
     list<Circulo*> inimigosAereos = arena->getInimigosAereos();
     list<Circulo*> inimigosTerrestres = arena->getInimigosTerrestres();
@@ -193,8 +217,8 @@ bool lerXML(char* caminhoArquivo){
                     larguraDimensao = r * 2;
                     alturaDimensao = r * 2;
                     id = atoi(circuloElemento->Attribute("id"));
-                    cx = atof(circuloElemento->Attribute("cx"));
-                    cy = alturaDimensao - atof(circuloElemento->Attribute("cy"));
+                    cx = atof(circuloElemento->Attribute("cx")) - 500;
+                    cy = alturaDimensao - atof(circuloElemento->Attribute("cy")) - 100;
                     cores = retornaCor(circuloElemento->Attribute("fill"));
                     arena = new Arena(id, r, cx, cy, cores[0], cores[1], cores[2]);
                     break;
@@ -206,8 +230,8 @@ bool lerXML(char* caminhoArquivo){
                 // Leitura dos demais círculos
                 id = atoi(circuloElemento->Attribute("id"));
                 r = atof(circuloElemento->Attribute("r"));
-                cx = atof(circuloElemento->Attribute("cx"));
-                cy = alturaDimensao - atof(circuloElemento->Attribute("cy"));
+                cx = atof(circuloElemento->Attribute("cx")) - 500;
+                cy = alturaDimensao - atof(circuloElemento->Attribute("cy")) - 100;
                 cores = retornaCor(circuloElemento->Attribute("fill"));
 
                 // Leitura do jogador
@@ -247,10 +271,10 @@ bool lerXML(char* caminhoArquivo){
 
                 // Atribuindo valores
                 GLint id = atoi(linhaElemento->Attribute("id"));
-                GLfloat x1 = atof(linhaElemento->Attribute("x1"));
-                GLfloat y1 = alturaDimensao - atof(linhaElemento->Attribute("y1"));
-                GLfloat x2 = atof(linhaElemento->Attribute("x2"));
-                GLfloat y2 = alturaDimensao - atof(linhaElemento->Attribute("y2"));
+                GLfloat x1 = atof(linhaElemento->Attribute("x1")) - 500;
+                GLfloat y1 = alturaDimensao - atof(linhaElemento->Attribute("y1")) - 100;
+                GLfloat x2 = atof(linhaElemento->Attribute("x2")) - 500;
+                GLfloat y2 = alturaDimensao - atof(linhaElemento->Attribute("y2")) - 100;
                 std::stringstream coresStream(coresLinha);
                 GLfloat cor[3];
                 int i = 0;
