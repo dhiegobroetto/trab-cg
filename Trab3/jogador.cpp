@@ -5,6 +5,8 @@ Jogador::Jogador(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
     this->raio = raio;
     this->x = x;
     this->y = y;
+	this->xInicial = x;
+	this->yInicial = y;
     this->corR = corR;
     this->corG = corG;
     this->corB = corB;
@@ -163,7 +165,7 @@ GLfloat Jogador::getAnguloCanhao(){
 }
 
 void Jogador::setAnguloCanhao(GLfloat anguloCanhao){
-	this->anguloCanhao = anguloCanhao;
+	this->anguloCanhao += anguloCanhao;
 }
 
 GLfloat Jogador::getMouseX(){
@@ -190,7 +192,7 @@ void Jogador::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat c
 void Jogador::exibeTexto(GLfloat x, GLfloat y){
     // Cria string para printar na tela.
     char *strTemporaria;
-    sprintf(str, "Raio: %.2f X: %.2f Y: %.2f", this->getRaio(), this->getMouseX(), this->getY());
+    sprintf(str, "Raio: %.2f X: %.2f Y: %.2f", this->getRaio(), this->getX(), this->getY());
     // Posição do texto na tela
     glRasterPos2f(x, y);
     strTemporaria = str;
@@ -246,28 +248,30 @@ void Jogador::desenhaAsa(int asa){
 }
 
 void Jogador::desenhaHelice(int asa){
+	GLfloat angulo = this->anguloHelice;
 	glPushMatrix();
 		if(asa == 0){
 			glTranslatef(-this->raio/8, this->raio/2, 0);
+			angulo *= -1;
 		}else if (asa == 1){
 			glTranslatef((-(this->raio/4)*3)/2, this->raio/2, 0);
 		}
 		desenhaQuadrado(this->raio/6, this->raio/4);
 		glTranslatef(0.0, this->raio/3, 0.0);
 		glPushMatrix();
-			glRotatef(this->anguloHelice, 0.0, 1.0, 0.0);
+			glRotatef(angulo, 0.0, 1.0, 0.0);
 			desenhaTriangulo(this->raio/4);
 		glPopMatrix();
 		glPushMatrix();
-			glRotatef(this->anguloHelice + 90, 0.0, 1.0, 0.0);
+			glRotatef(angulo + 90, 0.0, 1.0, 0.0);
 			desenhaTriangulo(this->raio/4);
 		glPopMatrix();
 		glPushMatrix();
-			glRotatef(this->anguloHelice + 180, 0.0, 1.0, 0.0);
+			glRotatef(angulo + 180, 0.0, 1.0, 0.0);
 			desenhaTriangulo(this->raio/4);
 		glPopMatrix();
 		glPushMatrix();
-			glRotatef(this->anguloHelice + 270, 0.0, 1.0, 0.0);
+			glRotatef(angulo + 270, 0.0, 1.0, 0.0);
 			desenhaTriangulo(this->raio/4);
 		glPopMatrix();
 	glPopMatrix();
@@ -370,8 +374,9 @@ bool Jogador::verificaColisao(GLfloat x, GLfloat y){
 	
 	// Verifica colisão da borda
     if ((distanciaBorda) > this->arena->getRaio()) {
-		this->x *= -1;
-		this->y *= -1;
+		this->atravessaBorda();
+		// this->x = cos((this->getAnguloJogador() * (M_PI / 180)) + 180) * this->arena->getRaio();
+		// this->y = sin((this->getAnguloJogador() * (M_PI / 180)) + 180) * this->arena->getRaio();
         return false;
     }
 
@@ -383,6 +388,24 @@ bool Jogador::verificaColisao(GLfloat x, GLfloat y){
         }
     }
 	return true;
+}
+
+void Jogador::atravessaBorda(){
+	// y - y0 = m * (x - x0)
+	// y = m * (x - x0) + y0
+	// x^2 + y^2 = r^2
+	GLfloat m = tan(this->getAnguloJogador());
+	GLfloat x0 = this->x;
+	GLfloat y0 = this->y;
+	GLfloat r = this->arena->getRaio();
+	GLfloat novoX = (-(2 * m * (y0 - m * x0)) + sqrt(pow((2 * m * (y0 - m * x0)), 2) - 4 * (pow(m, 2) + 1) * (pow((y0 - m * x0), 2) - pow(r, 2)))) / (2 * (pow(m, 2) + 1));
+	if(abs(novoX - this->x) <= 0.2){
+		GLfloat novoX = (-(2 * m * (y0 - m * x0)) - sqrt(pow((2 * m * (y0 - m * x0)), 2) - 4 * (pow(m, 2) + 1) * (pow((y0 - m * x0), 2) - pow(r, 2)))) / (2 * (pow(m, 2) + 1));
+	}
+	GLfloat novoY = sqrt(pow(r, 2) - pow(novoX, 2));
+	this->setX(novoX);
+	this->setY(novoY);
+
 }
 
 void Jogador::decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem){

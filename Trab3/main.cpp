@@ -52,30 +52,17 @@ void keyup(unsigned char key, int x, int y){
 }
 
 void mouseMove(int x, int y){
-    if(jogador->getMouseX() == 0.0){
-        jogador->setMouseX(x);
-    }
-    if(jogador->getAnguloCanhao() == -45 && x >= jogador->getMouseX()){
-        std::cout << "Direita" << std::endl;
-        jogador->setMouseX(x);
-    }else if(jogador->getAnguloCanhao() == 45 && x <= jogador->getMouseX()){
-        std::cout << "Esquerda" << std::endl;
-        jogador->setMouseX(x);
-    }else{
-        GLfloat angulo = (jogador->getMouseX() - x) / 2.0;
-        std::cout << jogador->getAnguloCanhao() << " " << jogador->getMouseX() << " " << x << std::endl;
-        if(angulo >= -45 && angulo <= 45){
-            jogador->setAnguloCanhao(angulo);
-        }else {
-            if(angulo < -45){
-                jogador->setAnguloCanhao(-45);
-            }else if(angulo > 45){
-                jogador->setAnguloCanhao(45);
+    if(jogador->isVoando()){
+        if(jogador->getMouseX() == 0.0){
+            jogador->setMouseX(x);
+        }else{
+            GLfloat angulo = (jogador->getMouseX() - x) / 2.0;
+            if(jogador->getAnguloCanhao() + angulo >= -45 && jogador->getAnguloCanhao() + angulo <= 45){
+                jogador->setAnguloCanhao(angulo);
             }
         }
+        jogador->setMouseX(x);
     }
-    
-    
 }
 
 void display(void){

@@ -8,6 +8,7 @@
 #include "arena.h"
 #include <iostream>
 #include <string>
+#include <cmath>
 
 using namespace std;
 
@@ -20,6 +21,8 @@ class Jogador
         GLfloat raio;
         GLfloat x;
         GLfloat y;
+        GLfloat xInicial;
+        GLfloat yInicial;
         GLfloat corR;
         GLfloat corG;
         GLfloat corB;
@@ -35,6 +38,7 @@ class Jogador
         GLfloat anguloCanhao;
         GLfloat anguloHelice;
         GLfloat mouseX;
+        GLfloat mouseLimite;
         bool ligado;
         bool voando;
 
@@ -96,6 +100,7 @@ class Jogador
         void voa(GLfloat velocidade);
         void moveXY(GLfloat x, GLfloat y);
         bool verificaColisao(GLfloat x, GLfloat y);
+        void atravessaBorda();
         void decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem);
         GLfloat distanciaEntrePontos(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
         void calculaPontoCrescimento(Linha* linha);
