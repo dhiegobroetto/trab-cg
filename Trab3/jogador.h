@@ -10,7 +10,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
-#include <list>
+#include <vector>
 
 using namespace std;
 
@@ -37,7 +37,7 @@ class Jogador
         GLfloat raioInicial;
         GLfloat tempoRaio;
         Arena* arena;
-        list<Projetil*> projeteis;
+        vector<Projetil*> projeteis;
         GLfloat anguloJogador;
         GLfloat anguloCanhao;
         GLfloat anguloHelice;
@@ -110,8 +110,7 @@ class Jogador
         void moveY(GLfloat y);
         void voa(GLfloat velocidade);
         void voaProjeteis();
-        void moveXY(GLfloat x, GLfloat y);
-        bool verificaColisao(GLfloat x, GLfloat y);
+        bool verificaColisao(GLfloat x, GLfloat y, bool projetil);
         void atravessaBorda();
         void decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem);
         GLfloat distanciaEntrePontos(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);

@@ -17,6 +17,7 @@ class Projetil
     private:
         GLfloat x;
         GLfloat y;
+        GLfloat projetilY;
         GLfloat base;
         GLfloat altura;
         GLfloat corR;
@@ -54,6 +55,8 @@ class Projetil
         GLfloat getAnguloJogadorBase();
         void setAnguloJogadorBase(GLfloat anguloJogadorBase);
         GLfloat getAnguloFinal();
+        GLfloat getBaseCanhao();
+        GLfloat getAlturaCanhao();
         void desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaProjetil();
         void moveX(GLfloat x);

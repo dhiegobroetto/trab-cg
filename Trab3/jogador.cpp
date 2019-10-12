@@ -338,8 +338,12 @@ void Jogador::desenhaCanhao(){
 }
 
 void Jogador::desenhaProjeteis(){
-	for(Projetil *projetil : this->projeteis){
-		projetil->desenhaProjetil();
+	for(int i = 0; i < projeteis.size(); i++){
+		if(this->verificaColisao(projeteis[i]->getX(), projeteis[i]->getY(), true)){
+			projeteis[i]->desenhaProjetil();
+		}else{
+			projeteis.erase(projeteis.begin() + i);
+		}
 	}
 }
 
@@ -352,9 +356,7 @@ void Jogador::desenhaJogador(){
 		desenhaCanhao();
 		desenhaBase();
 	glPopMatrix();
-	glPushMatrix();
-		desenhaProjeteis();
-	glPopMatrix();
+	desenhaProjeteis();
 	// exibeTexto(0.0, 0.0);
 }	
 
@@ -372,7 +374,7 @@ void Jogador::moveY(GLfloat y){
 	GLfloat cx = this->getX();
     GLfloat cy = this->getY() + (y * this->tempoMultiplicador * this->tempoAjustador);
 
-    if(verificaColisao(cx, cy)){
+    if(verificaColisao(cx, cy, false)){
     	this->setY(cy);
 		this->anguloHelice += 5;
 	}
@@ -381,7 +383,7 @@ void Jogador::moveY(GLfloat y){
 void Jogador::voa(GLfloat velocidade){
 	GLfloat cx = this->getX() + (cos(((this->getAnguloJogador()) * (M_PI / 180))) * velocidade * this->tempoMultiplicador * this->tempoAjustador);
     GLfloat cy = this->getY() + (sin(((this->getAnguloJogador()) * (M_PI / 180))) * velocidade * this->tempoMultiplicador * this->tempoAjustador);
-	if(verificaColisao(cx, cy)){
+	if(verificaColisao(cx, cy, false)){
     	this->setX(cx);
 		this->setY(cy);
 		this->anguloHelice += 5;
@@ -394,34 +396,29 @@ void Jogador::voaProjeteis(){
 	}
 }
 
-void Jogador::moveXY(GLfloat x, GLfloat y) {
-    GLfloat cx = this->getX() + (cos(M_PI / 4) * x * this->tempoMultiplicador * this->tempoAjustador);
-    GLfloat cy = this->getY() + (sin(M_PI / 4) * y * this->tempoMultiplicador * this->tempoAjustador);
-
-    if(verificaColisao(cx, cy)){
-    	this->setX(cx);
-		this->setY(cy);
-	}
-}
-
-bool Jogador::verificaColisao(GLfloat x, GLfloat y){
+bool Jogador::verificaColisao(GLfloat x, GLfloat y, bool projetil = false){
 	GLfloat distanciaBorda = this->distanciaEntrePontos(this->arena->getX(), this->arena->getY(), x, y);
 	
 	// Verifica colisão da borda
+	if(projetil){ distanciaBorda += this->getRaio(); }
     if ((distanciaBorda) > this->arena->getRaio()) {
-		this->atravessaBorda();
+		// this->atravessaBorda();
 		// this->x = cos((this->getAnguloJogador() * (M_PI / 180)) + 180) * this->arena->getRaio();
 		// this->y = sin((this->getAnguloJogador() * (M_PI / 180)) + 180) * this->arena->getRaio();
         return false;
     }
 
 	// Verifica colisão com inimigos aéreos
-    for (auto inimigo : this->arena->getInimigosAereos()) {
-        GLfloat distanciaInimigo = this->distanciaEntrePontos(inimigo->getX(), inimigo->getY(), x, y);
-        if ((distanciaInimigo <= (inimigo->getRaio() + getRaio())) && voando) {
-            return false;
-        }
-    }
+	if(!projetil) { 
+		for (auto inimigo : this->arena->getInimigosAereos()) {
+			GLfloat distanciaInimigo = this->distanciaEntrePontos(x, y, inimigo->getX(), inimigo->getY());
+			GLfloat raioInimigo = inimigo->getRaio();
+			raioInimigo += this->getRaio(); 
+			if ((distanciaInimigo < raioInimigo) && this->isVoando()) {
+				return false;
+			}
+		}
+	}
 	return true;
 }
 

@@ -53,22 +53,25 @@ void keyup(unsigned char key, int x, int y){
 }
 
 void mouseAction(int button, int state, int x, int y){
-    if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
-        Projetil *p = new Projetil(
-            jogador->getX(), 
-            jogador->getY(), 
-            (GLfloat) (jogador->getRaio()/6), 
-            (GLfloat) (jogador->getRaio()/6), 
-            (GLfloat) 0.0, 
-            (GLfloat) 0.0, 
-            (GLfloat) 0.0, 
-            jogador->getVelocidade() * jogador->getTempoMultiplicador() * jogador->getTempoAjustador() * 2.0, 
-            jogador->getAnguloCanhao(),
-            jogador->getAnguloJogador(),
-            (GLfloat) (jogador->getRaio()/2),
-            (GLfloat) (jogador->getRaio() - 1)
-        );
-        jogador->addProjetil(p);
+    if(jogador->isVoando()){
+        if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
+            Projetil *p = new Projetil(
+                jogador->getX(), 
+                jogador->getY(), 
+                (GLfloat) (jogador->getRaio()/6), 
+                (GLfloat) (jogador->getRaio()/6), 
+                (GLfloat) 0.0, 
+                (GLfloat) 0.0, 
+                (GLfloat) 0.0, 
+                jogador->getVelocidade() * jogador->getTempoMultiplicador() * jogador->getTempoAjustador() * 2.0, 
+                jogador->getAnguloCanhao(),
+                jogador->getAnguloJogador(),
+                (GLfloat) (jogador->getRaio()/2),
+                (GLfloat) (jogador->getRaio() - 1)
+            );
+            jogador->addProjetil(p);
+            // std::cout << "X: " << p->getX() << " Y: " << p->getY() <<std::endl;
+        }
     }
 
 }

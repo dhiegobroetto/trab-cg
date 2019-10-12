@@ -99,6 +99,13 @@ GLfloat Projetil::getAnguloFinal(){
     return this->getAnguloJogadorBase() + this->getAnguloProjetil() + 90;
 }
 
+GLfloat Projetil::getBaseCanhao(){
+	return this->baseCanhao;
+}
+GLfloat Projetil::getAlturaCanhao(){
+	return this->alturaCanhao;
+}
+
 void Projetil::desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB){
     float theta, px, py;
     glColor3f(corR, corG, corB);
@@ -144,10 +151,8 @@ void Projetil::desenhaProjetil(){
 void Projetil::voa(){
 	GLfloat cx = this->getX() + (cos(((this->getAnguloFinal()) * (M_PI / 180))) * this->velocidade);
     GLfloat cy = this->getY() + (sin(((this->getAnguloFinal()) * (M_PI / 180))) * this->velocidade);
-	if(verificaColisao(cx, cy)){
-    	this->setX(cx);
-		this->setY(cy);
-	}
+	this->setX(cx);
+	this->setY(cy);
 }
 
 bool Projetil::verificaColisao(GLfloat x, GLfloat y){
