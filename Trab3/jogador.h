@@ -6,13 +6,16 @@
 #include "linha.h"
 #include "circulo.h"
 #include "arena.h"
+#include "projetil.h"
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <list>
 
 using namespace std;
 
 class Arena;
+class Projetil;
 
 class Jogador
 {
@@ -34,11 +37,13 @@ class Jogador
         GLfloat raioInicial;
         GLfloat tempoRaio;
         Arena* arena;
+        list<Projetil*> projeteis;
         GLfloat anguloJogador;
         GLfloat anguloCanhao;
         GLfloat anguloHelice;
         GLfloat mouseX;
-        GLfloat mouseLimite;
+        GLfloat limiteCanhaoX;
+        GLfloat limiteCanhaoY;
         bool ligado;
         bool voando;
 
@@ -75,6 +80,10 @@ class Jogador
         void setRaioInicial(GLfloat& raioInicial);
         GLfloat getMouseX();
         void setMouseX(GLfloat mouseX);
+        GLfloat getLimiteCanhaoX();
+        void setLimiteCanhaoX(GLfloat limiteCanhaoX);
+        GLfloat getLimiteCanhaoY();
+        void setLimiteCanhaoY(GLfloat limiteCanhaoY);
         GLfloat getAnguloCanhao();
         void setAnguloCanhao(GLfloat anguloCanhao);
         bool isLigado();
@@ -83,6 +92,7 @@ class Jogador
         void setVoando(bool voando);
         Arena* getArena();
         void setArena(Arena* arena);
+        void addProjetil(Projetil *p);
         GLfloat getAnguloJogador();
         void setAnguloJogador(GLfloat anguloJogador);
         void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
@@ -94,10 +104,12 @@ class Jogador
         void desenhaAsa(int asa);
         void desenhaHelice(int asa);
         void desenhaCanhao();
+        void desenhaProjeteis();
         void desenhaJogador();
         void moveX(GLfloat x);
         void moveY(GLfloat y);
         void voa(GLfloat velocidade);
+        void voaProjeteis();
         void moveXY(GLfloat x, GLfloat y);
         bool verificaColisao(GLfloat x, GLfloat y);
         void atravessaBorda();

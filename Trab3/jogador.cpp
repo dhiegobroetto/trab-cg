@@ -152,6 +152,10 @@ void Jogador::setArena(Arena* arena){
 	this->arena = arena;
 }
 
+void Jogador::addProjetil(Projetil *p){
+	this->projeteis.push_back(p);
+}
+
 GLfloat Jogador::getAnguloJogador(){
 	return this->anguloJogador + 90;
 }
@@ -174,6 +178,22 @@ GLfloat Jogador::getMouseX(){
 
 void Jogador::setMouseX(GLfloat mouseX){
 	this->mouseX = mouseX;
+}
+
+GLfloat Jogador::getLimiteCanhaoX(){
+	return this->limiteCanhaoX;
+}
+
+void Jogador::setLimiteCanhaoX(GLfloat limiteCanhaoX){
+	this->limiteCanhaoX = limiteCanhaoX;
+}
+
+GLfloat Jogador::getLimiteCanhaoY(){
+	return this->limiteCanhaoY;
+}
+
+void Jogador::setLimiteCanhaoY(GLfloat limiteCanhaoY){
+	this->limiteCanhaoY = limiteCanhaoY;
 }
 
 void Jogador::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
@@ -317,6 +337,12 @@ void Jogador::desenhaCanhao(){
 	glPopMatrix();
 }
 
+void Jogador::desenhaProjeteis(){
+	for(Projetil *projetil : this->projeteis){
+		projetil->desenhaProjetil();
+	}
+}
+
 void Jogador::desenhaJogador(){
 	glPushMatrix();
 		glTranslatef(this->x, this->y, 0);
@@ -326,7 +352,10 @@ void Jogador::desenhaJogador(){
 		desenhaCanhao();
 		desenhaBase();
 	glPopMatrix();
-	exibeTexto(0.0, 0.0);
+	glPushMatrix();
+		desenhaProjeteis();
+	glPopMatrix();
+	// exibeTexto(0.0, 0.0);
 }	
 
 void Jogador::moveX(GLfloat x){
@@ -356,6 +385,12 @@ void Jogador::voa(GLfloat velocidade){
     	this->setX(cx);
 		this->setY(cy);
 		this->anguloHelice += 5;
+	}
+}
+
+void Jogador::voaProjeteis(){
+	for(Projetil *p : this->projeteis){
+		p->voa();
 	}
 }
 

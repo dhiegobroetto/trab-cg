@@ -7,6 +7,7 @@
 #include "linha.h"
 #include "arena.h"
 #include "jogador.h"
+#include "projetil.h"
 #include <sstream>
 #include <string>
 
@@ -49,6 +50,27 @@ void keyPress(unsigned char key, int x, int y){
 
 void keyup(unsigned char key, int x, int y){
   teclasTeclado[key] = 0;
+}
+
+void mouseAction(int button, int state, int x, int y){
+    if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
+        Projetil *p = new Projetil(
+            jogador->getX(), 
+            jogador->getY(), 
+            (GLfloat) (jogador->getRaio()/6), 
+            (GLfloat) (jogador->getRaio()/6), 
+            (GLfloat) 0.0, 
+            (GLfloat) 0.0, 
+            (GLfloat) 0.0, 
+            jogador->getVelocidade() * jogador->getTempoMultiplicador() * jogador->getTempoAjustador() * 2.0, 
+            jogador->getAnguloCanhao(),
+            jogador->getAnguloJogador(),
+            (GLfloat) (jogador->getRaio()/2),
+            (GLfloat) (jogador->getRaio() - 1)
+        );
+        jogador->addProjetil(p);
+    }
+
 }
 
 void mouseMove(int x, int y){
@@ -106,38 +128,13 @@ void idle(void){
     }
     if(jogador->isLigado() && jogador->isVoando()){
         GLfloat vel = jogador->getVelocidade();
-        if (teclasTeclado['w'] && teclasTeclado['a'] && teclasTeclado['d']) {
-            jogador->moveY(vel);
-        }else if (teclasTeclado['a'] && teclasTeclado['s'] && teclasTeclado['d']) {
-            jogador->moveY(-vel);
-        }else if (teclasTeclado['w'] && teclasTeclado['d']) {
-            jogador->moveXY(vel, vel);
-        }else if (teclasTeclado['w'] && teclasTeclado['a']) {
-            jogador->moveXY(-vel, vel);
-        }else if (teclasTeclado['w'] && teclasTeclado['d']) {
-            jogador->moveXY(vel, vel);
-        }else if (teclasTeclado['a'] && teclasTeclado['s']) {
-            jogador->moveXY(-vel, -vel);
-        }else if (teclasTeclado['s'] && teclasTeclado['d']) {
-            jogador->moveXY(vel, -vel);
-        }else if (teclasTeclado['w'] && teclasTeclado['a']) {
-            jogador->moveXY(-vel, vel);
-        }else if (teclasTeclado['w'] && teclasTeclado['d']) {
-            jogador->moveXY(vel, vel);
-        }else if (teclasTeclado['a'] && teclasTeclado['s']) {
-            jogador->moveXY(-vel, -vel);
-        }else if (teclasTeclado['s'] && teclasTeclado['d']) {
-            jogador->moveXY(vel, -vel);
-        }else if(teclasTeclado['w']){
-            jogador->moveY(vel);
-        }else if(teclasTeclado['a']){
+        if(teclasTeclado['a']){
             jogador->moveX(3.0);
-        }else if(teclasTeclado['s']){
-            jogador->moveY(-vel);
         }else if(teclasTeclado['d']){
             jogador->moveX(-3.0);
         }
         jogador->voa(vel);
+        jogador->voaProjeteis();
     }
     
     // Cálculo do tempo de sincronização.
@@ -300,6 +297,7 @@ int main(int argc, char** argv){
             glutDisplayFunc(display);
             glutKeyboardUpFunc(keyup);
             glutKeyboardFunc(keyPress);
+            glutMouseFunc(mouseAction);
             glutPassiveMotionFunc(mouseMove);
             glutIdleFunc(idle);
             glutMainLoop();
