@@ -126,52 +126,11 @@ void Projetil::desenhaProjetil(){
 		glTranslatef(0.0, this->alturaCanhao, 0);
 		desenhaQuadrado(this->base, this->altura, this->corR, this->corG, this->corB);
 	glPopMatrix();
-}	
-
-// void Projetil::moveX(GLfloat x){
-// 	// GLfloat cx = this->getX() + (x * this->tempoMultiplicador * this->tempoAjustador);
-//     // GLfloat cy = this->getY();
-
-//     // if(verificaColisao(cx, cy)){
-//     	// this->setX(cx);
-// 		this->anguloProjetil += x;
-// 	// }
-// }
-
-// void Projetil::moveY(GLfloat y){
-// 	GLfloat cx = this->getX();
-//     GLfloat cy = this->getY() + (y * this->tempoMultiplicador * this->tempoAjustador);
-
-//     if(verificaColisao(cx, cy)){
-//     	this->setY(cy);
-// 		this->anguloHelice += 5;
-// 	}
-// }
+}
 
 void Projetil::voa(){
 	GLfloat cx = this->getX() + (cos(((this->getAnguloFinal()) * (M_PI / 180))) * this->velocidade);
     GLfloat cy = this->getY() + (sin(((this->getAnguloFinal()) * (M_PI / 180))) * this->velocidade);
 	this->setX(cx);
 	this->setY(cy);
-}
-
-bool Projetil::verificaColisao(GLfloat x, GLfloat y){
-	// GLfloat distanciaBorda = this->distanciaEntrePontos(this->arena->getX(), this->arena->getY(), x, y);
-	
-	// Verifica colisão da borda
-    // if ((distanciaBorda) > this->arena->getRaio()) {
-	// 	this->atravessaBorda();
-		// this->x = cos((this->getAnguloProjetil() * (M_PI / 180)) + 180) * this->arena->getRaio();
-		// this->y = sin((this->getAnguloProjetil() * (M_PI / 180)) + 180) * this->arena->getRaio();
-    //     return false;
-    // }
-
-	// Verifica colisão com inimigos aéreos
-    // for (auto inimigo : this->arena->getInimigosAereos()) {
-    //     GLfloat distanciaInimigo = this->distanciaEntrePontos(inimigo->getX(), inimigo->getY(), x, y);
-    //     if ((distanciaInimigo <= (inimigo->getRaio() + getRaio()))  voando) {
-    //         return false;
-    //     }
-    // }
-	// return true;
 }

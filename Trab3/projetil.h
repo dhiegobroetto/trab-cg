@@ -61,7 +61,6 @@ class Projetil
         void desenhaProjetil();
         void moveX(GLfloat x);
         void moveY(GLfloat y);
-        bool verificaColisao(GLfloat x, GLfloat y);
         void voa();
 };
 
