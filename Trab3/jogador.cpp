@@ -20,6 +20,7 @@ Jogador::Jogador(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
 	this->anguloCanhao = 0.0;
 	this->anguloHelice = 0.0;
 	this->mouseX = 0.0;
+	this->vivo = true;
 }
 static char str[2000];
 void * fonte = GLUT_BITMAP_TIMES_ROMAN_24;
@@ -247,6 +248,32 @@ void Jogador::exibeTexto(GLfloat x, GLfloat y){
     }
 }
 
+void Jogador::exibeDecolagem(GLfloat x, GLfloat y){
+	char *strTemporaria;
+	char decolagem[50];
+	glColor3f(0.0,0.0,0.0);
+    sprintf(decolagem, "Pressione U para decolar.");
+    glRasterPos2f(x, y);
+    strTemporaria = decolagem;
+    while( *strTemporaria ){
+        glutBitmapCharacter(fonte, *strTemporaria);
+        strTemporaria++;
+    }
+}
+
+void Jogador::exibeGameOver(GLfloat x, GLfloat y){
+	char *strTemporaria;
+	char gameOver[80];
+	glColor3f(0.0,0.0,0.0);
+    sprintf(gameOver, "Game Over!\n\nPressione R para tentar novamente!");
+    glRasterPos2f(x, y);
+    strTemporaria = gameOver;
+    while( *strTemporaria ){
+        glutBitmapCharacter(fonte, *strTemporaria);
+        strTemporaria++;
+    }
+}
+
 void Jogador::desenhaQuadrado(GLfloat base, GLfloat altura){
 	glColor3f(0.0, 0.0, 0.0);
 	glBegin(GL_POLYGON);
@@ -391,7 +418,6 @@ void Jogador::desenhaJogador(){
 		desenhaBase();
 	glPopMatrix();
 	desenhaProjeteis();
-	// exibeTexto(0.0, 0.0);
 }	
 
 void Jogador::moveX(GLfloat x){

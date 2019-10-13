@@ -132,7 +132,14 @@ void display(void){
     }
     if(jogador != NULL){
         jogador->desenhaJogador();
+        if(!jogador->isLigado() && !jogador->isVoando()){
+            jogador->exibeDecolagem(arena->getX() - arena->getRaio(), arena->getY() - arena->getRaio()); 
+        }
+        if(!jogador->isVivo()){ 
+            jogador->exibeGameOver(arena->getX() - arena->getRaio(), arena->getY() - arena->getRaio()); 
+        }
     }
+    
     glutSwapBuffers();
 }
 

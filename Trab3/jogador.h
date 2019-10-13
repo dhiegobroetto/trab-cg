@@ -131,6 +131,8 @@ class Jogador
         void calculaPontoCrescimento(Linha* linha);
         void calculaAngulo(Linha* linha);
         void exibeTexto(GLfloat x, GLfloat y);
+        void exibeDecolagem(GLfloat x, GLfloat y);
+        void exibeGameOver(GLfloat x, GLfloat y);
         void reseta();
 };
 
