@@ -239,8 +239,8 @@ bool lerXML(char* caminhoArquivo){
                     larguraDimensao = r * 2;
                     alturaDimensao = r * 2;
                     id = atoi(circuloElemento->Attribute("id"));
-                    cx = atof(circuloElemento->Attribute("cx"));
-                    cy = alturaDimensao - atof(circuloElemento->Attribute("cy"));
+                    cx = atof(circuloElemento->Attribute("cx")) - 500;
+                    cy = alturaDimensao - atof(circuloElemento->Attribute("cy")) - 100;
                     cores = retornaCor(circuloElemento->Attribute("fill"));
                     arena = new Arena(id, r, cx, cy, cores[0], cores[1], cores[2]);
                     break;
@@ -252,8 +252,8 @@ bool lerXML(char* caminhoArquivo){
                 // Leitura dos demais círculos
                 id = atoi(circuloElemento->Attribute("id"));
                 r = atof(circuloElemento->Attribute("r"));
-                cx = atof(circuloElemento->Attribute("cx"));
-                cy = alturaDimensao - atof(circuloElemento->Attribute("cy"));
+                cx = atof(circuloElemento->Attribute("cx")) - 500;
+                cy = alturaDimensao - atof(circuloElemento->Attribute("cy")) - 100;
                 cores = retornaCor(circuloElemento->Attribute("fill"));
 
                 // Leitura do jogador
@@ -293,10 +293,10 @@ bool lerXML(char* caminhoArquivo){
 
                 // Atribuindo valores
                 GLint id = atoi(linhaElemento->Attribute("id"));
-                GLfloat x1 = atof(linhaElemento->Attribute("x1"));
-                GLfloat y1 = alturaDimensao - atof(linhaElemento->Attribute("y1"));
-                GLfloat x2 = atof(linhaElemento->Attribute("x2"));
-                GLfloat y2 = alturaDimensao - atof(linhaElemento->Attribute("y2"));
+                GLfloat x1 = atof(linhaElemento->Attribute("x1")) - 500;
+                GLfloat y1 = alturaDimensao - atof(linhaElemento->Attribute("y1")) - 100;
+                GLfloat x2 = atof(linhaElemento->Attribute("x2")) - 500;
+                GLfloat y2 = alturaDimensao - atof(linhaElemento->Attribute("y2")) - 100;
                 std::stringstream coresStream(coresLinha);
                 GLfloat cor[3];
                 int i = 0;
