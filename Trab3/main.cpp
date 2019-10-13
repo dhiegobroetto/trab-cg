@@ -63,7 +63,7 @@ void mouseAction(int button, int state, int x, int y){
                 (GLfloat) 0.0, 
                 (GLfloat) 0.0, 
                 (GLfloat) 0.0, 
-                jogador->getVelocidade() * jogador->getTempoMultiplicador() * jogador->getTempoAjustador() * 2.0, 
+                jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora() * jogador->getTempoAjustador() * 2.0, 
                 jogador->getAnguloCanhao(),
                 jogador->getAnguloJogador(),
                 (GLfloat) (jogador->getRaio()/2),
@@ -77,7 +77,7 @@ void mouseAction(int button, int state, int x, int y){
 }
 
 void mouseMove(int x, int y){
-    if(jogador->isVoando()){
+    if(jogador->isVoando() && jogador->isVivo()){
         if(jogador->getMouseX() == 0.0){
             jogador->setMouseX(x);
         }else{
@@ -121,25 +121,35 @@ void display(void){
 
 void idle(void){
     Jogador* jogador = arena->getJogador();
-    if(teclasTeclado['u'] && !jogador->isLigado()){
-        jogador->setLigado(true);
-        tempoAntigoDecolagem = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
-    }
-    if(jogador->isLigado() && !jogador->isVoando()){
-        tempoDecolagem = (glutGet(GLUT_ELAPSED_TIME) / 1000.0) - tempoAntigoDecolagem;
-        jogador->decola(arena->getLinha(), tempoAntigoDecolagem, tempoDecolagem);
-    }
-    if(jogador->isLigado() && jogador->isVoando()){
-        GLfloat vel = jogador->getVelocidade();
-        if(teclasTeclado['a']){
-            jogador->moveX(3.0);
-        }else if(teclasTeclado['d']){
-            jogador->moveX(-3.0);
+    if(jogador->isVivo()){
+        if(teclasTeclado['u'] || teclasTeclado['U'] && !jogador->isLigado()){
+            jogador->setLigado(true);
+            tempoAntigoDecolagem = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
         }
-        jogador->voa(vel);
-        jogador->voaProjeteis();
+        if(jogador->isLigado() && !jogador->isVoando()){
+            tempoDecolagem = (glutGet(GLUT_ELAPSED_TIME) / 1000.0) - tempoAntigoDecolagem;
+            jogador->decola(arena->getLinha(), tempoAntigoDecolagem, tempoDecolagem);
+        }
+        if(jogador->isLigado() && jogador->isVoando()){
+            GLfloat vel = jogador->getVelocidade();
+            if(teclasTeclado['a'] || teclasTeclado['A']){
+                jogador->moveX(3.0);
+            }else if(teclasTeclado['d'] || teclasTeclado['D']){
+                jogador->moveX(-3.0);
+            }
+            if(teclasTeclado['='] || teclasTeclado['+']){
+                jogador->incrementaVelocidade(1.0);
+            }
+            if(teclasTeclado['-']){
+                jogador->decrementaVelocidade(1.0);
+            }
+            jogador->voa(vel);
+            jogador->voaProjeteis();
+        }
     }
-    
+    if(teclasTeclado['r']){
+        jogador->reseta();
+    }
     // Cálculo do tempo de sincronização.
     tempoNovo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
     GLfloat t = tempoNovo - tempoAntigo;
@@ -227,7 +237,7 @@ bool lerXML(char* caminhoArquivo){
                     GLfloat vel = atof(jogadorElemento->Attribute("vel"));
 
                     // Velocidade no final da decolagem
-                    jogador->setTempoMultiplicador(vel);
+                    jogador->setVelocidadeMultiplicadora(vel);
                     arena->setJogador(jogador);
 
                     // Leitura dos inimigos aéreos

@@ -80,12 +80,12 @@ void Jogador::setCorB(GLfloat& corB){
 	this->corB = corB;
 }
 
-GLfloat Jogador::getTempoMultiplicador(){
-	return this->tempoMultiplicador;
+GLfloat Jogador::getVelocidadeMultiplicadora(){
+	return this->velocidadeMultiplicadora;
 }
 
-void Jogador::setTempoMultiplicador(GLfloat& tempoMultiplicador){
-	this->tempoMultiplicador = tempoMultiplicador;
+void Jogador::setVelocidadeMultiplicadora(GLfloat& velocidadeMultiplicadora){
+	this->velocidadeMultiplicadora = velocidadeMultiplicadora;
 }
 
 GLfloat Jogador::getTempoAjustador(){
@@ -102,6 +102,14 @@ GLfloat Jogador::getVelocidade(){
 
 void Jogador::setVelocidade(GLfloat velocidade){
 	this->velocidade = velocidade;
+}
+
+void Jogador::incrementaVelocidade(GLfloat velocidade){
+	this->velocidade += velocidade;
+}
+
+void Jogador::decrementaVelocidade(GLfloat velocidade){
+	this->velocidade -= velocidade;
 }
 
 GLfloat Jogador::getPontoCrescimento(){
@@ -142,6 +150,18 @@ bool Jogador::isVoando(){
 
 void Jogador::setVoando(bool voando){
 	this->voando = voando;
+}
+
+bool Jogador::isVivo(){
+	return this->vivo;
+}
+
+void Jogador::vive(){
+	this->vivo = true;
+}
+
+void Jogador::morre(){
+	this->vivo = false;
 }
 
 Arena* Jogador::getArena(){
@@ -366,21 +386,21 @@ void Jogador::moveX(GLfloat x){
 
 void Jogador::moveY(GLfloat y){
 	GLfloat cx = this->getX();
-    GLfloat cy = this->getY() + (y * this->tempoMultiplicador * this->tempoAjustador);
+    GLfloat cy = this->getY() + (y * this->velocidadeMultiplicadora * this->tempoAjustador);
 
     if(verificaColisao(cx, cy, false)){
     	this->setY(cy);
-		this->anguloHelice += 5;
+		this->anguloHelice += this->velocidade;
 	}
 }
 
 void Jogador::voa(GLfloat velocidade){
-	GLfloat cx = this->getX() + (cos(((this->getAnguloJogador()) * (M_PI / 180))) * velocidade * this->tempoMultiplicador * this->tempoAjustador);
-    GLfloat cy = this->getY() + (sin(((this->getAnguloJogador()) * (M_PI / 180))) * velocidade * this->tempoMultiplicador * this->tempoAjustador);
+	GLfloat cx = this->getX() + (cos(((this->getAnguloJogador()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
+    GLfloat cy = this->getY() + (sin(((this->getAnguloJogador()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
 	if(verificaColisao(cx, cy, false)){
     	this->setX(cx);
 		this->setY(cy);
-		this->anguloHelice += 5;
+		this->anguloHelice += this->velocidade;
 	}
 }
 
@@ -409,6 +429,7 @@ bool Jogador::verificaColisao(GLfloat x, GLfloat y, bool projetil = false){
 			GLfloat raioInimigo = inimigo->getRaio();
 			raioInimigo += this->getRaio(); 
 			if ((distanciaInimigo < raioInimigo) && this->isVoando()) {
+				this->morre();
 				return false;
 			}
 		}
@@ -450,6 +471,8 @@ void Jogador::decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem){
 		this->setX(x1);
 		this->setY(y1);
 		this->distanciaPontos = this->distanciaEntrePontos(this->x, this->y, linha->getX2(), linha->getY2());
+		GLfloat aceleracao = (this->distanciaPontos/tempoFinal);
+		this->anguloHelice = this->anguloHelice + aceleracao * tempoFinal;
 
 		// Subindo voo (dobrando o raio)
 		if(this->distanciaPontos <= this->pontoCrescimento and this->ligado and !this->voando){
@@ -487,4 +510,21 @@ void Jogador::calculaPontoCrescimento(Linha* linha){
 
 void Jogador::calculaAngulo(Linha* linha){
 	this->setAnguloJogador(-90 + atan2(linha->getDistanciaY(), linha->getDistanciaX()) * 180 / M_PI);
+}
+
+ void Jogador::reseta(){
+	this->x = this->xInicial;
+	this->y = this->yInicial;
+	this->ligado = false;
+	this->voando = false;
+	this->distanciaPontos = 0.0;
+	this->raio = raioInicial;
+	this->tempoRaio = 0.0;
+	this->calculaAngulo(this->getArena()->getLinha());
+	this->anguloCanhao = 0.0;
+	this->anguloHelice = 0.0;
+	this->mouseX = 0.0;
+	this->velocidade = 0.0;
+	this->projeteis.clear();
+	this->vive();
 }

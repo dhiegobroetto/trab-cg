@@ -30,7 +30,8 @@ class Jogador
         GLfloat corG;
         GLfloat corB;
         GLfloat velocidade;
-        GLfloat tempoMultiplicador;
+        GLfloat velocidadeInicial;
+        GLfloat velocidadeMultiplicadora;
         GLfloat tempoAjustador;
         GLfloat pontoCrescimento;
         GLfloat distanciaPontos;
@@ -46,6 +47,7 @@ class Jogador
         GLfloat limiteCanhaoY;
         bool ligado;
         bool voando;
+        bool vivo;
 
     public:
     	// ------------ Construtor ------------ //
@@ -66,12 +68,15 @@ class Jogador
         void setCorG(GLfloat& corG);
         GLfloat getCorB();
         void setCorB(GLfloat& corB);
-        GLfloat getTempoMultiplicador();
-        void setTempoMultiplicador(GLfloat& tempoMultiplicador);
+        GLfloat getVelocidadeMultiplicadora();
+        void setVelocidadeMultiplicadora(GLfloat& velocidadeMultiplicadora);
         GLfloat getTempoAjustador();
         void setTempoAjustador(GLfloat& tempoAjustador);
         GLfloat getVelocidade();
         void setVelocidade(GLfloat velocidade);
+        void setVelocidadeInicial(GLfloat velocidadeInicial);
+        void incrementaVelocidade(GLfloat velocidade);
+        void decrementaVelocidade(GLfloat velocidade);
         GLfloat getPontoCrescimento();
         void setPontoCrescimento(GLfloat pontoCrescimento);
         GLfloat getDistanciaPontos();
@@ -90,6 +95,9 @@ class Jogador
         void setLigado(bool ligado);
         bool isVoando();
         void setVoando(bool voando);
+        bool isVivo();
+        void vive();
+        void morre();
         Arena* getArena();
         void setArena(Arena* arena);
         void addProjetil(Projetil *p);
@@ -117,6 +125,7 @@ class Jogador
         void calculaPontoCrescimento(Linha* linha);
         void calculaAngulo(Linha* linha);
         void exibeTexto(GLfloat x, GLfloat y);
+        void reseta();
 };
 
 #endif /* JOGADOR_H */
