@@ -4,11 +4,14 @@ Bomba::Bomba(GLfloat x, GLfloat y, GLfloat raio, GLfloat corR, GLfloat corG, GLf
     this->x = x;
     this->y = y;
     this->raio = raio;
+	this->raioInicial = raio;
     this->corR = corR;
     this->corG = corG;
     this->corB = corB;
 	this->velocidade = velocidade;
     this->anguloJogadorBase = anguloJogadorBase;
+	this->tempoInicial = (glutGet(GLUT_ELAPSED_TIME) / 1000.0);
+	this->explode = false;
 }
 
 GLfloat Bomba::getX(){
@@ -97,4 +100,30 @@ void Bomba::voa(){
     GLfloat cy = this->getY() + (sin(((this->getAnguloJogadorBase() + 90) * (M_PI / 180))) * this->velocidade);
 	this->setX(cx);
 	this->setY(cy);
+	this->cai();
+}
+
+void Bomba::cai(){
+	GLfloat tempoFinal = 4.0;
+	GLfloat tempoAtual = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
+	GLfloat tempoQueda = tempoAtual - this->tempoInicial;
+	if(tempoQueda < tempoFinal){
+		// V = del(S) / del(t)
+		GLfloat	velocidadeRaio = ((this->raioInicial / 2) - this->raioInicial) / tempoFinal;
+		// S = So + Vt
+		GLfloat passoRaio = velocidadeRaio * tempoQueda;
+		GLfloat raioDecrescente = this->raioInicial + passoRaio;
+		this->setRaio(raioDecrescente);
+	}else{
+		this->setRaio(this->raioInicial / 2);
+		this->explodeBomba();
+	}
+}
+
+void Bomba::explodeBomba(){
+	this->explode = true;
+}
+
+bool Bomba::explodiu(){
+	return this->explode;
 }

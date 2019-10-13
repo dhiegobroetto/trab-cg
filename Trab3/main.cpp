@@ -71,7 +71,6 @@ void mouseAction(int button, int state, int x, int y){
                 (GLfloat) (jogador->getRaio() - 1)
             );
             jogador->addProjetil(p);
-            // std::cout << "X: " << p->getX() << " Y: " << p->getY() <<std::endl;
         }
         if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN){
             Bomba *b = new Bomba(
@@ -85,7 +84,6 @@ void mouseAction(int button, int state, int x, int y){
                 jogador->getAnguloJogador()
             );
             jogador->addBomba(b);
-            // std::cout << "X: " << p->getX() << " Y: " << p->getY() <<std::endl;
         }
     }
 
@@ -122,10 +120,14 @@ void display(void){
     if(linha != NULL){
         linha->desenhaLinha();
     }
-    for(list<Circulo*>::iterator c = inimigosAereos.begin(); c != inimigosAereos.end(); ++c){
+    for(list<Circulo*>::iterator c = inimigosTerrestres.begin(); c != inimigosTerrestres.end(); ++c){
         (*c)->desenha();
     }
-     for(list<Circulo*>::iterator c = inimigosTerrestres.begin(); c != inimigosTerrestres.end(); ++c){
+    if(jogador != NULL){
+        jogador->desenhaBombas();
+    	// jogador->desenhaProjeteis();
+    }
+    for(list<Circulo*>::iterator c = inimigosAereos.begin(); c != inimigosAereos.end(); ++c){
         (*c)->desenha();
     }
     if(jogador != NULL){
@@ -148,9 +150,9 @@ void idle(void){
         if(jogador->isLigado() && jogador->isVoando()){
             GLfloat vel = jogador->getVelocidade();
             if(teclasTeclado['a'] || teclasTeclado['A']){
-                jogador->moveX(3.0);
+                jogador->moveX(100.0);
             }else if(teclasTeclado['d'] || teclasTeclado['D']){
-                jogador->moveX(-3.0);
+                jogador->moveX(-100.0);
             }
             if(teclasTeclado['='] || teclasTeclado['+']){
                 jogador->incrementaVelocidade(1.0);
