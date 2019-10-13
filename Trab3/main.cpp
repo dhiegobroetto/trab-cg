@@ -8,6 +8,7 @@
 #include "arena.h"
 #include "jogador.h"
 #include "projetil.h"
+#include "bomba.h"
 #include <sstream>
 #include <string>
 
@@ -53,7 +54,7 @@ void keyup(unsigned char key, int x, int y){
 }
 
 void mouseAction(int button, int state, int x, int y){
-    if(jogador->isVoando()){
+    if(jogador->isVoando() && jogador->isVivo()){
         if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
             Projetil *p = new Projetil(
                 jogador->getX(), 
@@ -70,6 +71,20 @@ void mouseAction(int button, int state, int x, int y){
                 (GLfloat) (jogador->getRaio() - 1)
             );
             jogador->addProjetil(p);
+            // std::cout << "X: " << p->getX() << " Y: " << p->getY() <<std::endl;
+        }
+        if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN){
+            Bomba *b = new Bomba(
+                jogador->getX(), 
+                jogador->getY(), 
+                (GLfloat) (jogador->getRaio()/3),  
+                (GLfloat) 0.0, 
+                (GLfloat) 0.0, 
+                (GLfloat) 0.0, 
+                jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora() * jogador->getTempoAjustador(),
+                jogador->getAnguloJogador()
+            );
+            jogador->addBomba(b);
             // std::cout << "X: " << p->getX() << " Y: " << p->getY() <<std::endl;
         }
     }
@@ -145,6 +160,7 @@ void idle(void){
             }
             jogador->voa(vel);
             jogador->voaProjeteis();
+            jogador->voaBombas();
         }
     }
     if(teclasTeclado['r']){

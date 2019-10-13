@@ -7,6 +7,7 @@
 #include "circulo.h"
 #include "arena.h"
 #include "projetil.h"
+#include "bomba.h"
 #include <iostream>
 #include <string>
 #include <cmath>
@@ -16,6 +17,7 @@ using namespace std;
 
 class Arena;
 class Projetil;
+class Bomba;
 
 class Jogador
 {
@@ -39,6 +41,7 @@ class Jogador
         GLfloat tempoRaio;
         Arena* arena;
         vector<Projetil*> projeteis;
+        vector<Bomba*> bombas;
         GLfloat anguloJogador;
         GLfloat anguloCanhao;
         GLfloat anguloHelice;
@@ -101,6 +104,7 @@ class Jogador
         Arena* getArena();
         void setArena(Arena* arena);
         void addProjetil(Projetil *p);
+        void addBomba(Bomba *b);
         GLfloat getAnguloJogador();
         void setAnguloJogador(GLfloat anguloJogador);
         void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
@@ -113,11 +117,13 @@ class Jogador
         void desenhaHelice(int asa);
         void desenhaCanhao();
         void desenhaProjeteis();
+        void desenhaBombas();
         void desenhaJogador();
         void moveX(GLfloat x);
         void moveY(GLfloat y);
         void voa(GLfloat velocidade);
         void voaProjeteis();
+        void voaBombas();
         bool verificaColisao(GLfloat x, GLfloat y, bool projetil);
         void atravessaBorda();
         void decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem);

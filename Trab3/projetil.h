@@ -17,7 +17,6 @@ class Projetil
     private:
         GLfloat x;
         GLfloat y;
-        GLfloat projetilY;
         GLfloat base;
         GLfloat altura;
         GLfloat corR;
@@ -59,8 +58,6 @@ class Projetil
         GLfloat getAlturaCanhao();
         void desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaProjetil();
-        void moveX(GLfloat x);
-        void moveY(GLfloat y);
         void voa();
 };
 

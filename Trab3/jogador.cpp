@@ -176,6 +176,10 @@ void Jogador::addProjetil(Projetil *p){
 	this->projeteis.push_back(p);
 }
 
+void Jogador::addBomba(Bomba *b){
+	this->bombas.push_back(b);
+}
+
 GLfloat Jogador::getAnguloJogador(){
 	return this->anguloJogador + 90;
 }
@@ -367,7 +371,18 @@ void Jogador::desenhaProjeteis(){
 	}
 }
 
+void Jogador::desenhaBombas(){
+	for(int i = 0; i < bombas.size(); i++){
+		if(this->verificaColisao(bombas[i]->getX(), bombas[i]->getY(), true)){
+			bombas[i]->desenhaBomba();
+		}else{
+			bombas.erase(bombas.begin() + i);
+		}
+	}
+}
+
 void Jogador::desenhaJogador(){
+	desenhaBombas();
 	glPushMatrix();
 		glTranslatef(this->x, this->y, 0);
 		glRotatef(this->anguloJogador, 0.0, 0.0, 1.0);
@@ -407,6 +422,12 @@ void Jogador::voa(GLfloat velocidade){
 void Jogador::voaProjeteis(){
 	for(Projetil *p : this->projeteis){
 		p->voa();
+	}
+}
+
+void Jogador::voaBombas(){
+	for(Bomba *b : this->bombas){
+		b->voa();
 	}
 }
 
