@@ -361,13 +361,7 @@ void Jogador::desenhaJogador(){
 }	
 
 void Jogador::moveX(GLfloat x){
-	// GLfloat cx = this->getX() + (x * this->tempoMultiplicador * this->tempoAjustador);
-    // GLfloat cy = this->getY();
-
-    // if(verificaColisao(cx, cy)){
-    	// this->setX(cx);
-		this->anguloJogador += x;
-	// }
+	this->anguloJogador += x;
 }
 
 void Jogador::moveY(GLfloat y){
@@ -401,7 +395,7 @@ bool Jogador::verificaColisao(GLfloat x, GLfloat y, bool projetil = false){
 	
 	// Verifica colisão da borda
 	if(projetil){ distanciaBorda += this->getRaio(); }
-    if ((distanciaBorda) > this->arena->getRaio()) {
+    if ((distanciaBorda) >= this->arena->getRaio()) {
 		// this->atravessaBorda();
 		// this->x = cos((this->getAnguloJogador() * (M_PI / 180)) + 180) * this->arena->getRaio();
 		// this->y = sin((this->getAnguloJogador() * (M_PI / 180)) + 180) * this->arena->getRaio();
@@ -489,4 +483,8 @@ GLfloat Jogador::distanciaEntrePontos(GLfloat x1, GLfloat y1, GLfloat x2, GLfloa
 void Jogador::calculaPontoCrescimento(Linha* linha){
 	GLfloat pontoCrescimento = this->distanciaEntrePontos(linha->getX1(), linha->getY1(), linha->getX2(), linha->getY2()) / 2.0;
 	this->pontoCrescimento = pontoCrescimento;
+}
+
+void Jogador::calculaAngulo(Linha* linha){
+	this->setAnguloJogador(-90 + atan2(linha->getDistanciaY(), linha->getDistanciaX()) * 180 / M_PI);
 }

@@ -204,8 +204,8 @@ bool lerXML(char* caminhoArquivo){
                     larguraDimensao = r * 2;
                     alturaDimensao = r * 2;
                     id = atoi(circuloElemento->Attribute("id"));
-                    cx = atof(circuloElemento->Attribute("cx")) - 500;
-                    cy = alturaDimensao - atof(circuloElemento->Attribute("cy")) - 100;
+                    cx = atof(circuloElemento->Attribute("cx"));
+                    cy = alturaDimensao - atof(circuloElemento->Attribute("cy"));
                     cores = retornaCor(circuloElemento->Attribute("fill"));
                     arena = new Arena(id, r, cx, cy, cores[0], cores[1], cores[2]);
                     break;
@@ -217,8 +217,8 @@ bool lerXML(char* caminhoArquivo){
                 // Leitura dos demais círculos
                 id = atoi(circuloElemento->Attribute("id"));
                 r = atof(circuloElemento->Attribute("r"));
-                cx = atof(circuloElemento->Attribute("cx")) - 500;
-                cy = alturaDimensao - atof(circuloElemento->Attribute("cy")) - 100;
+                cx = atof(circuloElemento->Attribute("cx"));
+                cy = alturaDimensao - atof(circuloElemento->Attribute("cy"));
                 cores = retornaCor(circuloElemento->Attribute("fill"));
 
                 // Leitura do jogador
@@ -258,10 +258,10 @@ bool lerXML(char* caminhoArquivo){
 
                 // Atribuindo valores
                 GLint id = atoi(linhaElemento->Attribute("id"));
-                GLfloat x1 = atof(linhaElemento->Attribute("x1")) - 500;
-                GLfloat y1 = alturaDimensao - atof(linhaElemento->Attribute("y1")) - 100;
-                GLfloat x2 = atof(linhaElemento->Attribute("x2")) - 500;
-                GLfloat y2 = alturaDimensao - atof(linhaElemento->Attribute("y2")) - 100;
+                GLfloat x1 = atof(linhaElemento->Attribute("x1"));
+                GLfloat y1 = alturaDimensao - atof(linhaElemento->Attribute("y1"));
+                GLfloat x2 = atof(linhaElemento->Attribute("x2"));
+                GLfloat y2 = alturaDimensao - atof(linhaElemento->Attribute("y2"));
                 std::stringstream coresStream(coresLinha);
                 GLfloat cor[3];
                 int i = 0;
@@ -271,6 +271,7 @@ bool lerXML(char* caminhoArquivo){
                 Linha* linha = new Linha(id, x1, y1, x2, y2, cor[0], cor[1], cor[2]);
                 arena->setLinha(linha);
                 arena->getJogador()->calculaPontoCrescimento(linha);
+                arena->getJogador()->calculaAngulo(linha);
             }
             return true;
         }else{

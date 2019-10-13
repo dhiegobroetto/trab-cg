@@ -39,7 +39,8 @@ class Linha
         GLfloat getCorB();
         void setCorB(GLfloat& corB);
         void desenhaLinha();
-
+        GLfloat getDistanciaX();
+        GLfloat getDistanciaY();
 };
 
 #endif /* LINHA_H */

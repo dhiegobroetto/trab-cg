@@ -83,3 +83,12 @@ void Linha::desenhaLinha(){
         glVertex2d(this->getX2(), this->getY2());
     glEnd();
 }
+
+GLfloat Linha::getDistanciaX(){
+	return this->x2 - this->x1;
+}
+
+
+GLfloat Linha::getDistanciaY(){
+	return this->y2 - this->y1;
+}
