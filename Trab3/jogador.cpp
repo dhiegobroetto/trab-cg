@@ -463,7 +463,9 @@ bool Jogador::verificaColisao(GLfloat x, GLfloat y, bool projetil = false){
 	// Verifica colisão da borda
 	if(projetil){ distanciaBorda += this->getRaio(); }
     if ((distanciaBorda) >= this->arena->getRaio()) {
-		this->atravessaBorda();
+		if(!projetil){
+			this->atravessaBorda();
+		}
 		// this->x = cos((this->getAnguloJogador() * (M_PI / 180)) + 180) * this->arena->getRaio();
 		// this->y = sin((this->getAnguloJogador() * (M_PI / 180)) + 180) * this->arena->getRaio();
         return false;
@@ -526,8 +528,8 @@ void Jogador::atravessaBorda(){
 	// x^2 + (m * (x - x0) + y0)^2 = r^2
 
 // Terceira tentativa
-	GLfloat alfa = -90 + atan2(this->getY() - this->arena->getY(), this->getX() - this->arena->getX()) * 180 / M_PI;
-	GLfloat beta = this->anguloJogador;
+	// GLfloat alfa = -90 + atan2(this->getY() - this->arena->getY(), this->getX() - this->arena->getX()) * 180 / M_PI;
+	// GLfloat beta = this->anguloJogador;
 // 	a fórmula que eu cheguei é -2*(alfa-beta+90)
 // alfa é o angulo do jogador em relação ao centro
 // beta é o angulo de rotação do jogador
@@ -536,14 +538,33 @@ void Jogador::atravessaBorda(){
 // mas aí pra achar as coordenadas, vc precisa do angulo em relação ao eixo x.. 
 // pra isso vc faz uma conta do angulo do jogador em relação ao eixo x menos 
 // esse angulo que vc achar
-	GLfloat theta = -2 * (alfa - beta + 90);
-	theta -= this->anguloJogador;
-	GLfloat px = cos(theta) * this->arena->getRaio();
-	GLfloat py = sin(theta) * this->arena->getRaio();
-	std::cout << "px, py: " << px << ", " << py << " x, y: " << x << ", " << y << " alfa, beta, theta: " << alfa << ", " << beta << ", " << theta << std::endl;
-	this->setX(px);
-	this->setY(py);
+	// GLfloat theta = -2 * (alfa - beta + 90);
+	// theta -= this->anguloJogador;
+	// GLfloat px = cos(theta) * this->arena->getRaio();
+	// GLfloat py = sin(theta) * this->arena->getRaio();
+	// std::cout << "px, py: " << px << ", " << py << " x, y: " << x << ", " << y << " alfa, beta, theta: " << alfa << ", " << beta << ", " << theta << std::endl;
+	// this->setX(px);
+	// this->setY(py);
 	// std::cout << "alfa: " << alfa << " beta: " << beta << " anguloSaida: " << anguloSaida << std::endl;
+
+// Quarta tentativa
+	// y - y0 = m * (x - x0)
+	// y = m * (x - x0) + y0
+	// x^2 + y^2 = r^2
+	// GLfloat alfa = -90 + atan2(this->getY() - this->arena->getY(), this->getX() - this->arena->getX()) * 180 / M_PI;
+	// GLfloat beta = this->getAnguloJogador();
+	// GLfloat theta = -2 * (alfa - beta + 90);
+	// theta -= this->anguloJogador;
+	GLfloat m = tan(this->getAnguloJogador());
+	GLfloat a = this->x;
+	GLfloat b = this->y;
+	GLfloat c = this->arena->getX();
+	GLfloat d = this->arena->getY();
+	GLfloat r = this->arena->getRaio();
+	GLfloat novoX = (1/(pow(m, 2) + 1)) * (sqrt(-pow(a, 2) + 2*a*b*m + 2*a*c - 2*a*d*m - pow(b, 2)*pow(m, 2) - 2*b*c*m + 2*b*d*pow(m, 2) - pow(c, 2) + 2*c*d*m - pow(d, 2)*pow(m, 2) + pow(m, 2)*pow(r, 2) + pow(r, 2)) - a*m + b*pow(m, 2) + c*m + d);
+	GLfloat novoY = (1/(pow(m, 2) + 1)) * (m*sqrt(-pow(a, 2) + 2*a*b*m + 2*a*c - 2*a*d*m - pow(b, 2)*pow(m, 2) - 2*b*c*m + 2*b*d*pow(m, 2) - pow(c, 2) + 2*c*d*m - pow(d, 2)*pow(m, 2) + pow(m, 2)*pow(r, 2) + pow(r, 2)) + a - b*m + c*pow(m, 2) + d*m);
+	this->setX(novoX);
+	this->setY(novoY);
 }
 
 void Jogador::decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem){
