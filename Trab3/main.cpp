@@ -57,8 +57,8 @@ void mouseAction(int button, int state, int x, int y){
     if(jogador->isVoando() && jogador->isVivo()){
         if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
             Projetil *p = new Projetil(
-                jogador->getX(), 
-                jogador->getY(), 
+                jogador->getX() + ((jogador->getRaio()) * cos(jogador->getAnguloJogador() * M_PI / 180)),
+                jogador->getY() + ((jogador->getRaio()) * sin(jogador->getAnguloJogador() * M_PI / 180)), 
                 (GLfloat) (jogador->getRaio()/6), 
                 (GLfloat) (jogador->getRaio()/6), 
                 (GLfloat) 0.0, 
