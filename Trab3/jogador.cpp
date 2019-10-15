@@ -487,82 +487,12 @@ bool Jogador::verificaColisao(GLfloat x, GLfloat y, bool projetil = false){
 }
 
 void Jogador::atravessaBorda(){
-	// y - y0 = m * (x - x0)
-	// y = m * (x - x0) + y0
-	// x^2 + y^2 = r^2
-
-// Primeira tentativa
-	// GLfloat m = tan(this->getAnguloJogador());
-	// GLfloat x0 = this->x;
-	// GLfloat y0 = this->y;
-	// GLfloat r = this->arena->getRaio();
-	// GLfloat novoX = (-(2 * m * (y0 - m * x0)) + sqrt(pow((2 * m * (y0 - m * x0)), 2) - 4 * (pow(m, 2) + 1) * (pow((y0 - m * x0), 2) - pow(r, 2)))) / (2 * (pow(m, 2) + 1));
-	// if(abs(novoX - this->x) <= 0.2){
-	// 	GLfloat novoX = (-(2 * m * (y0 - m * x0)) - sqrt(pow((2 * m * (y0 - m * x0)), 2) - 4 * (pow(m, 2) + 1) * (pow((y0 - m * x0), 2) - pow(r, 2)))) / (2 * (pow(m, 2) + 1));
-	// }
-	// GLfloat novoY = sqrt(pow(r, 2) - pow(novoX, 2));
-	// this->setX(novoX);
-	// this->setY(novoY);
-
-
-// Segunda tentativa
-	// y - y0 = m * (x - x0)
-	// y = m * (x - x0) + y0
-	// GLfloat cx = (cos((this->anguloJogador * M_PI) / 180.0)) * this->x;
-    // GLfloat cy = (sin((this->anguloJogador * M_PI) / 180.0)) * this->y;
-	// GLfloat x0 = this->x;
-	// GLfloat y0 = this->y;
-	// GLfloat r = this->raio;
-	// GLfloat m = (this->y - cy) / (this->x - cx);
-	// GLfloat novoX1 = r + (m * x0) + y0 / (m + 1);
-	// GLfloat novoY1 = sqrt(pow(r, 2) - pow(novoX1, 2));
-	// GLfloat novoX2 = (r + (m * x0) + y0 / (m + 1)) * -1;
-	// GLfloat novoY2 = sqrt(pow(r, 2) - pow(novoX2, 2));
-	// if(distanciaEntrePontos(this->x, this->y, novoX1, novoY1) > distanciaEntrePontos(this->x, this->y, novoX2, novoY2)){
-	// 	this->setX(novoX1);
-	// 	this->setY(novoY1);
-	// }else{
-	// 	this->setX(novoX2);
-	// 	this->setY(novoY2);
-	// }
-	// x^2 + (m * (x - x0) + y0)^2 = r^2
-
-// Terceira tentativa
-	// GLfloat alfa = -90 + atan2(this->getY() - this->arena->getY(), this->getX() - this->arena->getX()) * 180 / M_PI;
-	// GLfloat beta = this->anguloJogador;
-// 	a fórmula que eu cheguei é -2*(alfa-beta+90)
-// alfa é o angulo do jogador em relação ao centro
-// beta é o angulo de rotação do jogador
-// isso vai te dar o angulo da posição onde ele vai apareceer
-// ai a partir disso é só vc calcular a posição, com esse angulo e o raio da arena
-// mas aí pra achar as coordenadas, vc precisa do angulo em relação ao eixo x.. 
-// pra isso vc faz uma conta do angulo do jogador em relação ao eixo x menos 
-// esse angulo que vc achar
-	// GLfloat theta = -2 * (alfa - beta + 90);
-	// theta -= this->anguloJogador;
-	// GLfloat px = cos(theta) * this->arena->getRaio();
-	// GLfloat py = sin(theta) * this->arena->getRaio();
-	// std::cout << "px, py: " << px << ", " << py << " x, y: " << x << ", " << y << " alfa, beta, theta: " << alfa << ", " << beta << ", " << theta << std::endl;
-	// this->setX(px);
-	// this->setY(py);
-	// std::cout << "alfa: " << alfa << " beta: " << beta << " anguloSaida: " << anguloSaida << std::endl;
-
-// Quarta tentativa
-	// y - y0 = m * (x - x0)
-	// y = m * (x - x0) + y0
-	// x^2 + y^2 = r^2
-	// GLfloat alfa = -90 + atan2(this->getY() - this->arena->getY(), this->getX() - this->arena->getX()) * 180 / M_PI;
-	// GLfloat beta = this->getAnguloJogador();
-	// GLfloat theta = -2 * (alfa - beta + 90);
-	// theta -= this->anguloJogador;
-	GLfloat m = tan(this->getAnguloJogador());
-	GLfloat a = this->x;
-	GLfloat b = this->y;
-	GLfloat c = this->arena->getX();
-	GLfloat d = this->arena->getY();
-	GLfloat r = this->arena->getRaio();
-	GLfloat novoX = (1/(pow(m, 2) + 1)) * (sqrt(-pow(a, 2) + 2*a*b*m + 2*a*c - 2*a*d*m - pow(b, 2)*pow(m, 2) - 2*b*c*m + 2*b*d*pow(m, 2) - pow(c, 2) + 2*c*d*m - pow(d, 2)*pow(m, 2) + pow(m, 2)*pow(r, 2) + pow(r, 2)) - a*m + b*pow(m, 2) + c*m + d);
-	GLfloat novoY = (1/(pow(m, 2) + 1)) * (m*sqrt(-pow(a, 2) + 2*a*b*m + 2*a*c - 2*a*d*m - pow(b, 2)*pow(m, 2) - 2*b*c*m + 2*b*d*pow(m, 2) - pow(c, 2) + 2*c*d*m - pow(d, 2)*pow(m, 2) + pow(m, 2)*pow(r, 2) + pow(r, 2)) + a - b*m + c*pow(m, 2) + d*m);
+	GLfloat cx = this->getX();
+    GLfloat cy = this->getY();
+    GLfloat alpha = atan2(cy, cx) * 180 / M_PI;
+    GLfloat theta = (-2 * (alpha - this->anguloJogador)) * M_PI / 180;
+    GLfloat novoX = (cx * cos(theta)) - (cy * sin(theta));
+	GLfloat novoY = (cx * sin(theta)) + (cy * cos(theta));
 	this->setX(novoX);
 	this->setY(novoY);
 }
