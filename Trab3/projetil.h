@@ -58,7 +58,7 @@ class Projetil
         GLfloat getAlturaCanhao();
         void desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaProjetil();
-        void voa();
+        void voa(GLfloat tempoAjustador);
 };
 
 #endif /* PROJETIL_H */

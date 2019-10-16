@@ -125,9 +125,9 @@ void Projetil::desenhaProjetil(){
 	glPopMatrix();
 }
 
-void Projetil::voa(){
-	GLfloat cx = this->getX() + (cos(((this->getAnguloFinal()) * (M_PI / 180))) * this->velocidade);
-    GLfloat cy = this->getY() + (sin(((this->getAnguloFinal()) * (M_PI / 180))) * this->velocidade);
+void Projetil::voa(GLfloat tempoAjustador){
+	GLfloat cx = this->getX() + (cos(((this->getAnguloFinal()) * (M_PI / 180))) * this->velocidade * tempoAjustador);
+    GLfloat cy = this->getY() + (sin(((this->getAnguloFinal()) * (M_PI / 180))) * this->velocidade * tempoAjustador);
 	this->setX(cx);
 	this->setY(cy);
 }

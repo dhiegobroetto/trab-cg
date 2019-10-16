@@ -95,9 +95,9 @@ void Bomba::desenhaBomba(){
 	glPopMatrix();
 }
 
-void Bomba::voa(){
-	GLfloat cx = this->getX() + (cos(((this->getAnguloJogadorBase() + 90) * (M_PI / 180))) * this->velocidade);
-    GLfloat cy = this->getY() + (sin(((this->getAnguloJogadorBase() + 90) * (M_PI / 180))) * this->velocidade);
+void Bomba::voa(GLfloat tempoAjustador){
+	GLfloat cx = this->getX() + (cos(((this->getAnguloJogadorBase() + 90) * (M_PI / 180))) * this->velocidade * tempoAjustador);
+    GLfloat cy = this->getY() + (sin(((this->getAnguloJogadorBase() + 90) * (M_PI / 180))) * this->velocidade * tempoAjustador);
 	this->setX(cx);
 	this->setY(cy);
 	this->cai();

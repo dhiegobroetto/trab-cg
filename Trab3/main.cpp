@@ -53,6 +53,12 @@ void keyup(unsigned char key, int x, int y){
   teclasTeclado[key] = 0;
 }
 
+void limpaTeclas(){
+    for(int i = 0; i < 256; i++){
+        teclasTeclado[i] = 0;
+    }
+}
+
 void mouseAction(int button, int state, int x, int y){
     if(jogador->isVoando() && jogador->isVivo()){
         if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
@@ -64,7 +70,7 @@ void mouseAction(int button, int state, int x, int y){
                 (GLfloat) 0.0, 
                 (GLfloat) 0.0, 
                 (GLfloat) 0.0, 
-                jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora() * jogador->getTempoAjustador() * 2.0, 
+                jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora() * jogador->getVelocidadeTiro(), 
                 jogador->getAnguloCanhao(),
                 jogador->getAnguloJogador(),
                 (GLfloat) (jogador->getRaio()/2),
@@ -80,7 +86,7 @@ void mouseAction(int button, int state, int x, int y){
                 (GLfloat) 0.0, 
                 (GLfloat) 0.0, 
                 (GLfloat) 0.0, 
-                jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora() * jogador->getTempoAjustador(),
+                jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora(),
                 jogador->getAnguloJogador()
             );
             jogador->addBomba(b);
@@ -145,8 +151,13 @@ void display(void){
 
 void idle(void){
     Jogador* jogador = arena->getJogador();
+    // Cálculo do tempo de sincronização.
+    tempoNovo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
+    GLfloat t = tempoNovo - tempoAntigo;
+    tempoAntigo = tempoNovo;
+    jogador->setTempoAjustador(t);
     if(jogador->isVivo()){
-        if(teclasTeclado['u'] || teclasTeclado['U'] && !jogador->isLigado()){
+        if((teclasTeclado['u'] || teclasTeclado['U']) && !jogador->isLigado()){
             jogador->setLigado(true);
             tempoAntigoDecolagem = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
         }
@@ -162,24 +173,21 @@ void idle(void){
                 jogador->moveX(-100.0);
             }
             if(teclasTeclado['='] || teclasTeclado['+']){
-                jogador->incrementaVelocidade(1.0);
+                jogador->incrementaVelocidade(3.0);
             }
             if(teclasTeclado['-']){
-                jogador->decrementaVelocidade(1.0);
+                jogador->decrementaVelocidade(3.0);
             }
             jogador->voa(vel);
-            jogador->voaProjeteis();
-            jogador->voaBombas();
+            jogador->voaProjeteis(t);
+            jogador->voaBombas(t);
         }
     }
     if(teclasTeclado['r']){
         jogador->reseta();
+        limpaTeclas();
     }
-    // Cálculo do tempo de sincronização.
-    tempoNovo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
-    GLfloat t = tempoNovo - tempoAntigo;
-    tempoAntigo = tempoNovo;
-    jogador->setTempoAjustador(t);
+    
     glutPostRedisplay();
 }
 
@@ -229,20 +237,22 @@ bool lerXML(char* caminhoArquivo){
             circuloElemento = arenaElement->FirstChildElement("circle");
 
             GLint id;
+            GLfloat arenaX, arenaY, arenaRaio;
             GLfloat cx, r, cy, *cores;
 
             // Leitura de círculos
             while(circuloElemento){
                 // Leitura da arena
                 if(((std::string)circuloElemento->Attribute("fill")).compare("blue") == 0){
-                    r = atof(circuloElemento->Attribute("r"));
-                    larguraDimensao = r * 2;
-                    alturaDimensao = r * 2;
+                    arenaRaio = atof(circuloElemento->Attribute("r"));
+                    larguraDimensao = arenaRaio * 2;
+                    alturaDimensao = arenaRaio * 2;
                     id = atoi(circuloElemento->Attribute("id"));
-                    cx = atof(circuloElemento->Attribute("cx")) - 500;
-                    cy = alturaDimensao - atof(circuloElemento->Attribute("cy")) - 100;
                     cores = retornaCor(circuloElemento->Attribute("fill"));
-                    arena = new Arena(id, r, cx, cy, cores[0], cores[1], cores[2]);
+                    arenaX = arenaY = 0.0;
+                    arena = new Arena(id, arenaRaio, arenaX, arenaY, cores[0], cores[1], cores[2]);
+                    arenaX = atof(circuloElemento->Attribute("cx"));
+                    arenaY = alturaDimensao - atof(circuloElemento->Attribute("cy"));
                     break;
                 }
                 circuloElemento = circuloElemento->NextSiblingElement("circle");
@@ -252,17 +262,19 @@ bool lerXML(char* caminhoArquivo){
                 // Leitura dos demais círculos
                 id = atoi(circuloElemento->Attribute("id"));
                 r = atof(circuloElemento->Attribute("r"));
-                cx = atof(circuloElemento->Attribute("cx")) - 500;
-                cy = alturaDimensao - atof(circuloElemento->Attribute("cy")) - 100;
+                cx = atof(circuloElemento->Attribute("cx")) - arenaX;
+                cy = alturaDimensao - atof(circuloElemento->Attribute("cy")) - arenaY;
                 cores = retornaCor(circuloElemento->Attribute("fill"));
 
                 // Leitura do jogador
                 if(((std::string)circuloElemento->Attribute("fill")).compare("green") == 0){
                     Jogador* jogador = new Jogador(id, r, cx, cy, cores[0], cores[1], cores[2], arena);
                     GLfloat vel = atof(jogadorElemento->Attribute("vel"));
+                    GLfloat velTiro = atof(jogadorElemento->Attribute("velTiro"));
 
                     // Velocidade no final da decolagem
                     jogador->setVelocidadeMultiplicadora(vel);
+                    jogador->setVelocidadeTiro(velTiro);
                     arena->setJogador(jogador);
 
                     // Leitura dos inimigos aéreos
@@ -293,10 +305,10 @@ bool lerXML(char* caminhoArquivo){
 
                 // Atribuindo valores
                 GLint id = atoi(linhaElemento->Attribute("id"));
-                GLfloat x1 = atof(linhaElemento->Attribute("x1")) - 500;
-                GLfloat y1 = alturaDimensao - atof(linhaElemento->Attribute("y1")) - 100;
-                GLfloat x2 = atof(linhaElemento->Attribute("x2")) - 500;
-                GLfloat y2 = alturaDimensao - atof(linhaElemento->Attribute("y2")) - 100;
+                GLfloat x1 = atof(linhaElemento->Attribute("x1")) - arenaX;
+                GLfloat y1 = alturaDimensao - atof(linhaElemento->Attribute("y1")) - arenaY;
+                GLfloat x2 = atof(linhaElemento->Attribute("x2")) - arenaX;
+                GLfloat y2 = alturaDimensao - atof(linhaElemento->Attribute("y2")) - arenaY;
                 std::stringstream coresStream(coresLinha);
                 GLfloat cor[3];
                 int i = 0;

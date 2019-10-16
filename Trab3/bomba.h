@@ -49,7 +49,7 @@ class Bomba
         void setVelocidade(GLfloat velocidade);
         void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaBomba();
-        void voa();
+        void voa(GLfloat tempoAjustador);
         void cai();
         void explodeBomba();
         bool explodiu();

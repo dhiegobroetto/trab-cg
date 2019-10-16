@@ -119,6 +119,9 @@ void Jogador::incrementaVelocidade(GLfloat velocidade){
 
 void Jogador::decrementaVelocidade(GLfloat velocidade){
 	this->velocidade -= velocidade;
+	if(this->velocidade < 0){
+		this->velocidade = 0;
+	}
 }
 
 GLfloat Jogador::getPontoCrescimento(){
@@ -453,15 +456,15 @@ void Jogador::voa(GLfloat velocidade){
 	}
 }
 
-void Jogador::voaProjeteis(){
+void Jogador::voaProjeteis(GLfloat tempoAjustador){
 	for(Projetil *p : this->projeteis){
-		p->voa();
+		p->voa(tempoAjustador);
 	}
 }
 
-void Jogador::voaBombas(){
+void Jogador::voaBombas(GLfloat tempoAjustador){
 	for(Bomba *b : this->bombas){
-		b->voa();
+		b->voa(tempoAjustador);
 	}
 }
 
