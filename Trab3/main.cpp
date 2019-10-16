@@ -43,6 +43,7 @@ GLfloat* retornaCor(std::string fill){
     if(fill.compare("orange") == 0){
         return laranja;
     }
+    return NULL;
 }
 
 void keyPress(unsigned char key, int x, int y){
