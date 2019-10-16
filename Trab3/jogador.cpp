@@ -285,8 +285,8 @@ void Jogador::exibeGameOver(GLfloat x, GLfloat y){
     }
 }
 
-void Jogador::desenhaQuadrado(GLfloat base, GLfloat altura){
-	glColor3f(0.0, 0.0, 0.0);
+void Jogador::desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB){
+	glColor3f(corR, corG, corB);
 	glBegin(GL_POLYGON);
 		glVertex3f(base/2, 0.0, 0.0);
 		glVertex3f(base/2, altura, 0.0);
@@ -300,13 +300,13 @@ void Jogador::desenhaTriangulo(GLfloat tamanho){
 	glBegin(GL_TRIANGLES);
 		glVertex3f(0.0, 0.0, 0.0);
 		glVertex3f(-tamanho, -tamanho/2, 0.0);
-		glVertex3f(-tamanho, tamanho, 0.0);
+		glVertex3f(-tamanho, tamanho/2, 0.0);
 	glEnd();
 	glColor3f(1.0, 1.0, 0.0);
 	glBegin(GL_TRIANGLES);
 		glVertex3f(0.0, 0.0, 0.0);
 		glVertex3f(tamanho, -tamanho/2, 0.0);
-		glVertex3f(tamanho, tamanho, 0.0);
+		glVertex3f(tamanho, tamanho/2, 0.0);
 	glEnd();
 }
 
@@ -329,6 +329,16 @@ void Jogador::desenhaAsa(int asa){
 		}
 }
 
+void Jogador::desenhaAerodinamica(GLfloat tamanho, GLfloat corR, GLfloat corG, GLfloat corB){
+	glColor3f(corR, corG, corB);
+	glBegin(GL_TRIANGLES);
+		glVertex3f(0.0, tamanho, 0.0);
+		glVertex3f(tamanho, 0.0, 0.0);
+		glVertex3f(-tamanho, 0.0, 0.0);
+	glEnd();
+}
+
+
 void Jogador::desenhaHelice(int asa){
 	GLfloat angulo = this->anguloHelice;
 	glPushMatrix();
@@ -338,7 +348,7 @@ void Jogador::desenhaHelice(int asa){
 		}else if (asa == 1){
 			glTranslatef((-(this->raio/4)*3)/2, this->raio/2, 0);
 		}
-		desenhaQuadrado(this->raio/6, this->raio/4);
+		desenhaQuadrado(this->raio/6, this->raio/4, 0.0, 0.0, 0.0);
 		glTranslatef(0.0, this->raio/3, 0.0);
 		glPushMatrix();
 			glRotatef(angulo, 0.0, 1.0, 0.0);
@@ -359,7 +369,23 @@ void Jogador::desenhaHelice(int asa){
 	glPopMatrix();
 }
 
-void Jogador::desenhaElipse(GLfloat cx, GLfloat cy){
+
+void Jogador::desenhaElipseBorda(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB){
+	glColor3f(corR, corG, corB);
+	float x,y,z;
+	int t;
+	glPointSize(1.0);
+	glBegin(GL_POINTS);
+        for(t = 0; t <= 360; t +=10){
+			x = cx * sin(t);
+			y = cy * cos(t);
+			z = 0;
+			glVertex3f(x,y,z);
+       }
+	glEnd();
+}
+
+void Jogador::desenhaElipse(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB){
 	glColor3f(corR, corG, corB);
 	float x,y,z;
 	int t;
@@ -375,7 +401,7 @@ void Jogador::desenhaElipse(GLfloat cx, GLfloat cy){
 
 void Jogador::desenhaBase(){
 	glPushMatrix();
-		desenhaElipse((this->getRaio()/3), this->getRaio());
+		desenhaElipse((this->getRaio()/3), this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB());
 	glPopMatrix();
 }
 
@@ -395,7 +421,7 @@ void Jogador::desenhaCanhao(){
 	glPushMatrix();
 		glTranslatef(0.0, this->raio - 1, 0);
 		glRotatef(this->anguloCanhao, 0.0, 0.0, 1.0);
-		desenhaQuadrado(this->raio/4, this->raio/2 + 1);
+		desenhaQuadrado(this->raio/4, this->raio/2 + 1, 0.0, 0.0, 0.0);
 	glPopMatrix();
 }
 
@@ -426,10 +452,23 @@ void Jogador::desenhaJogador(){
 		desenhaAsas(0);
 		desenhaAsas(1);
 		desenhaCanhao();
+		glPushMatrix();
+			glTranslatef(0.0, -(this->raio) , 0.0);
+			glTranslatef(0.0, this->raio/16, 0.0);
+			desenhaAerodinamica(this->raio/2, 0.0, 0.0, 0.0);
+		glPopMatrix();
 		desenhaBase();
+		glPushMatrix();
+			glTranslatef(0.0, -this->raio, 0.0);
+			desenhaQuadrado(this->raio/8, this->raio/3, 0.0, 0.0, 0.0);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(0.0, this->raio/2, 0.0);
+			desenhaElipse(this->raio/4, this->raio/8, 0.0, 0.0, 0.0);
+			desenhaElipseBorda(this->raio/4, this->raio/8, 1.0, 1.0, 1.0);
+		glPopMatrix();
 	glPopMatrix();
 	desenhaProjeteis();
-	exibeTexto(this->arena->getX() - this->arena->getRaio(), this->arena->getY() - this->arena->getRaio());
 }	
 
 void Jogador::moveX(GLfloat x){
@@ -525,7 +564,7 @@ void Jogador::decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem){
 		this->setY(y1);
 		this->distanciaPontos = this->distanciaEntrePontos(this->x, this->y, linha->getX2(), linha->getY2());
 		GLfloat aceleracao = (this->distanciaPontos/tempoFinal);
-		this->anguloHelice = this->anguloHelice + aceleracao * tempoFinal;
+		this->anguloHelice = this->anguloHelice + aceleracao * tempoDecolagem;
 
 		// Subindo voo (dobrando o raio)
 		if(this->distanciaPontos <= this->pontoCrescimento and this->ligado and !this->voando){
@@ -565,7 +604,7 @@ void Jogador::calculaAngulo(Linha* linha){
 	this->setAnguloJogador(-90 + atan2(linha->getDistanciaY(), linha->getDistanciaX()) * 180 / M_PI);
 }
 
- void Jogador::reseta(){
+void Jogador::reseta(){
 	this->x = this->xInicial;
 	this->y = this->yInicial;
 	this->ligado = false;

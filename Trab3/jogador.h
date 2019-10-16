@@ -111,12 +111,14 @@ class Jogador
         GLfloat getAnguloJogador();
         void setAnguloJogador(GLfloat anguloJogador);
         void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
-        void desenhaQuadrado(GLfloat base, GLfloat altura);
+        void desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaTriangulo(GLfloat tamanho);
-        void desenhaElipse(GLfloat cx, GLfloat cy);
+        void desenhaElipse(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB);
+        void desenhaElipseBorda(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaBase();
         void desenhaAsas(int asa);
         void desenhaAsa(int asa);
+        void desenhaAerodinamica(GLfloat tamanho, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaHelice(int asa);
         void desenhaCanhao();
         void desenhaProjeteis();
