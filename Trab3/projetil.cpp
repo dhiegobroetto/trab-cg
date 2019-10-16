@@ -120,10 +120,7 @@ void Projetil::desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLflo
 void Projetil::desenhaProjetil(){
 	glPushMatrix();
 		glTranslatef(this->x, this->y, 0);
-		// glRotatef(this->getAnguloJogadorBase(), 0.0, 0.0, 1.0);
-		// glTranslatef(0.0, this->baseCanhao, 0);
 		glRotatef(this->anguloProjetil, 0.0, 0.0, 1.0);
-		// glTranslatef(0.0, this->alturaCanhao, 0);
 		desenhaQuadrado(this->base, this->altura, this->corR, this->corG, this->corB);
 	glPopMatrix();
 }

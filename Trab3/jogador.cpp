@@ -89,6 +89,14 @@ void Jogador::setVelocidadeMultiplicadora(GLfloat& velocidadeMultiplicadora){
 	this->velocidadeMultiplicadora = velocidadeMultiplicadora;
 }
 
+GLfloat Jogador::getVelocidadeTiro(){
+	return this->velocidadeTiro;
+}
+
+void Jogador::setVelocidadeTiro(GLfloat& velocidadeTiro){
+	this->velocidadeTiro = velocidadeTiro;
+}
+
 GLfloat Jogador::getTempoAjustador(){
 	return this->tempoAjustador;
 }
@@ -390,7 +398,7 @@ void Jogador::desenhaCanhao(){
 
 void Jogador::desenhaProjeteis(){
 	for(int i = 0; i < projeteis.size(); i++){
-		if(this->verificaColisao(projeteis[i]->getX(), projeteis[i]->getY(), true)){
+		if(this->verificaColisao(projeteis[i]->getX(), projeteis[i]->getY(), true, 0.0)){
 			projeteis[i]->desenhaProjetil();
 		}else{
 			projeteis.erase(projeteis.begin() + i);
@@ -400,7 +408,7 @@ void Jogador::desenhaProjeteis(){
 
 void Jogador::desenhaBombas(){
 	for(int i = 0; i < bombas.size(); i++){
-		if(this->verificaColisao(bombas[i]->getX(), bombas[i]->getY(), true) && !bombas[i]->explodiu()){
+		if(this->verificaColisao(bombas[i]->getX(), bombas[i]->getY(), true, bombas[i]->getRaio()) && !bombas[i]->explodiu()){
 			bombas[i]->desenhaBomba();
 		}else{
 			bombas.erase(bombas.begin() + i);
@@ -429,7 +437,7 @@ void Jogador::moveY(GLfloat y){
 	GLfloat cx = this->getX();
     GLfloat cy = this->getY() + (y * this->velocidadeMultiplicadora * this->tempoAjustador);
 
-    if(verificaColisao(cx, cy, false)){
+    if(verificaColisao(cx, cy, false, 0.0)){
     	this->setY(cy);
 		this->anguloHelice += this->velocidade;
 	}
@@ -438,7 +446,7 @@ void Jogador::moveY(GLfloat y){
 void Jogador::voa(GLfloat velocidade){
 	GLfloat cx = this->getX() + (cos(((this->getAnguloJogador()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
     GLfloat cy = this->getY() + (sin(((this->getAnguloJogador()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
-	if(verificaColisao(cx, cy, false)){
+	if(verificaColisao(cx, cy, false, 0.0)){
     	this->setX(cx);
 		this->setY(cy);
 		this->anguloHelice += this->velocidade;
@@ -457,17 +465,17 @@ void Jogador::voaBombas(){
 	}
 }
 
-bool Jogador::verificaColisao(GLfloat x, GLfloat y, bool projetil = false){
+bool Jogador::verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raioBomba){
 	GLfloat distanciaBorda = this->distanciaEntrePontos(this->arena->getX(), this->arena->getY(), x, y);
 	
 	// Verifica colisão da borda
-	if(projetil){ distanciaBorda += this->getRaio(); }
+	if(raioBomba != 0){
+		distanciaBorda += raioBomba;
+	}
     if ((distanciaBorda) >= this->arena->getRaio()) {
 		if(!projetil){
 			this->atravessaBorda();
 		}
-		// this->x = cos((this->getAnguloJogador() * (M_PI / 180)) + 180) * this->arena->getRaio();
-		// this->y = sin((this->getAnguloJogador() * (M_PI / 180)) + 180) * this->arena->getRaio();
         return false;
     }
 

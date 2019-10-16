@@ -34,6 +34,7 @@ class Jogador
         GLfloat velocidade;
         GLfloat velocidadeInicial;
         GLfloat velocidadeMultiplicadora;
+        GLfloat velocidadeTiro;
         GLfloat tempoAjustador;
         GLfloat pontoCrescimento;
         GLfloat distanciaPontos;
@@ -73,6 +74,8 @@ class Jogador
         void setCorB(GLfloat& corB);
         GLfloat getVelocidadeMultiplicadora();
         void setVelocidadeMultiplicadora(GLfloat& velocidadeMultiplicadora);
+        GLfloat getVelocidadeTiro();
+        void setVelocidadeTiro(GLfloat& velocidadeTiro);
         GLfloat getTempoAjustador();
         void setTempoAjustador(GLfloat& tempoAjustador);
         GLfloat getVelocidade();
@@ -124,7 +127,7 @@ class Jogador
         void voa(GLfloat velocidade);
         void voaProjeteis();
         void voaBombas();
-        bool verificaColisao(GLfloat x, GLfloat y, bool projetil);
+        bool verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raioBomba);
         void atravessaBorda();
         void decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem);
         GLfloat distanciaEntrePontos(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
