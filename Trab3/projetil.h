@@ -17,8 +17,7 @@ class Projetil
     private:
         GLfloat x;
         GLfloat y;
-        GLfloat base;
-        GLfloat altura;
+        GLfloat raio;
         GLfloat corR;
         GLfloat corG;
         GLfloat corB;
@@ -30,17 +29,15 @@ class Projetil
 
     public:
     	// ------------ Construtor ------------ //
-        Projetil(GLfloat x, GLfloat y, GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB, GLfloat velocidade, GLfloat anguloProjetil, GLfloat anguloJogadorBase, GLfloat baseCanhao, GLfloat alturaCanhao);
+        Projetil(GLfloat x, GLfloat y, GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB, GLfloat velocidade, GLfloat anguloProjetil, GLfloat anguloJogadorBase, GLfloat baseCanhao, GLfloat alturaCanhao);
 
         // ------------ Getters e Setters ------------ //
         GLfloat getX();
         void setX(GLfloat x);
         GLfloat getY();
         void setY(GLfloat y);
-        GLfloat getBase();
-        void setBase(GLfloat base);
-        GLfloat getAltura();
-        void setAltura(GLfloat altura);
+        GLfloat getRaio();
+        void setRaio(GLfloat raio);
         GLfloat getCorR();
         void setCorR(GLfloat corR);
         GLfloat getCorG();
@@ -56,7 +53,7 @@ class Projetil
         GLfloat getAnguloFinal();
         GLfloat getBaseCanhao();
         GLfloat getAlturaCanhao();
-        void desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB);
+        void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaProjetil();
         void voa(GLfloat tempoAjustador);
 };

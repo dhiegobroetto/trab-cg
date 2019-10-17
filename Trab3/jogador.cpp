@@ -427,7 +427,7 @@ void Jogador::desenhaCanhao(){
 
 void Jogador::desenhaProjeteis(){
 	for(int i = 0; i < projeteis.size(); i++){
-		if(this->verificaColisao(projeteis[i]->getX(), projeteis[i]->getY(), true, 0.0)){
+		if(this->verificaColisao(projeteis[i]->getX(), projeteis[i]->getY(), true, projeteis[i]->getRaio())){
 			projeteis[i]->desenhaProjetil();
 		}else{
 			projeteis.erase(projeteis.begin() + i);
@@ -507,12 +507,12 @@ void Jogador::voaBombas(GLfloat tempoAjustador){
 	}
 }
 
-bool Jogador::verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raioBomba){
+bool Jogador::verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raio){
 	GLfloat distanciaBorda = this->distanciaEntrePontos(this->arena->getX(), this->arena->getY(), x, y);
 	
 	// Verifica colisão da borda
-	if(raioBomba != 0){
-		distanciaBorda += raioBomba;
+	if(raio != 0){
+		distanciaBorda += raio;
 	}
     if ((distanciaBorda) >= this->arena->getRaio()) {
 		if(!projetil){

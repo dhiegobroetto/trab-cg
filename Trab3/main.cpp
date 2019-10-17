@@ -66,8 +66,7 @@ void mouseAction(int button, int state, int x, int y){
             Projetil *p = new Projetil(
                 jogador->getX() + ((jogador->getRaio()) * cos(jogador->getAnguloJogador() * M_PI / 180)) + (jogador->getRaio()/2) * cos(jogador->getAnguloJogador() * M_PI / 180 + jogador->getAnguloCanhao() * M_PI / 180),
                 jogador->getY() + ((jogador->getRaio()) * sin(jogador->getAnguloJogador() * M_PI / 180)) + (jogador->getRaio()/2) * sin(jogador->getAnguloJogador() * M_PI / 180 + jogador->getAnguloCanhao() * M_PI / 180),
-                (GLfloat) (jogador->getRaio()/6), 
-                (GLfloat) (jogador->getRaio()/6), 
+                (GLfloat) (jogador->getRaio()/8), 
                 (GLfloat) 0.0, 
                 (GLfloat) 0.0, 
                 (GLfloat) 0.0, 

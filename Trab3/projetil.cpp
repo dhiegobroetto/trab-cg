@@ -1,10 +1,9 @@
 #include "projetil.h"
 
-Projetil::Projetil(GLfloat x, GLfloat y, GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB, GLfloat velocidade, GLfloat anguloProjetil, GLfloat anguloJogadorBase, GLfloat alturaCanhao, GLfloat baseCanhao){
+Projetil::Projetil(GLfloat x, GLfloat y, GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB, GLfloat velocidade, GLfloat anguloProjetil, GLfloat anguloJogadorBase, GLfloat alturaCanhao, GLfloat baseCanhao){
     this->x = x;
     this->y = y;
-    this->base = base;
-    this->altura = altura;
+    this->raio = raio;
     this->corR = corR;
     this->corG = corG;
     this->corB = corB;
@@ -23,20 +22,12 @@ void Projetil::setX(GLfloat x){
 	this->x = x;
 }
 
-GLfloat Projetil::getBase(){
-	return this->base;
+GLfloat Projetil::getRaio(){
+	return this->raio;
 }
 
-void Projetil::setBase(GLfloat base){
-	this->base = base;
-}
-
-GLfloat Projetil::getAltura(){
-	return this->altura;
-}
-
-void Projetil::setAltura(GLfloat altura){
-	this->altura = altura;
+void Projetil::setRaio(GLfloat raio){
+	this->raio = raio;
 }
 
 GLfloat Projetil::getY(){
@@ -106,22 +97,24 @@ GLfloat Projetil::getAlturaCanhao(){
 	return this->alturaCanhao;
 }
 
-void Projetil::desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB){
+void Projetil::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
     float theta, px, py;
     glColor3f(corR, corG, corB);
 	glBegin(GL_POLYGON);
-        glVertex3f(base/2, -altura/2, 0.0);
-        glVertex3f(base/2, altura/2, 0.0);
-        glVertex3f(-base/2, altura/2, 0.0);
-        glVertex3f(-base/2, -altura/2, 0.0);
-    glEnd();
+		for (int i = 0; i < 360; i++) {
+			theta = (i * M_PI) / 180.0;
+			px = cos(theta) * raio;
+			py = sin(theta) * raio;
+			glVertex2f(px, py);
+		}
+	glEnd();
 }
 
 void Projetil::desenhaProjetil(){
 	glPushMatrix();
 		glTranslatef(this->x, this->y, 0);
 		glRotatef(this->anguloProjetil, 0.0, 0.0, 1.0);
-		desenhaQuadrado(this->base, this->altura, this->corR, this->corG, this->corB);
+		desenhaCirculo(this->raio, this->corR, this->corG, this->corB);
 	glPopMatrix();
 }
 
