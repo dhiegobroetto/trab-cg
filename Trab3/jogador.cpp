@@ -350,22 +350,21 @@ void Jogador::desenhaHelice(int asa){
 		}
 		desenhaQuadrado(this->raio/6, this->raio/4, 0.0, 0.0, 0.0);
 		glTranslatef(0.0, this->raio/3, 0.0);
-		glPushMatrix();
 			glRotatef(angulo, 0.0, 1.0, 0.0);
 			desenhaTriangulo(this->raio/4);
-		glPopMatrix();
-		glPushMatrix();
+			glRotatef(-angulo, 0.0, 1.0, 0.0);
+		
 			glRotatef(angulo + 90, 0.0, 1.0, 0.0);
 			desenhaTriangulo(this->raio/4);
-		glPopMatrix();
-		glPushMatrix();
+			glRotatef(-(angulo + 90), 0.0, 1.0, 0.0);
+		
 			glRotatef(angulo + 180, 0.0, 1.0, 0.0);
 			desenhaTriangulo(this->raio/4);
-		glPopMatrix();
-		glPushMatrix();
+			glRotatef(-(angulo + 180), 0.0, 1.0, 0.0);
+		
 			glRotatef(angulo + 270, 0.0, 1.0, 0.0);
 			desenhaTriangulo(this->raio/4);
-		glPopMatrix();
+			glRotatef(-(angulo + 270), 0.0, 1.0, 0.0);
 	glPopMatrix();
 }
 
@@ -407,10 +406,11 @@ void Jogador::desenhaBase(){
 
 void Jogador::desenhaAsas(int asa){
 	glPushMatrix();
-	if(asa == 0)
-		glTranslatef(-this->raio/2, -this->raio/3, 0);
-	else if(asa == 1)
-		glTranslatef(this->raio, -this->raio/3, 0);
+		if(asa == 0){
+			glTranslatef(-this->raio/2, -this->raio/3, 0);
+		}else if(asa == 1){
+			glTranslatef(this->raio, -this->raio/3, 0);
+		}
 		desenhaAsa(asa);
 		desenhaHelice(asa);
 	glPopMatrix();
