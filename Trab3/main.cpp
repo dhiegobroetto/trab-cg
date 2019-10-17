@@ -73,7 +73,7 @@ void mouseAction(int button, int state, int x, int y){
                 jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora() * jogador->getVelocidadeTiro(), 
                 jogador->getAnguloCanhao(),
                 jogador->getAnguloJogador(),
-                (GLfloat) (jogador->getRaio()/2),
+                (GLfloat) (jogador->getRaio() / 2),
                 (GLfloat) (jogador->getRaio() - 1)
             );
             jogador->addProjetil(p);

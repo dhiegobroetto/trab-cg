@@ -376,7 +376,7 @@ void Jogador::desenhaElipseBorda(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat c
 	int t;
 	glPointSize(1.0);
 	glBegin(GL_POINTS);
-        for(t = 0; t <= 360; t +=10){
+        for(t = 0; t <= 360; t +=20){
 			x = cx * sin(t);
 			y = cy * cos(t);
 			z = 0;
