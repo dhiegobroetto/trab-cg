@@ -349,7 +349,7 @@ void Jogador::desenhaHelice(int asa){
 			glTranslatef((-(this->raio/4)*3)/2, this->raio/2, 0);
 		}
 		desenhaQuadrado(this->raio/6, this->raio/4, 0.0, 0.0, 0.0);
-		glTranslatef(0.0, this->raio/3, 0.0);
+		glTranslatef(0.0, this->raio/4, 0.0);
 			glRotatef(angulo, 0.0, 1.0, 0.0);
 			desenhaTriangulo(this->raio/4);
 			glRotatef(-angulo, 0.0, 1.0, 0.0);
