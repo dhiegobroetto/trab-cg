@@ -33,6 +33,7 @@ class Inimigo
         GLfloat velocidadeInicial;
         GLfloat velocidadeMultiplicadora;
         GLfloat velocidadeTiro;
+        GLfloat frequenciaTiro;
         GLfloat tempoAjustador;
         GLfloat pontoCrescimento;
         GLfloat distanciaPontos;
@@ -52,7 +53,7 @@ class Inimigo
 
     public:
     	// ------------ Construtor ------------ //
-        Inimigo(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR, GLfloat& corG, GLfloat& corB, Arena* arena);
+        Inimigo(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR, GLfloat& corG, GLfloat& corB, Arena* arena, GLfloat velocidade, GLfloat velocidadeTiro, GLfloat frequenciaTiro);
 
         // ------------ Getters e Setters ------------ //
         GLint getId();
@@ -73,6 +74,8 @@ class Inimigo
         void setVelocidadeMultiplicadora(GLfloat& velocidadeMultiplicadora);
         GLfloat getVelocidadeTiro();
         void setVelocidadeTiro(GLfloat& velocidadeTiro);
+        GLfloat getFrequenciaTiro();
+        void setFrequenciaTiro(GLfloat& FrequenciaTiro);
         GLfloat getTempoAjustador();
         void setTempoAjustador(GLfloat& tempoAjustador);
         GLfloat getVelocidade();

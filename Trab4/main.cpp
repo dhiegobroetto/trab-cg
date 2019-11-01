@@ -149,6 +149,12 @@ void display(void){
     glutSwapBuffers();
 }
 
+// void inicializaInimigosAereos(GLfloat vel){
+//     for(list<Inimigo*>::iterator c = inimigosAereos.begin(); c != inimigosAereos.end(); ++c){
+//         (*c)->setVelocidade(vel);
+//     }
+// }
+
 void idle(void){
     Jogador* jogador = arena->getJogador();
     // Cálculo do tempo de sincronização.
@@ -166,6 +172,7 @@ void idle(void){
             jogador->decola(arena->getLinha(), tempoAntigoDecolagem, tempoDecolagem);
         }
         if(jogador->isLigado() && jogador->isVoando()){
+            // inicializaInimigosAereos(vel);
             GLfloat vel = jogador->getVelocidade();
             if(teclasTeclado['a'] || teclasTeclado['A']){
                 jogador->moveX(100.0);
@@ -216,6 +223,7 @@ bool lerXML(char* caminhoArquivo){
         TiXmlElement *tipo = NULL;
         TiXmlElement *caminho = NULL;
         TiXmlElement *jogadorElemento = NULL;
+        TiXmlElement *inimigoElemento = NULL;
 
         // Atribui valores
         arquivoDaArena = aplicacao->FirstChildElement("arquivoDaArena");
@@ -223,6 +231,7 @@ bool lerXML(char* caminhoArquivo){
         tipo = arquivoDaArena->FirstChildElement("tipo");
         caminho = arquivoDaArena->FirstChildElement("caminho");
         jogadorElemento = aplicacao->FirstChildElement("jogador");
+        inimigoElemento = aplicacao->FirstChildElement("inimigo");
 
         // Abre arquivo SVG
         std::string arquivoSVG = (std::string)caminho->GetText() + '/' + (std::string)nome->GetText() + '.' + (std::string)tipo->GetText();
@@ -279,7 +288,10 @@ bool lerXML(char* caminhoArquivo){
 
                     // Leitura dos inimigos aéreos
                 }else if(((std::string)circuloElemento->Attribute("fill")).compare("red") == 0){
-                    arena->criaInimigosAereos(id, r, cx, cy, cores[0], cores[1], cores[2], arena);
+                    GLfloat vel = atof(inimigoElemento->Attribute("vel"));
+                    GLfloat velTiro = atof(inimigoElemento->Attribute("velTiro"));
+                    GLfloat freqTiro = atof(jogadorElemento->Attribute("freqTiro"));
+                    arena->criaInimigosAereos(id, r, cx, cy, cores[0], cores[1], cores[2], arena, vel, velTiro, freqTiro);
 
                     // Leitura dos inimigos terrestres
                 }else if(((std::string)circuloElemento->Attribute("fill")).compare("orange") == 0){

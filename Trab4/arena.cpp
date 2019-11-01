@@ -106,9 +106,9 @@ void Arena::desenhaArena(){
 	glPopMatrix();
 }
 
-void Arena::criaInimigosAereos(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b, Arena* arena) {
+void Arena::criaInimigosAereos(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b, Arena* arena, GLfloat vel, GLfloat velTiro, GLfloat freqTiro) {
     Circulo* circulo = new Circulo(id, raioCirculo, x, y, r, g, b);
-	Inimigo* inimigo = new Inimigo(id, raioCirculo, x, y, r, g, b, arena);
+	Inimigo* inimigo = new Inimigo(id, raioCirculo, x, y, r, g, b, arena, vel, velTiro, freqTiro);
     this->inimigosAereos.push_back(inimigo);
 }
 

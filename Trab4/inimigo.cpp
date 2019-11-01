@@ -1,6 +1,6 @@
 #include "inimigo.h"
 
-Inimigo::Inimigo(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR, GLfloat& corG, GLfloat& corB, Arena* arena){
+Inimigo::Inimigo(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR, GLfloat& corG, GLfloat& corB, Arena* arena, GLfloat velocidade, GLfloat velocidadeTiro, GLfloat frequenciaTiro){
 	this->id = id;
     this->raio = raio;
     this->x = x;
@@ -21,6 +21,9 @@ Inimigo::Inimigo(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
 	this->anguloHelice = 0.0;
 	this->mouseX = 0.0;
 	this->vivo = true;
+	this->velocidade = velocidade;
+	this->velocidadeTiro = velocidadeTiro;
+	this->frequenciaTiro = frequenciaTiro;
 }
 // static char str[2000];
 // void * fonte = GLUT_BITMAP_TIMES_ROMAN_24;
@@ -95,6 +98,14 @@ GLfloat Inimigo::getVelocidadeTiro(){
 
 void Inimigo::setVelocidadeTiro(GLfloat& velocidadeTiro){
 	this->velocidadeTiro = velocidadeTiro;
+}
+
+GLfloat Inimigo::getFrequenciaTiro(){
+	return this->frequenciaTiro;
+}
+
+void Inimigo::setFrequenciaTiro(GLfloat& frequenciaTiro){
+	this->frequenciaTiro = frequenciaTiro;
 }
 
 GLfloat Inimigo::getTempoAjustador(){
