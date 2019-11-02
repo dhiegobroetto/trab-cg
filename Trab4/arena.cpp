@@ -86,6 +86,10 @@ list<Inimigo*> Arena::getInimigosAereos(){
 	return this->inimigosAereos;
 }
 
+void Arena::mataInimigo(Inimigo* inimigo){
+	this->inimigosAereos.remove(inimigo);
+}
+
 list<Circulo*> Arena::getInimigosTerrestres(){
 	return this->inimigosTerrestres;
 }
@@ -115,4 +119,10 @@ void Arena::criaInimigosAereos(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y
 void Arena::criaInimigosTerrestres(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b) {
     Circulo* circulo = new Circulo(id, raioCirculo, x, y, r, g, b);
     this->inimigosTerrestres.push_back(circulo);
+}
+
+void Arena::voaInimigosAereos(GLfloat vel){
+	for(Inimigo* i : this->inimigosAereos){
+		i->voa(vel);
+	}
 }

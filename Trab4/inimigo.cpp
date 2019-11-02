@@ -21,7 +21,7 @@ Inimigo::Inimigo(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
 	this->anguloHelice = 0.0;
 	this->mouseX = 0.0;
 	this->vivo = true;
-	this->velocidade = velocidade;
+	this->velocidadeMultiplicadora = velocidade;
 	this->velocidadeTiro = velocidadeTiro;
 	this->frequenciaTiro = frequenciaTiro;
 }
@@ -476,17 +476,18 @@ void Inimigo::moveY(GLfloat y){
 	GLfloat cx = this->getX();
     GLfloat cy = this->getY() + (y * this->velocidadeMultiplicadora * this->tempoAjustador);
 
-    if(verificaColisao(cx, cy, false, 0.0)){
-    	this->setY(cy);
-		this->anguloHelice += this->velocidade;
-	}
+    // if(verificaColisao(cx, cy, false, 0.0)){
+	this->setY(cy);
+	this->anguloHelice += this->velocidade;
+	// }
 }
 
 void Inimigo::voa(GLfloat velocidade){
 	GLfloat cx = this->getX() + (cos(((this->getAnguloInimigo()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
     GLfloat cy = this->getY() + (sin(((this->getAnguloInimigo()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
+
 	if(verificaColisao(cx, cy, false, 0.0)){
-    	this->setX(cx);
+		this->setX(cx);
 		this->setY(cy);
 		this->anguloHelice += this->velocidade;
 	}
@@ -512,18 +513,6 @@ bool Inimigo::verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raio)
         return false;
     }
 
-	// Verifica colisão com inimigos aéreos
-	// if(!projetil) { 
-	// 	for (auto inimigo : this->arena->getInimigosAereos()) {
-	// 		GLfloat distanciaInimigo = this->distanciaEntrePontos(x, y, inimigo->getX(), inimigo->getY());
-	// 		GLfloat raioInimigo = inimigo->getRaio();
-	// 		raioInimigo += this->getRaio(); 
-	// 		if ((distanciaInimigo < raioInimigo) && this->isVoando()) {
-	// 			this->morre();
-	// 			return false;
-	// 		}
-	// 	}
-	// }
 	return true;
 }
 

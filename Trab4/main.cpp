@@ -149,11 +149,19 @@ void display(void){
     glutSwapBuffers();
 }
 
-// void inicializaInimigosAereos(GLfloat vel){
-//     for(list<Inimigo*>::iterator c = inimigosAereos.begin(); c != inimigosAereos.end(); ++c){
-//         (*c)->setVelocidade(vel);
-//     }
-// }
+void inicializaInimigosAereos(GLfloat vel){
+    for(Inimigo* c : arena->getInimigosAereos()){
+        c->setVelocidade(vel);
+        c->setVoando(true);
+        c->setLigado(true);
+    }
+}
+
+void atualizaTempoInimigosAereos(GLfloat tempo){
+    for(Inimigo* c : arena->getInimigosAereos()){
+        c->setTempoAjustador(tempo);
+    }
+}
 
 void idle(void){
     Jogador* jogador = arena->getJogador();
@@ -163,6 +171,7 @@ void idle(void){
     tempoAntigo = tempoNovo;
     jogador->setTempoAjustador(t);
     if(jogador->isVivo()){
+        atualizaTempoInimigosAereos(t);
         if((teclasTeclado['u'] || teclasTeclado['U']) && !jogador->isLigado()){
             jogador->setLigado(true);
             tempoAntigoDecolagem = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
@@ -172,8 +181,10 @@ void idle(void){
             jogador->decola(arena->getLinha(), tempoAntigoDecolagem, tempoDecolagem);
         }
         if(jogador->isLigado() && jogador->isVoando()){
-            // inicializaInimigosAereos(vel);
             GLfloat vel = jogador->getVelocidade();
+            if(!arena->getInimigosAereos().front()->isVoando()){
+                inicializaInimigosAereos(vel);
+            }
             if(teclasTeclado['a'] || teclasTeclado['A']){
                 jogador->moveX(100.0);
             }else if(teclasTeclado['d'] || teclasTeclado['D']){
@@ -188,6 +199,8 @@ void idle(void){
             jogador->voa(vel);
             jogador->voaProjeteis(t);
             jogador->voaBombas(t);
+            arena->voaInimigosAereos(vel);
+
         }
     }
     if(teclasTeclado['r']){
@@ -290,7 +303,7 @@ bool lerXML(char* caminhoArquivo){
                 }else if(((std::string)circuloElemento->Attribute("fill")).compare("red") == 0){
                     GLfloat vel = atof(inimigoElemento->Attribute("vel"));
                     GLfloat velTiro = atof(inimigoElemento->Attribute("velTiro"));
-                    GLfloat freqTiro = atof(jogadorElemento->Attribute("freqTiro"));
+                    GLfloat freqTiro = atof(inimigoElemento->Attribute("freqTiro"));
                     arena->criaInimigosAereos(id, r, cx, cy, cores[0], cores[1], cores[2], arena, vel, velTiro, freqTiro);
 
                     // Leitura dos inimigos terrestres

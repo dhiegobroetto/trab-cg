@@ -496,9 +496,38 @@ void Jogador::voa(GLfloat velocidade){
 }
 
 void Jogador::voaProjeteis(GLfloat tempoAjustador){
+	int i = 0;
 	for(Projetil *p : this->projeteis){
-		p->voa(tempoAjustador);
+		if(verificaColisaoProjetil(p->getX(), p->getY())){
+			p->voa(tempoAjustador);
+		}else{
+			this->projeteis.erase(this->projeteis.begin()+i);
+		}
+		i++;
 	}
+}
+
+bool Jogador::verificaColisaoProjetil(GLfloat x, GLfloat y){
+	GLfloat distanciaBorda = this->distanciaEntrePontos(this->arena->getX(), this->arena->getY(), x, y);
+	
+	// Verifica colisão da borda
+
+	// Verifica colisão com inimigos aéreos
+	list<Inimigo*> inimigosMortos;
+	int i = 0;
+	for (auto inimigo : this->arena->getInimigosAereos()) {
+		GLfloat distanciaInimigo = this->distanciaEntrePontos(x, y, inimigo->getX(), inimigo->getY());
+		GLfloat raioInimigo = inimigo->getRaio();
+		raioInimigo += this->getRaio(); 
+		if ((distanciaInimigo < raioInimigo) && this->isVoando()) {
+			inimigosMortos.push_back(inimigo);
+		}
+		i++;
+	}
+	for (auto im : inimigosMortos){
+		this->arena->mataInimigo(im);
+	}
+	return true;
 }
 
 void Jogador::voaBombas(GLfloat tempoAjustador){
