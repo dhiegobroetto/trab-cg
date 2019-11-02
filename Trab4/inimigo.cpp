@@ -16,7 +16,7 @@ Inimigo::Inimigo(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
 	this->raioInicial = raio;
 	this->tempoRaio = 0.0;
 	this->arena = arena;
-	this->anguloInimigo = 0.0;
+	this->anguloInimigo = (GLfloat) (rand() % 360);
 	this->anguloCanhao = 0.0;
 	this->anguloHelice = 0.0;
 	this->mouseX = 0.0;
@@ -503,9 +503,9 @@ void Inimigo::giraInimigo(GLfloat vel, GLfloat curva){
 	}
 }
 
-void Inimigo::voa(GLfloat velocidade, GLfloat curva){
-	GLfloat cx = this->getX() + (cos(((this->getAnguloInimigo()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
-    GLfloat cy = this->getY() + (sin(((this->getAnguloInimigo()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
+void Inimigo::voa(GLfloat curva){
+	GLfloat cx = this->getX() + (cos(((this->getAnguloInimigo()) * (M_PI / 180))) * this->velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
+    GLfloat cy = this->getY() + (sin(((this->getAnguloInimigo()) * (M_PI / 180))) * this->velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
 	GLfloat tempoAgora = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
 	GLfloat segundosIA = 2;
 	if(this->tempoIA + segundosIA <= tempoAgora){
@@ -615,8 +615,8 @@ void Inimigo::calculaPontoCrescimento(Linha* linha){
 	this->pontoCrescimento = pontoCrescimento;
 }
 
-void Inimigo::calculaAngulo(Linha* linha){
-	this->setAnguloInimigo(-90 + atan2(linha->getDistanciaY(), linha->getDistanciaX()) * 180 / M_PI);
+void Inimigo::calculaAngulo(){
+	this->setAnguloInimigo((GLfloat) (rand() % 360));
 }
 
 void Inimigo::reseta(){
@@ -627,7 +627,7 @@ void Inimigo::reseta(){
 	this->distanciaPontos = 0.0;
 	this->raio = raioInicial;
 	this->tempoRaio = 0.0;
-	this->calculaAngulo(this->getArena()->getLinha());
+	this->calculaAngulo();
 	this->anguloCanhao = 0.0;
 	this->anguloHelice = 0.0;
 	this->mouseX = 0.0;

@@ -546,17 +546,17 @@ bool Jogador::verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raio)
     }
 
 	// Verifica colisão com inimigos aéreos
-	if(!projetil) { 
-		for (auto inimigo : this->arena->getInimigosAereos()) {
-			GLfloat distanciaInimigo = this->distanciaEntrePontos(x, y, inimigo->getX(), inimigo->getY());
-			GLfloat raioInimigo = inimigo->getRaio();
-			raioInimigo += this->getRaio(); 
-			if ((distanciaInimigo < raioInimigo) && this->isVoando()) {
-				this->morre();
-				return false;
-			}
-		}
-	}
+	// if(!projetil) { 
+	// 	for (auto inimigo : this->arena->getInimigosAereos()) {
+	// 		GLfloat distanciaInimigo = this->distanciaEntrePontos(x, y, inimigo->getX(), inimigo->getY());
+	// 		GLfloat raioInimigo = inimigo->getRaio();
+	// 		raioInimigo += this->getRaio(); 
+	// 		if ((distanciaInimigo < raioInimigo) && this->isVoando()) {
+	// 			this->morre();
+	// 			return false;
+	// 		}
+	// 	}
+	// }
 	return true;
 }
 

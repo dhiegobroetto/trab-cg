@@ -11,6 +11,7 @@
 #include <string>
 #include <cmath>
 #include <vector>
+#include <cstdlib>
 
 #define RETO 0
 #define ESQUERDA 1
@@ -133,7 +134,7 @@ class Inimigo
         void moveX(GLfloat x);
         void moveY(GLfloat y);
         void giraInimigo(GLfloat vel, GLfloat curva);
-        void voa(GLfloat velocidade, GLfloat curva);
+        void voa(GLfloat curva);
         void voaProjeteis(GLfloat tempoAjustador);
         void voaBombas(GLfloat tempoAjustador);
         bool verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raioBomba);
@@ -141,7 +142,7 @@ class Inimigo
         void decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem);
         GLfloat distanciaEntrePontos(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
         void calculaPontoCrescimento(Linha* linha);
-        void calculaAngulo(Linha* linha);
+        void calculaAngulo();
         void exibeTexto(GLfloat x, GLfloat y);
         void exibeDecolagem(GLfloat x, GLfloat y);
         void exibeGameOver(GLfloat x, GLfloat y);

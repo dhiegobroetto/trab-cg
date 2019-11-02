@@ -200,13 +200,14 @@ void idle(void){
             jogador->voa(vel);
             jogador->voaProjeteis(t);
             jogador->voaBombas(t);
-            arena->voaInimigosAereos(vel, curva);
+            arena->voaInimigosAereos(curva);
         }
     }else{
         // Você venceu!!!!!
     }
     if(teclasTeclado['r']){
         jogador->reseta();
+        arena->reseta();
         limpaTeclas();
     }
     

@@ -87,6 +87,7 @@ list<Inimigo*> Arena::getInimigosAereos(){
 }
 
 void Arena::mataInimigo(Inimigo* inimigo){
+	this->inimigoAereosMortos.push_back(inimigo);
 	this->inimigosAereos.remove(inimigo);
 }
 
@@ -121,8 +122,18 @@ void Arena::criaInimigosTerrestres(GLint id, GLfloat raioCirculo,GLfloat x,GLflo
     this->inimigosTerrestres.push_back(circulo);
 }
 
-void Arena::voaInimigosAereos(GLfloat vel, GLfloat curva){
+void Arena::voaInimigosAereos(GLfloat curva){
 	for(Inimigo* i : this->inimigosAereos){
-		i->voa(vel, curva);
+		i->voa(curva);
+	}
+}
+
+void Arena::reseta(){
+	for(Inimigo* i : this->inimigoAereosMortos){
+		this->inimigosAereos.push_back(i);
+	}
+	this->inimigoAereosMortos.clear();
+	for(Inimigo* i : this->inimigosAereos){
+		i->reseta();
 	}
 }
