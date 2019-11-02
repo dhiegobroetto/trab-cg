@@ -12,6 +12,10 @@
 #include <cmath>
 #include <vector>
 
+#define RETO 0
+#define ESQUERDA 1
+#define DIREITA 2
+
 using namespace std;
 
 class Arena;
@@ -47,6 +51,8 @@ class Inimigo
         GLfloat mouseX;
         GLfloat limiteCanhaoX;
         GLfloat limiteCanhaoY;
+        int estado;
+        GLfloat tempoIA;
         bool ligado;
         bool voando;
         bool vivo;
@@ -97,6 +103,7 @@ class Inimigo
         void setLimiteCanhaoY(GLfloat limiteCanhaoY);
         GLfloat getAnguloCanhao();
         void setAnguloCanhao(GLfloat anguloCanhao);
+        void setTempoIA(GLfloat tempoIA);
         bool isLigado();
         void setLigado(bool ligado);
         bool isVoando();
@@ -125,7 +132,8 @@ class Inimigo
         void desenhaInimigo();
         void moveX(GLfloat x);
         void moveY(GLfloat y);
-        void voa(GLfloat velocidade);
+        void giraInimigo(GLfloat vel, GLfloat curva);
+        void voa(GLfloat velocidade, GLfloat curva);
         void voaProjeteis(GLfloat tempoAjustador);
         void voaBombas(GLfloat tempoAjustador);
         bool verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raioBomba);

@@ -121,8 +121,8 @@ void Arena::criaInimigosTerrestres(GLint id, GLfloat raioCirculo,GLfloat x,GLflo
     this->inimigosTerrestres.push_back(circulo);
 }
 
-void Arena::voaInimigosAereos(GLfloat vel){
+void Arena::voaInimigosAereos(GLfloat vel, GLfloat curva){
 	for(Inimigo* i : this->inimigosAereos){
-		i->voa(vel);
+		i->voa(vel, curva);
 	}
 }

@@ -10,7 +10,7 @@ Inimigo::Inimigo(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
     this->corR = corR;
     this->corG = corG;
     this->corB = corB;
-	this->ligado = false;
+	this->ligado = true;
 	this->voando = false;
 	this->distanciaPontos = 0.0;
 	this->raioInicial = raio;
@@ -24,6 +24,8 @@ Inimigo::Inimigo(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
 	this->velocidadeMultiplicadora = velocidade;
 	this->velocidadeTiro = velocidadeTiro;
 	this->frequenciaTiro = frequenciaTiro;
+	this->estado = RETO;
+	this->tempoIA = 0;
 }
 // static char str[2000];
 // void * fonte = GLUT_BITMAP_TIMES_ROMAN_24;
@@ -157,6 +159,10 @@ GLfloat Inimigo::getRaioInicial() {
 
 void Inimigo::setRaioInicial(GLfloat& raioInicial) {
     this->raioInicial = raioInicial;
+}
+
+void Inimigo::setTempoIA(GLfloat tempoIA){
+	this->tempoIA = tempoIA;
 }
 
 bool Inimigo::isLigado(){
@@ -482,10 +488,41 @@ void Inimigo::moveY(GLfloat y){
 	// }
 }
 
-void Inimigo::voa(GLfloat velocidade){
+GLfloat calculaProbabilidadeGirar(){
+	return ((GLfloat) rand() / (RAND_MAX));
+}
+
+void Inimigo::giraInimigo(GLfloat vel, GLfloat curva){
+	switch(this->estado){
+		case ESQUERDA:
+			this->moveX(curva);
+			break;
+		case DIREITA:
+			this->moveX((-1)*curva);
+			break;
+	}
+}
+
+void Inimigo::voa(GLfloat velocidade, GLfloat curva){
 	GLfloat cx = this->getX() + (cos(((this->getAnguloInimigo()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
     GLfloat cy = this->getY() + (sin(((this->getAnguloInimigo()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
-
+	GLfloat tempoAgora = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
+	GLfloat segundosIA = 2;
+	if(this->tempoIA + segundosIA <= tempoAgora){
+		GLfloat prob = calculaProbabilidadeGirar();
+		// >= 0 ~ <= 0.6: anda reto
+		// > 0.6 ~ <= 0.8: gira esquerda
+		// > 0.8 ~ <= 1.0: gira direita 
+		if(prob > 0.6 && prob <= 8){
+			this->estado = ESQUERDA;
+		}else if(prob > 8 && prob <= 1.0){
+			this->estado = DIREITA;
+		}else{
+			this->estado = RETO;
+		}
+		this->tempoIA = tempoAgora;
+	}
+	this->giraInimigo(velocidade, curva);
 	if(verificaColisao(cx, cy, false, 0.0)){
 		this->setX(cx);
 		this->setY(cy);
@@ -501,7 +538,6 @@ void Inimigo::voaProjeteis(GLfloat tempoAjustador){
 
 bool Inimigo::verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raio){
 	GLfloat distanciaBorda = this->distanciaEntrePontos(this->arena->getX(), this->arena->getY(), x, y);
-	
 	// Verifica colisão da borda
 	if(raio != 0){
 		distanciaBorda += raio;
@@ -512,7 +548,6 @@ bool Inimigo::verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raio)
 		}
         return false;
     }
-
 	return true;
 }
 

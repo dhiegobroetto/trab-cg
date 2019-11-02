@@ -152,8 +152,8 @@ void display(void){
 void inicializaInimigosAereos(GLfloat vel){
     for(Inimigo* c : arena->getInimigosAereos()){
         c->setVelocidade(vel);
+        c->setTempoIA(glutGet(GLUT_ELAPSED_TIME) / 1000.0);
         c->setVoando(true);
-        c->setLigado(true);
     }
 }
 
@@ -182,13 +182,14 @@ void idle(void){
         }
         if(jogador->isLigado() && jogador->isVoando()){
             GLfloat vel = jogador->getVelocidade();
+            GLfloat curva = 100.0;
             if(!arena->getInimigosAereos().front()->isVoando()){
                 inicializaInimigosAereos(vel);
             }
             if(teclasTeclado['a'] || teclasTeclado['A']){
-                jogador->moveX(100.0);
+                jogador->moveX(curva);
             }else if(teclasTeclado['d'] || teclasTeclado['D']){
-                jogador->moveX(-100.0);
+                jogador->moveX(-curva);
             }
             if(teclasTeclado['='] || teclasTeclado['+']){
                 jogador->incrementaVelocidade(3.0);
@@ -199,8 +200,7 @@ void idle(void){
             jogador->voa(vel);
             jogador->voaProjeteis(t);
             jogador->voaBombas(t);
-            arena->voaInimigosAereos(vel);
-
+            arena->voaInimigosAereos(vel, curva);
         }
     }else{
         // Você venceu!!!!!
