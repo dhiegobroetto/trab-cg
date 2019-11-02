@@ -170,7 +170,7 @@ void idle(void){
     GLfloat t = tempoNovo - tempoAntigo;
     tempoAntigo = tempoNovo;
     jogador->setTempoAjustador(t);
-    if(jogador->isVivo()){
+    if(jogador->isVivo() && arena->getInimigosAereos().size() > 0){
         atualizaTempoInimigosAereos(t);
         if((teclasTeclado['u'] || teclasTeclado['U']) && !jogador->isLigado()){
             jogador->setLigado(true);
@@ -202,6 +202,8 @@ void idle(void){
             arena->voaInimigosAereos(vel);
 
         }
+    }else{
+        // Você venceu!!!!!
     }
     if(teclasTeclado['r']){
         jogador->reseta();
