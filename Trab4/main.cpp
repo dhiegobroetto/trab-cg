@@ -124,18 +124,23 @@ void display(void){
     if(arena != NULL){
         arena->desenhaArena();
     }
+    
     if(linha != NULL){
         linha->desenhaLinha();
     }
+    
     for(list<Circulo*>::iterator c = inimigosTerrestres.begin(); c != inimigosTerrestres.end(); ++c){
         (*c)->desenha();
     }
+    
     if(jogador != NULL){
         jogador->desenhaBombas();
     }
+    
     for(list<Inimigo*>::iterator c = inimigosAereos.begin(); c != inimigosAereos.end(); ++c){
         (*c)->desenhaInimigo();
     }
+    
     if(jogador != NULL){
         jogador->desenhaJogador();
         if(!jogador->isLigado() && !jogador->isVoando()){
@@ -204,6 +209,7 @@ void idle(void){
         }
     }else{
         // Você venceu!!!!!
+        jogador->morre();
     }
     if(teclasTeclado['r']){
         jogador->reseta();

@@ -439,6 +439,8 @@ void Jogador::desenhaBombas(){
 	for(int i = 0; i < bombas.size(); i++){
 		if(this->verificaColisao(bombas[i]->getX(), bombas[i]->getY(), true, bombas[i]->getRaio()) && !bombas[i]->explodiu()){
 			bombas[i]->desenhaBomba();
+		}else if(bombas[i]->explodiu()){
+			this->verificaColisaoBomba(bombas[i]->getX(), bombas[i]->getY());
 		}else{
 			bombas.erase(bombas.begin() + i);
 		}
@@ -521,6 +523,20 @@ bool Jogador::verificaColisaoProjetil(GLfloat x, GLfloat y){
 	}
 	for (auto im : inimigosMortos){
 		this->arena->mataInimigo(im);
+	}
+	return true;
+}
+
+bool Jogador::verificaColisaoBomba(GLfloat x, GLfloat y){
+	// Verifica colisão com inimigos terrestres
+	for (auto inimigo : this->arena->getInimigosTerrestres()) {
+		GLfloat distanciaInimigo = this->distanciaEntrePontos(x, y, inimigo->getX(), inimigo->getY());
+		GLfloat raioInimigo = inimigo->getRaio();
+		if ((distanciaInimigo < raioInimigo) && this->isVoando()) {
+			// arena->mataInimigo(inimigo);
+			arena->getInimigosTerrestres().remove(inimigo);
+			return false;
+		}
 	}
 	return true;
 }
