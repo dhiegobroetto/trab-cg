@@ -188,7 +188,7 @@ void idle(void){
         if(jogador->isLigado() && jogador->isVoando()){
             GLfloat vel = jogador->getVelocidade();
             GLfloat curva = 100.0;
-            if(!arena->getInimigosAereos().front()->isVoando()){
+            if(arena->getInimigosAereos().size() > 0 && !arena->getInimigosAereos().front()->isVoando()){
                 inicializaInimigosAereos(vel);
             }
             if(teclasTeclado['a'] || teclasTeclado['A']){

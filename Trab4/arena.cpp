@@ -128,8 +128,10 @@ void Arena::criaInimigosTerrestres(GLint id, GLfloat raioCirculo,GLfloat x,GLflo
 }
 
 void Arena::voaInimigosAereos(GLfloat curva){
-	for(Inimigo* i : this->inimigosAereos){
-		i->voa(curva);
+	if(this->inimigosAereos.size() > 0){
+		for(Inimigo* i : this->inimigosAereos){
+			i->voa(curva);
+		}
 	}
 }
 
@@ -138,10 +140,12 @@ void Arena::reseta(){
 		this->inimigosAereos.push_back(i);
 	}
 	this->inimigoAereosMortos.clear();
+
 	for(Circulo* i : this->inimigosTerrestresMortos){
 		this->inimigosTerrestres.push_back(i);
 	}
 	this->inimigosTerrestresMortos.clear();
+	
 	for(Inimigo* i : this->inimigosAereos){
 		i->reseta();
 	}
