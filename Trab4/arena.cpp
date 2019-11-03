@@ -86,9 +86,14 @@ list<Inimigo*> Arena::getInimigosAereos(){
 	return this->inimigosAereos;
 }
 
-void Arena::mataInimigo(Inimigo* inimigo){
+void Arena::mataInimigoAereo(Inimigo* inimigo){
 	this->inimigoAereosMortos.push_back(inimigo);
 	this->inimigosAereos.remove(inimigo);
+}
+
+void Arena::mataInimigoTerrestre(Circulo* inimigo){
+	this->inimigosTerrestresMortos.push_back(inimigo);
+	this->inimigosTerrestres.remove(inimigo);
 }
 
 list<Circulo*> Arena::getInimigosTerrestres(){
@@ -133,6 +138,10 @@ void Arena::reseta(){
 		this->inimigosAereos.push_back(i);
 	}
 	this->inimigoAereosMortos.clear();
+	for(Circulo* i : this->inimigosTerrestresMortos){
+		this->inimigosTerrestres.push_back(i);
+	}
+	this->inimigosTerrestresMortos.clear();
 	for(Inimigo* i : this->inimigosAereos){
 		i->reseta();
 	}

@@ -440,7 +440,8 @@ void Jogador::desenhaBombas(){
 		if(this->verificaColisao(bombas[i]->getX(), bombas[i]->getY(), true, bombas[i]->getRaio()) && !bombas[i]->explodiu()){
 			bombas[i]->desenhaBomba();
 		}else if(bombas[i]->explodiu()){
-			this->verificaColisaoBomba(bombas[i]->getX(), bombas[i]->getY());
+			this->verificaColisaoBomba(bombas[i]->getX(), bombas[i]->getY(), bombas[i]->getRaio());
+			bombas.erase(bombas.begin() + i);
 		}else{
 			bombas.erase(bombas.begin() + i);
 		}
@@ -511,34 +512,33 @@ void Jogador::voaProjeteis(GLfloat tempoAjustador){
 
 bool Jogador::verificaColisaoProjetil(GLfloat x, GLfloat y){
 	// Verifica colisão com inimigos aéreos
-	list<Inimigo*> inimigosMortos;
 	for (auto inimigo : this->arena->getInimigosAereos()) {
 		GLfloat distanciaInimigo = this->distanciaEntrePontos(x, y, inimigo->getX(), inimigo->getY());
 		GLfloat raioInimigo = inimigo->getRaio();
 		if ((distanciaInimigo < raioInimigo) && this->isVoando()) {
-			inimigosMortos.push_back(inimigo);
-			arena->mataInimigo(inimigo);
+			arena->mataInimigoAereo(inimigo);
 			return false;
 		}
-	}
-	for (auto im : inimigosMortos){
-		this->arena->mataInimigo(im);
 	}
 	return true;
 }
 
-bool Jogador::verificaColisaoBomba(GLfloat x, GLfloat y){
+void Jogador::verificaColisaoBomba(GLfloat x, GLfloat y, GLfloat raio){
 	// Verifica colisão com inimigos terrestres
+	list<Circulo*> inimigosMortos;
 	for (auto inimigo : this->arena->getInimigosTerrestres()) {
 		GLfloat distanciaInimigo = this->distanciaEntrePontos(x, y, inimigo->getX(), inimigo->getY());
 		GLfloat raioInimigo = inimigo->getRaio();
+		raioInimigo += raio;
 		if ((distanciaInimigo < raioInimigo) && this->isVoando()) {
-			// arena->mataInimigo(inimigo);
-			arena->getInimigosTerrestres().remove(inimigo);
-			return false;
+			arena->mataInimigoTerrestre(inimigo);
 		}
 	}
-	return true;
+	// for(auto inimigo : inimigosMortos){
+	// 	arena->getInimigosTerrestres().remove(inimigo);
+	// 	std::cout << arena->getInimigosTerrestres().size() << std::endl;
+	// }
+	inimigosMortos.clear();
 }
 
 void Jogador::voaBombas(GLfloat tempoAjustador){

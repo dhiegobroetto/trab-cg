@@ -32,6 +32,7 @@ class Arena
         list<Inimigo*> inimigosAereos;
         list<Inimigo*> inimigoAereosMortos;
         list<Circulo*> inimigosTerrestres;
+        list<Circulo*> inimigosTerrestresMortos;
 
     public:
     	// ------------ Construtor ------------ //
@@ -57,7 +58,8 @@ class Arena
         Linha* getLinha();
         void setLinha(Linha* linha);
         list<Inimigo*> getInimigosAereos();
-        void mataInimigo(Inimigo* inimigo);
+        void mataInimigoAereo(Inimigo* inimigo);
+        void mataInimigoTerrestre(Circulo* inimigo);
         list<Circulo*> getInimigosTerrestres();
         void desenhaArena();
         void criaInimigosAereos(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b, Arena* arena, GLfloat vel, GLfloat velTiro, GLfloat freqTiro);
