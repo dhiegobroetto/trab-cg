@@ -1,5 +1,7 @@
 #include "arena.h"
 
+void * fonte = GLUT_BITMAP_TIMES_ROMAN_24;
+
 Arena::Arena(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR, GLfloat& corG, GLfloat& corB){
 	this->id = id;
     this->raio = raio;
@@ -87,7 +89,7 @@ list<Inimigo*> Arena::getInimigosAereos(){
 }
 
 void Arena::mataInimigoAereo(Inimigo* inimigo){
-	this->inimigoAereosMortos.push_back(inimigo);
+	this->inimigosAereosMortos.push_back(inimigo);
 	this->inimigosAereos.remove(inimigo);
 }
 
@@ -137,10 +139,10 @@ void Arena::voaInimigosAereos(GLfloat curva, GLfloat tempoMultiplicador){
 }
 
 void Arena::reseta(){
-	for(Inimigo* i : this->inimigoAereosMortos){
+	for(Inimigo* i : this->inimigosAereosMortos){
 		this->inimigosAereos.push_back(i);
 	}
-	this->inimigoAereosMortos.clear();
+	this->inimigosAereosMortos.clear();
 
 	for(Circulo* i : this->inimigosTerrestresMortos){
 		this->inimigosTerrestres.push_back(i);
@@ -150,4 +152,74 @@ void Arena::reseta(){
 	for(Inimigo* i : this->inimigosAereos){
 		i->reseta();
 	}
+}
+
+void Arena::exibeDecolagem(GLfloat x, GLfloat y){
+	char *strTemporaria;
+	char decolagem[50];
+	glColor3f(1.0,1.0,1.0);
+    sprintf(decolagem, "Pressione U para decolar.");
+    glRasterPos2f(x, y);
+    strTemporaria = decolagem;
+    while( *strTemporaria ){
+        glutBitmapCharacter(fonte, *strTemporaria);
+        strTemporaria++;
+    }
+}
+
+void Arena::exibeVitoria(GLfloat x, GLfloat y){
+	char *strTemporaria;
+	char venceu[80];
+	glColor3f(1.0,1.0,1.0);
+    sprintf(venceu, "Voce venceu!");
+    glRasterPos2f(x + 90, y);
+    strTemporaria = venceu;
+    while( *strTemporaria ){
+        glutBitmapCharacter(fonte, *strTemporaria);
+        strTemporaria++;
+    }
+
+	glColor3f(1.0,1.0,1.0);
+    sprintf(venceu, "Pressione R para jogar novamente!");
+    glRasterPos2f(x, y - 25);
+    strTemporaria = venceu;
+    while( *strTemporaria ){
+        glutBitmapCharacter(fonte, *strTemporaria);
+        strTemporaria++;
+    }
+	
+}
+
+void Arena::exibeGameOver(GLfloat x, GLfloat y){
+	char *strTemporaria;
+	char gameOver[80];
+	glColor3f(1.0,1.0,1.0);
+    sprintf(gameOver, "Game Over!");
+    glRasterPos2f(x + 90, y);
+    strTemporaria = gameOver;
+    while( *strTemporaria ){
+        glutBitmapCharacter(fonte, *strTemporaria);
+        strTemporaria++;
+    }
+	glColor3f(1.0,1.0,1.0);
+	sprintf(gameOver, "Pressione R para jogar novamente!");
+	glRasterPos2f(x, y - 25);
+	strTemporaria = gameOver;
+	while( *strTemporaria ){
+		glutBitmapCharacter(fonte, *strTemporaria);
+		strTemporaria++;
+	}
+}
+
+void Arena::exibePontuacao(GLfloat x, GLfloat y){
+	char *strTemporaria;
+	char pontuacao[50];
+	glColor3f(0.0,0.0,0.0);
+    sprintf(pontuacao, "%d/%d bases destruidas.", (int)this->inimigosTerrestresMortos.size(), (int)(this->inimigosTerrestresMortos.size() + this->inimigosTerrestres.size()));
+    glRasterPos2f(x, y);
+    strTemporaria = pontuacao;
+    while( *strTemporaria ){
+        glutBitmapCharacter(fonte, *strTemporaria);
+        strTemporaria++;
+    }
 }

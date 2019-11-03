@@ -44,6 +44,7 @@ class Inimigo
         GLfloat distanciaPontos;
         GLfloat raioInicial;
         GLfloat tempoRaio;
+        GLfloat segundosIA;
         Arena* arena;
         vector<Projetil*> projeteis;
         GLfloat anguloInimigo;
@@ -119,7 +120,6 @@ class Inimigo
         void addProjetil(Projetil *p);
         GLfloat getAnguloInimigo();
         void setAnguloInimigo(GLfloat anguloInimigo);
-        void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaTriangulo(GLfloat tamanho);
         void desenhaElipse(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB);
@@ -146,9 +146,6 @@ class Inimigo
         GLfloat distanciaEntrePontos(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
         void calculaPontoCrescimento(Linha* linha);
         void calculaAngulo();
-        void exibeTexto(GLfloat x, GLfloat y);
-        void exibeDecolagem(GLfloat x, GLfloat y);
-        void exibeGameOver(GLfloat x, GLfloat y);
         void reseta();
 };
 

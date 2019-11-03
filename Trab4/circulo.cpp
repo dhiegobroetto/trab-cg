@@ -64,22 +64,83 @@ void Circulo::setVelocidade(GLfloat& velocidade){
 
 void Circulo::desenha(){
 	glPushMatrix();
-	desenhaCirculo(this->raio, this->x, this->y, this->corR, this->corG, this->corB);
+		GLfloat base = this->raio * 0.5;
+		desenhaCirculo(base, (this->x + base), (this->y - base), this->corR, this->corG, this->corB);
+		desenhaCirculo(base, (this->x + base), (this->y + base), this->corR, this->corG, this->corB);
+		desenhaCirculo(base, (this->x - base), (this->y + base), this->corR, this->corG, this->corB);
+		desenhaCirculo(base, (this->x - base), (this->y - base), this->corR, this->corG, this->corB);
+		glTranslatef(this->x, this->y, 0);
+		desenhaQuadrado(this->raio * 0.8, 0.2, 0.2, 0.2);
+		desenhaQuadradoLinha(this->raio * 0.6, this->corR, this->corG, this->corB);
+		desenhaCirculoLinha(base * 0.6, this->corR, this->corG, this->corB);
+		desenhaCruz(this->raio * 0.6, this->corR, this->corG, this->corB);
 	glPopMatrix();
 }
 
-void Circulo::desenhaCirculo(GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR, GLfloat& corG, GLfloat& corB){
-	float theta, px, py;
-    glTranslatef(x, y, 0);
-	glColor3f(this->getCorR(), this->getCorG(), this->getCorB());
+void Circulo::desenhaQuadrado(GLfloat base, GLfloat corR, GLfloat corG, GLfloat corB){
+	glColor3f(corR, corG, corB);
 	glBegin(GL_POLYGON);
+		glVertex3f(base, -base, 0.0);
+		glVertex3f(base, base, 0.0);
+		glVertex3f(-base, base, 0.0);
+		glVertex3f(-base, -base, 0.0);
+	glEnd();
+}
+
+void Circulo::desenhaQuadradoLinha(GLfloat base, GLfloat corR, GLfloat corG, GLfloat corB){
+	glColor3f(corR, corG, corB);
+	glPointSize(1.0);
+	glBegin(GL_LINES);
+		glVertex3f(base, -base, 0.0);
+		glVertex3f(base, base, 0.0);
+		glVertex3f(base, base, 0.0);
+		glVertex3f(-base, base, 0.0);
+		glVertex3f(-base, base, 0.0);
+		glVertex3f(-base, -base, 0.0);
+		glVertex3f(-base, -base, 0.0);
+		glVertex3f(base, -base, 0.0);
+	glEnd();
+}
+
+void Circulo::desenhaCruz(GLfloat base, GLfloat corR, GLfloat corG, GLfloat corB){
+	glColor3f(corR, corG, corB);
+	glPointSize(1.0);
+	glBegin(GL_LINES);
+		glVertex3f(0.0, -base, 0.0);
+		glVertex3f(0.0, base, 0.0);
+		glVertex3f(base, 0.0, 0.0);
+		glVertex3f(-base, 0.0, 0.0);
+	glEnd();
+}
+
+void Circulo::desenhaCirculoLinha(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
+	float theta, px, py;
+	glColor3f(corR, corG, corB);
+	glPointSize(1.0);
+	glBegin(GL_POINTS);
 		for (int i = 0; i < 360; i++) {
 			theta = (i * M_PI) / 180.0;
-			px = cos(theta) * this->getRaio();
-			py = sin(theta) * this->getRaio();
+			px = cos(theta) * raio;
+			py = sin(theta) * raio;
 			glVertex2f(px, py);
 		}
 	glEnd();
+}	
+
+void Circulo::desenhaCirculo(GLfloat raio, GLfloat x, GLfloat y, GLfloat corR, GLfloat corG, GLfloat corB){
+	float theta, px, py;
+	glPushMatrix();
+		glTranslatef(x, y, 0);
+		glColor3f(corR, corG, corB);
+		glBegin(GL_POLYGON);
+			for (int i = 0; i < 360; i++) {
+				theta = (i * M_PI) / 180.0;
+				px = cos(theta) * raio;
+				py = sin(theta) * raio;
+				glVertex2f(px, py);
+			}
+		glEnd();
+	glPopMatrix();
 }	
 void Circulo::moveX(GLfloat x){
     this->x += x;

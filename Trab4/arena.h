@@ -30,7 +30,7 @@ class Arena
         Jogador* jogador;
         Linha* linha;
         list<Inimigo*> inimigosAereos;
-        list<Inimigo*> inimigoAereosMortos;
+        list<Inimigo*> inimigosAereosMortos;
         list<Circulo*> inimigosTerrestres;
         list<Circulo*> inimigosTerrestresMortos;
 
@@ -66,7 +66,11 @@ class Arena
         void criaInimigosTerrestres(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b);
         void voaInimigosAereos(GLfloat curva, GLfloat tempoMultiplicador);
         void reseta();
-
+        void exibeTexto(GLfloat x, GLfloat y);
+        void exibeDecolagem(GLfloat x, GLfloat y);
+        void exibeVitoria(GLfloat x, GLfloat y);
+        void exibeGameOver(GLfloat x, GLfloat y);
+        void exibePontuacao(GLfloat x, GLfloat y);
 };
 
 #endif /* ARENA_H */

@@ -144,12 +144,16 @@ void display(void){
     if(jogador != NULL){
         jogador->desenhaJogador();
         if(!jogador->isLigado() && !jogador->isVoando()){
-            jogador->exibeDecolagem(arena->getX() - arena->getRaio(), arena->getY() - arena->getRaio()); 
+            arena->exibeDecolagem(arena->getX() - 110, arena->getY() + 40);
         }
         if(!jogador->isVivo()){ 
-            jogador->exibeGameOver(arena->getX() - arena->getRaio(), arena->getY() - arena->getRaio()); 
+            arena->exibeGameOver(arena->getX() - 155, arena->getY() + 40);
+        }
+        if(jogador->isVivo() && arena->getInimigosTerrestres().size() == 0){
+            arena->exibeVitoria(arena->getX() - 155, arena->getY() + 40);
         }
     }
+    arena->exibePontuacao(arena->getX() + arena->getRaio() - 210, arena->getY() + arena->getRaio() - 20); 
     
     glutSwapBuffers();
 }
@@ -176,7 +180,7 @@ void idle(void){
     GLfloat t = tempoNovo - tempoAntigo;
     tempoAntigo = tempoNovo;
     jogador->setTempoAjustador(t);
-    if(jogador->isVivo() && (arena->getInimigosAereos().size() > 0 || arena->getInimigosTerrestres().size() > 0)){
+    if(jogador->isVivo() && arena->getInimigosTerrestres().size() > 0){
         atualizaTempoInimigosAereos(t);
         if((teclasTeclado['u'] || teclasTeclado['U']) && !jogador->isLigado()){
             jogador->setLigado(true);
@@ -208,9 +212,6 @@ void idle(void){
             jogador->voaBombas(t);
             arena->voaInimigosAereos(curva, t);
         }
-    }else{
-        // Você venceu!!!!!
-        jogador->morre();
     }
     if(teclasTeclado['r']){
         jogador->reseta();

@@ -22,8 +22,6 @@ Jogador::Jogador(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
 	this->mouseX = 0.0;
 	this->vivo = true;
 }
-static char str[2000];
-void * fonte = GLUT_BITMAP_TIMES_ROMAN_24;
 
 GLint Jogador::getId(){
 	return this->id;
@@ -243,46 +241,6 @@ void Jogador::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat c
 			glVertex2f(px, py);
 		}
 	glEnd();
-}
-
-void Jogador::exibeTexto(GLfloat x, GLfloat y){
-    // Cria string para printar na tela.
-    char *strTemporaria;
-    sprintf(str, "Raio: %.2f X: %.2f Y: %.2f", this->getRaio(), this->getX(), this->getY());
-    // Posição do texto na tela
-    glRasterPos2f(x, y);
-    strTemporaria = str;
-    // Printa cada caractere na tela através da função glutBitmapCharacter.
-    while( *strTemporaria ){
-        glutBitmapCharacter(fonte, *strTemporaria);
-        strTemporaria++;
-    }
-}
-
-void Jogador::exibeDecolagem(GLfloat x, GLfloat y){
-	char *strTemporaria;
-	char decolagem[50];
-	glColor3f(0.0,0.0,0.0);
-    sprintf(decolagem, "Pressione U para decolar.");
-    glRasterPos2f(x, y);
-    strTemporaria = decolagem;
-    while( *strTemporaria ){
-        glutBitmapCharacter(fonte, *strTemporaria);
-        strTemporaria++;
-    }
-}
-
-void Jogador::exibeGameOver(GLfloat x, GLfloat y){
-	char *strTemporaria;
-	char gameOver[80];
-	glColor3f(0.0,0.0,0.0);
-    sprintf(gameOver, "Game Over!\n\nPressione R para tentar novamente!");
-    glRasterPos2f(x, y);
-    strTemporaria = gameOver;
-    while( *strTemporaria ){
-        glutBitmapCharacter(fonte, *strTemporaria);
-        strTemporaria++;
-    }
 }
 
 void Jogador::desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB){

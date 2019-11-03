@@ -15,6 +15,7 @@ Inimigo::Inimigo(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
 	this->distanciaPontos = 0.0;
 	this->raioInicial = raio;
 	this->tempoRaio = 0.0;
+	this->segundosIA = (GLfloat) (rand() % 2) + 1;
 	this->arena = arena;
 	this->anguloInimigo = (GLfloat) (rand() % 360);
 	this->anguloCanhao = 0.0;
@@ -28,8 +29,6 @@ Inimigo::Inimigo(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
 	this->tempoIA = 0;
 	this->tempoAtira = 0;
 }
-// static char str[2000];
-// void * fonte = GLUT_BITMAP_TIMES_ROMAN_24;
 
 GLint Inimigo::getId(){
 	return this->id;
@@ -250,59 +249,6 @@ void Inimigo::setLimiteCanhaoY(GLfloat limiteCanhaoY){
 	this->limiteCanhaoY = limiteCanhaoY;
 }
 
-void Inimigo::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
-    float theta, px, py;
-    glColor3f(1.0, 1.0, 1.0);
-	glBegin(GL_POLYGON);
-		for (int i = 0; i < 360; i++) {
-			theta = (i * M_PI) / 180.0;
-			px = cos(theta) * raio;
-			py = sin(theta) * raio;
-			glVertex2f(px, py);
-		}
-	glEnd();
-}
-
-// void Inimigo::exibeTexto(GLfloat x, GLfloat y){
-//     // Cria string para printar na tela.
-//     char *strTemporaria;
-//     sprintf(str, "Raio: %.2f X: %.2f Y: %.2f", this->getRaio(), this->getX(), this->getY());
-//     // Posição do texto na tela
-//     glRasterPos2f(x, y);
-//     strTemporaria = str;
-//     // Printa cada caractere na tela através da função glutBitmapCharacter.
-//     while( *strTemporaria ){
-//         glutBitmapCharacter(fonte, *strTemporaria);
-//         strTemporaria++;
-//     }
-// }
-
-// void Inimigo::exibeDecolagem(GLfloat x, GLfloat y){
-// 	char *strTemporaria;
-// 	char decolagem[50];
-// 	glColor3f(0.0,0.0,0.0);
-//     sprintf(decolagem, "Pressione U para decolar.");
-//     glRasterPos2f(x, y);
-//     strTemporaria = decolagem;
-//     while( *strTemporaria ){
-//         glutBitmapCharacter(fonte, *strTemporaria);
-//         strTemporaria++;
-//     }
-// }
-
-// void Inimigo::exibeGameOver(GLfloat x, GLfloat y){
-// 	char *strTemporaria;
-// 	char gameOver[80];
-// 	glColor3f(0.0,0.0,0.0);
-//     sprintf(gameOver, "Game Over!\n\nPressione R para tentar novamente!");
-//     glRasterPos2f(x, y);
-//     strTemporaria = gameOver;
-//     while( *strTemporaria ){
-//         glutBitmapCharacter(fonte, *strTemporaria);
-//         strTemporaria++;
-//     }
-// }
-
 void Inimigo::desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB){
 	glColor3f(corR, corG, corB);
 	glBegin(GL_POLYGON);
@@ -487,10 +433,8 @@ void Inimigo::moveY(GLfloat y){
 	GLfloat cx = this->getX();
     GLfloat cy = this->getY() + (y * this->velocidadeMultiplicadora * this->tempoAjustador);
 
-    // if(verificaColisao(cx, cy, false, 0.0)){
 	this->setY(cy);
 	this->anguloHelice += this->velocidade;
-	// }
 }
 
 GLfloat calculaProbabilidadeGirar(){
@@ -527,20 +471,21 @@ void Inimigo::voa(GLfloat curva){
 	GLfloat cx = this->getX() + (cos(((this->getAnguloInimigo()) * (M_PI / 180))) * this->velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
     GLfloat cy = this->getY() + (sin(((this->getAnguloInimigo()) * (M_PI / 180))) * this->velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
 	GLfloat tempoAgora = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
-	GLfloat segundosIA = 2;
-	if(this->tempoIA + segundosIA <= tempoAgora){
+	if(this->tempoIA + this->segundosIA <= tempoAgora){
+		
 		GLfloat prob = calculaProbabilidadeGirar();
 		// >= 0 ~ <= 0.6: anda reto
 		// > 0.6 ~ <= 0.8: gira esquerda
 		// > 0.8 ~ <= 1.0: gira direita 
-		if(prob > 0.6 && prob <= 8){
+		if(prob > 0.6 && prob <= 0.8){
 			this->estado = ESQUERDA;
-		}else if(prob > 8 && prob <= 1.0){
+		}else if(prob > 0.8 && prob <= 1.0){
 			this->estado = DIREITA;
 		}else{
 			this->estado = RETO;
 		}
 		this->tempoIA = tempoAgora;
+		this->segundosIA = (GLfloat) (rand() % 2) + 1;
 	}
 	if(this->tempoAtira + (1/this->frequenciaTiro) <= tempoAgora){
 		this->atira();
