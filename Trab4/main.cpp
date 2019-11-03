@@ -158,6 +158,7 @@ void inicializaInimigosAereos(GLfloat vel){
     for(Inimigo* c : arena->getInimigosAereos()){
         c->setVelocidade(vel);
         c->setTempoIA(glutGet(GLUT_ELAPSED_TIME) / 1000.0);
+        c->setTempoAtira(glutGet(GLUT_ELAPSED_TIME) / 1000.0);
         c->setVoando(true);
     }
 }
@@ -205,7 +206,7 @@ void idle(void){
             jogador->voa(vel);
             jogador->voaProjeteis(t);
             jogador->voaBombas(t);
-            arena->voaInimigosAereos(curva);
+            arena->voaInimigosAereos(curva, t);
         }
     }else{
         // Você venceu!!!!!

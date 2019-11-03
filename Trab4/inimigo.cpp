@@ -26,6 +26,7 @@ Inimigo::Inimigo(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
 	this->frequenciaTiro = frequenciaTiro;
 	this->estado = RETO;
 	this->tempoIA = 0;
+	this->tempoAtira = 0;
 }
 // static char str[2000];
 // void * fonte = GLUT_BITMAP_TIMES_ROMAN_24;
@@ -163,6 +164,10 @@ void Inimigo::setRaioInicial(GLfloat& raioInicial) {
 
 void Inimigo::setTempoIA(GLfloat tempoIA){
 	this->tempoIA = tempoIA;
+}
+
+void Inimigo::setTempoAtira(GLfloat tempoAtira){
+	this->tempoAtira = tempoAtira;
 }
 
 bool Inimigo::isLigado(){
@@ -441,7 +446,7 @@ void Inimigo::desenhaCanhao(){
 void Inimigo::desenhaProjeteis(){
 	for(int i = 0; i < projeteis.size(); i++){
 		if(this->verificaColisao(projeteis[i]->getX(), projeteis[i]->getY(), true, projeteis[i]->getRaio())){
-			projeteis[i]->desenhaProjetil();
+			projeteis[i]->desenhaProjetil(this->corR, this->corG, this->corB);
 		}else{
 			projeteis.erase(projeteis.begin() + i);
 		}
@@ -502,7 +507,22 @@ void Inimigo::giraInimigo(GLfloat vel, GLfloat curva){
 			break;
 	}
 }
-
+void Inimigo::atira(){
+	Projetil *p = new Projetil(
+		this->getX() + ((this->getRaio()) * cos(this->getAnguloInimigo() * M_PI / 180)) + (this->getRaio()/2) * cos(this->getAnguloInimigo() * M_PI / 180 + this->getAnguloCanhao() * M_PI / 180),
+		this->getY() + ((this->getRaio()) * sin(this->getAnguloInimigo() * M_PI / 180)) + (this->getRaio()/2) * sin(this->getAnguloInimigo() * M_PI / 180 + this->getAnguloCanhao() * M_PI / 180),
+		(GLfloat) (this->getRaio()/8), 
+		(GLfloat) 0.0, 
+		(GLfloat) 0.0, 
+		(GLfloat) 0.0, 
+		this->getVelocidade() * this->getVelocidadeMultiplicadora() * this->getVelocidadeTiro(), 
+		this->getAnguloCanhao(),
+		this->getAnguloInimigo(),
+		(GLfloat) (this->getRaio() / 2),
+		(GLfloat) (this->getRaio() - 1)
+	);
+	this->addProjetil(p);
+}
 void Inimigo::voa(GLfloat curva){
 	GLfloat cx = this->getX() + (cos(((this->getAnguloInimigo()) * (M_PI / 180))) * this->velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
     GLfloat cy = this->getY() + (sin(((this->getAnguloInimigo()) * (M_PI / 180))) * this->velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
@@ -521,6 +541,10 @@ void Inimigo::voa(GLfloat curva){
 			this->estado = RETO;
 		}
 		this->tempoIA = tempoAgora;
+	}
+	if(this->tempoAtira + (1/this->frequenciaTiro) <= tempoAgora){
+		this->atira();
+		this->tempoAtira = tempoAgora;
 	}
 	this->giraInimigo(velocidade, curva);
 	if(verificaColisao(cx, cy, false, 0.0)){
@@ -548,6 +572,16 @@ bool Inimigo::verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raio)
 		}
         return false;
     }
+	// Verifica colisão com jogador
+	if(projetil) { 
+		GLfloat distanciaJogador = this->distanciaEntrePontos(x, y, arena->getJogador()->getX(), arena->getJogador()->getY());
+		GLfloat raioJogador = arena->getJogador()->getRaio();
+		raioJogador += raio;
+		if ((distanciaJogador < raioJogador) && this->isVoando()) {
+			arena->getJogador()->morre();
+			return false;
+		}
+	}
 	return true;
 }
 

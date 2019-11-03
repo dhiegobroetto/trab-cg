@@ -54,6 +54,7 @@ class Inimigo
         GLfloat limiteCanhaoY;
         int estado;
         GLfloat tempoIA;
+        GLfloat tempoAtira;
         bool ligado;
         bool voando;
         bool vivo;
@@ -105,6 +106,7 @@ class Inimigo
         GLfloat getAnguloCanhao();
         void setAnguloCanhao(GLfloat anguloCanhao);
         void setTempoIA(GLfloat tempoIA);
+        void setTempoAtira(GLfloat tempoAtira);
         bool isLigado();
         void setLigado(bool ligado);
         bool isVoando();
@@ -134,6 +136,7 @@ class Inimigo
         void moveX(GLfloat x);
         void moveY(GLfloat y);
         void giraInimigo(GLfloat vel, GLfloat curva);
+        void atira();
         void voa(GLfloat curva);
         void voaProjeteis(GLfloat tempoAjustador);
         void voaBombas(GLfloat tempoAjustador);

@@ -108,13 +108,24 @@ void Projetil::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat 
 			glVertex2f(px, py);
 		}
 	glEnd();
+
+	glColor3f(1.0, 1.0, 1.0);
+	glPointSize(0.5);
+	glBegin(GL_POINTS);
+        for (int i = 0; i < 360; i++) {
+			theta = (i * M_PI) / 180.0;
+			px = cos(theta) * raio;
+			py = sin(theta) * raio;
+			glVertex2f(px, py);
+		}
+	glEnd();
 }
 
-void Projetil::desenhaProjetil(){
+void Projetil::desenhaProjetil(GLfloat corR, GLfloat corG, GLfloat corB){
 	glPushMatrix();
 		glTranslatef(this->x, this->y, 0);
 		glRotatef(this->anguloProjetil, 0.0, 0.0, 1.0);
-		desenhaCirculo(this->raio, this->corR, this->corG, this->corB);
+		desenhaCirculo(this->raio, corR, corG, corB);
 	glPopMatrix();
 }
 

@@ -428,7 +428,7 @@ void Jogador::desenhaCanhao(){
 void Jogador::desenhaProjeteis(){
 	for(int i = 0; i < projeteis.size(); i++){
 		if(this->verificaColisao(projeteis[i]->getX(), projeteis[i]->getY(), true, projeteis[i]->getRaio())){
-			projeteis[i]->desenhaProjetil();
+			projeteis[i]->desenhaProjetil(this->corR, this->corG, this->corB);
 		}else{
 			projeteis.erase(projeteis.begin() + i);
 		}
@@ -534,10 +534,6 @@ void Jogador::verificaColisaoBomba(GLfloat x, GLfloat y, GLfloat raio){
 			arena->mataInimigoTerrestre(inimigo);
 		}
 	}
-	// for(auto inimigo : inimigosMortos){
-	// 	arena->getInimigosTerrestres().remove(inimigo);
-	// 	std::cout << arena->getInimigosTerrestres().size() << std::endl;
-	// }
 	inimigosMortos.clear();
 }
 
@@ -562,17 +558,17 @@ bool Jogador::verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raio)
     }
 
 	// Verifica colisão com inimigos aéreos
-	// if(!projetil) { 
-	// 	for (auto inimigo : this->arena->getInimigosAereos()) {
-	// 		GLfloat distanciaInimigo = this->distanciaEntrePontos(x, y, inimigo->getX(), inimigo->getY());
-	// 		GLfloat raioInimigo = inimigo->getRaio();
-	// 		raioInimigo += this->getRaio(); 
-	// 		if ((distanciaInimigo < raioInimigo) && this->isVoando()) {
-	// 			this->morre();
-	// 			return false;
-	// 		}
-	// 	}
-	// }
+	if(!projetil) { 
+		for (auto inimigo : this->arena->getInimigosAereos()) {
+			GLfloat distanciaInimigo = this->distanciaEntrePontos(x, y, inimigo->getX(), inimigo->getY());
+			GLfloat raioInimigo = inimigo->getRaio();
+			raioInimigo += this->getRaio(); 
+			if ((distanciaInimigo < raioInimigo) && this->isVoando()) {
+				this->morre();
+				return false;
+			}
+		}
+	}
 	return true;
 }
 
