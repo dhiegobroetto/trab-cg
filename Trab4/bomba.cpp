@@ -104,7 +104,7 @@ void Bomba::voa(GLfloat tempoAjustador){
 }
 
 void Bomba::cai(){
-	GLfloat tempoFinal = 4.0;
+	GLfloat tempoFinal = 2.0;
 	GLfloat tempoAtual = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
 	GLfloat tempoQueda = tempoAtual - this->tempoInicial;
 	if(tempoQueda < tempoFinal){
