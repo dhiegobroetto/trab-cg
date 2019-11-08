@@ -472,7 +472,7 @@ void Inimigo::voa(GLfloat curva){
     GLfloat cy = this->getY() + (sin(((this->getAnguloInimigo()) * (M_PI / 180))) * this->velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
 	GLfloat tempoAgora = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
 	if(this->tempoIA + this->segundosIA <= tempoAgora){
-		
+
 		GLfloat prob = calculaProbabilidadeGirar();
 		// >= 0 ~ <= 0.6: anda reto
 		// > 0.6 ~ <= 0.8: gira esquerda
@@ -518,7 +518,7 @@ bool Inimigo::verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raio)
         return false;
     }
 	// Verifica colisão com jogador
-	if(projetil) { 
+	if(projetil && arena->getJogador()->isLigado() && arena->getJogador()->isVoando()) {
 		GLfloat distanciaJogador = this->distanciaEntrePontos(x, y, arena->getJogador()->getX(), arena->getJogador()->getY());
 		GLfloat raioJogador = arena->getJogador()->getRaio();
 		raioJogador += raio;

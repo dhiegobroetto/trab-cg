@@ -136,11 +136,7 @@ void display(void){
     if(jogador != NULL){
         jogador->desenhaBombas();
     }
-    
-    for(list<Inimigo*>::iterator c = inimigosAereos.begin(); c != inimigosAereos.end(); ++c){
-        (*c)->desenhaInimigo();
-    }
-    
+
     if(jogador != NULL){
         jogador->desenhaJogador();
         if(!jogador->isLigado() && !jogador->isVoando()){
@@ -153,6 +149,11 @@ void display(void){
             arena->exibeVitoria(arena->getX() - 155, arena->getY() + 40);
         }
     }
+
+    for(list<Inimigo*>::iterator c = inimigosAereos.begin(); c != inimigosAereos.end(); ++c){
+        (*c)->desenhaInimigo();
+    }
+
     arena->exibePontuacao(arena->getX() + arena->getRaio() - 210, arena->getY() + arena->getRaio() - 20); 
     
     glutSwapBuffers();
@@ -173,15 +174,31 @@ void atualizaTempoInimigosAereos(GLfloat tempo){
     }
 }
 
+GLfloat calculaVelocidadeFinal(){
+    GLfloat dx = arena->getLinha()->getX2() - arena->getLinha()->getX1();
+    GLfloat x = 2 * dx / pow(4.0, 2);
+
+    GLfloat dy = arena->getLinha()->getY2() - arena->getLinha()->getY1();
+    GLfloat y = 2 * dy / pow(4.0, 2);
+    return sqrt(pow(x, 2) + pow(y, 2)) * 4.0;
+}
+
 void idle(void){
     Jogador* jogador = arena->getJogador();
+    GLfloat curva = 100.0;
     // Cálculo do tempo de sincronização.
     tempoNovo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
     GLfloat t = tempoNovo - tempoAntigo;
     tempoAntigo = tempoNovo;
     jogador->setTempoAjustador(t);
+    atualizaTempoInimigosAereos(t);
+    if(jogador->isVivo()){
+        if(arena->getInimigosAereos().size() > 0 && !arena->getInimigosAereos().front()->isVoando()){
+            inicializaInimigosAereos(calculaVelocidadeFinal());
+        }
+        arena->voaInimigosAereos(curva, t);
+    }
     if(jogador->isVivo() && arena->getInimigosTerrestres().size() > 0){
-        atualizaTempoInimigosAereos(t);
         if((teclasTeclado['u'] || teclasTeclado['U']) && !jogador->isLigado()){
             jogador->setLigado(true);
             tempoAntigoDecolagem = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
@@ -192,10 +209,6 @@ void idle(void){
         }
         if(jogador->isLigado() && jogador->isVoando()){
             GLfloat vel = jogador->getVelocidade();
-            GLfloat curva = 100.0;
-            if(arena->getInimigosAereos().size() > 0 && !arena->getInimigosAereos().front()->isVoando()){
-                inicializaInimigosAereos(vel);
-            }
             if(teclasTeclado['a'] || teclasTeclado['A']){
                 jogador->moveX(curva);
             }else if(teclasTeclado['d'] || teclasTeclado['D']){
@@ -210,7 +223,6 @@ void idle(void){
             jogador->voa(vel);
             jogador->voaProjeteis(t);
             jogador->voaBombas(t);
-            arena->voaInimigosAereos(curva, t);
         }
     }
     if(teclasTeclado['r']){
@@ -368,6 +380,7 @@ bool lerXML(char* caminhoArquivo){
 }
 
 int main(int argc, char** argv){
+    srand(time(NULL));
     if(argc > 1){
         if(lerXML(argv[1])){
             fundoR = 1.0;
