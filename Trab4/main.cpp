@@ -139,21 +139,22 @@ void display(void){
 
     if(jogador != NULL){
         jogador->desenhaJogador();
-        if(!jogador->isLigado() && !jogador->isVoando()){
-            arena->exibeDecolagem(arena->getX() - 110, arena->getY() + 40);
-        }
-        if(!jogador->isVivo()){ 
-            arena->exibeGameOver(arena->getX() - 155, arena->getY() + 40);
-        }
-        if(jogador->isVivo() && arena->getInimigosTerrestres().size() == 0){
-            arena->exibeVitoria(arena->getX() - 155, arena->getY() + 40);
-        }
     }
 
     for(list<Inimigo*>::iterator c = inimigosAereos.begin(); c != inimigosAereos.end(); ++c){
         (*c)->desenhaInimigo();
     }
-
+    if(jogador != NULL){
+        if(!jogador->isLigado() && !jogador->isVoando()){
+            arena->exibeDecolagem(arena->getX() - 110, arena->getY() + 40);
+        }
+        if(!jogador->isVivo()){ 
+                arena->exibeGameOver(arena->getX() - 155, arena->getY() + 40);
+        }
+        if(jogador->isVivo() && arena->getInimigosTerrestres().size() == 0){
+            arena->exibeVitoria(arena->getX() - 155, arena->getY() + 40);
+        }
+    }
     arena->exibePontuacao(arena->getX() + arena->getRaio() - 210, arena->getY() + arena->getRaio() - 20); 
     
     glutSwapBuffers();
@@ -192,13 +193,12 @@ void idle(void){
     tempoAntigo = tempoNovo;
     jogador->setTempoAjustador(t);
     atualizaTempoInimigosAereos(t);
-    if(jogador->isVivo()){
+
+    if(jogador->isVivo() && arena->getInimigosTerrestres().size() > 0){
         if(arena->getInimigosAereos().size() > 0 && !arena->getInimigosAereos().front()->isVoando()){
             inicializaInimigosAereos(calculaVelocidadeFinal());
         }
         arena->voaInimigosAereos(curva, t);
-    }
-    if(jogador->isVivo() && arena->getInimigosTerrestres().size() > 0){
         if((teclasTeclado['u'] || teclasTeclado['U']) && !jogador->isLigado()){
             jogador->setLigado(true);
             tempoAntigoDecolagem = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
