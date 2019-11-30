@@ -117,10 +117,11 @@ void display(void){
     Linha* linha = arena->getLinha();
     list<Inimigo*> inimigosAereos = arena->getInimigosAereos();
     list<Circulo*> inimigosTerrestres = arena->getInimigosTerrestres();
-
     // Limpar todos os pixels
-    glClear(GL_COLOR_BUFFER_BIT);
-    glRotatef(M_PI/2, 1, 0, 0);
+    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(arena->getJogador()->getX(),arena->getJogador()->getY(),10, arena->getJogador()->getX() + arena->getJogador()->getRaio()*cos(arena->getJogador()->getAnguloJogador() *M_PI/180),arena->getJogador()->getY() + arena->getJogador()->getRaio()*sin(arena->getJogador()->getAnguloJogador() *M_PI/180),0, 0,0,1);
     if(arena != NULL){
         arena->desenhaArena();
     }
@@ -156,7 +157,6 @@ void display(void){
         }
     }
     arena->exibePontuacao(arena->getX() + arena->getRaio() - 210, arena->getY() + arena->getRaio() - 20); 
-    
     glutSwapBuffers();
 }
 
@@ -236,12 +236,10 @@ void idle(void){
 
 void init(float fundoR, float fundoG, float fundoB){
     glClearColor(fundoR, fundoG, fundoB, 0.0);
-
-    // Iniciar sistema de viz
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+    // Iniciar sistema de viz
     gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, 900.0);
-    gluLookAt(arena->getX(),arena->getY(), arena->getRaio()*2, arena->getX(),arena->getY(),0, 0,1,0);
     // glOrtho(
     //     arena->getX() - arena->getRaio(), 
     //     arena->getX() + arena->getRaio(), 
