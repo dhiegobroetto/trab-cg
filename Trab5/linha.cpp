@@ -6,8 +6,8 @@ Linha::Linha(GLint& id, GLfloat& x1, GLfloat& y1, GLfloat& x2, GLfloat& y2, GLfl
     this->y1 = y1;
     this->x2 = x2;
     this->y2 = y2;
-		this->z1 = 0;
-		this->z2 = 0;
+	this->z1 = 0;
+	this->z2 = 0;
     this->corR = corR;
     this->corG = corG;
     this->corB = corB;

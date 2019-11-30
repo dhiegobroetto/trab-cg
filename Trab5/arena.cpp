@@ -7,7 +7,7 @@ Arena::Arena(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR, GL
     this->raio = raio;
     this->x = x;
     this->y = y;
-		this->z = 0;
+	this->z = 0;
     this->corR = corR;
     this->corG = corG;
     this->corB = corB;
@@ -112,8 +112,9 @@ list<Circulo*> Arena::getInimigosTerrestres(){
 }
 
 void Arena::desenhaArena(){
-	glPushMatrix();
 	float theta, px, py;
+
+	glPushMatrix();
     glTranslatef(this->x, this->y, 0);
 	glColor3f(this->getCorR(), this->getCorG(), this->getCorB());
 	glBegin(GL_POLYGON);

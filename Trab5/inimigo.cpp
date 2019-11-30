@@ -5,7 +5,7 @@ Inimigo::Inimigo(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
     this->raio = raio;
     this->x = x;
     this->y = y;
-		this->z = 0;
+	this->z = 0;
 	this->xInicial = x;
 	this->yInicial = y;
     this->corR = corR;

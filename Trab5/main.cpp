@@ -62,218 +62,192 @@ void limpaTeclas(){
 }
 
 void mouseAction(int button, int state, int x, int y){
-    // if(jogador->isVoando() && jogador->isVivo()){
-    //     if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
-    //         Projetil *p = new Projetil(
-    //             jogador->getX() + ((jogador->getRaio()) * cos(jogador->getAnguloJogador() * M_PI / 180)) + (jogador->getRaio()/2) * cos(jogador->getAnguloJogador() * M_PI / 180 + jogador->getAnguloCanhao() * M_PI / 180),
-    //             jogador->getY() + ((jogador->getRaio()) * sin(jogador->getAnguloJogador() * M_PI / 180)) + (jogador->getRaio()/2) * sin(jogador->getAnguloJogador() * M_PI / 180 + jogador->getAnguloCanhao() * M_PI / 180),
-    //             (GLfloat) (jogador->getRaio()/8), 
-    //             (GLfloat) 0.0, 
-    //             (GLfloat) 0.0, 
-    //             (GLfloat) 0.0, 
-    //             jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora() * jogador->getVelocidadeTiro(), 
-    //             jogador->getAnguloCanhao(),
-    //             jogador->getAnguloJogador(),
-    //             (GLfloat) (jogador->getRaio() / 2),
-    //             (GLfloat) (jogador->getRaio() - 1)
-    //         );
-    //         jogador->addProjetil(p);
-    //     }
-    //     if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN){
-    //         Bomba *b = new Bomba(
-    //             jogador->getX(), 
-    //             jogador->getY(), 
-    //             (GLfloat) (jogador->getRaio()/3),  
-    //             (GLfloat) 0.0, 
-    //             (GLfloat) 0.0, 
-    //             (GLfloat) 0.0, 
-    //             jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora(),
-    //             jogador->getAnguloJogador()
-    //         );
-    //         jogador->addBomba(b);
-    //     }
-    // }
+    if(jogador->isVoando() && jogador->isVivo()){
+        if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
+            Projetil *p = new Projetil(
+                jogador->getX() + ((jogador->getRaio()) * cos(jogador->getAnguloJogador() * M_PI / 180)) + (jogador->getRaio()/2) * cos(jogador->getAnguloJogador() * M_PI / 180 + jogador->getAnguloCanhao() * M_PI / 180),
+                jogador->getY() + ((jogador->getRaio()) * sin(jogador->getAnguloJogador() * M_PI / 180)) + (jogador->getRaio()/2) * sin(jogador->getAnguloJogador() * M_PI / 180 + jogador->getAnguloCanhao() * M_PI / 180),
+                (GLfloat) (jogador->getRaio()/8), 
+                (GLfloat) 0.0, 
+                (GLfloat) 0.0, 
+                (GLfloat) 0.0, 
+                jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora() * jogador->getVelocidadeTiro(), 
+                jogador->getAnguloCanhao(),
+                jogador->getAnguloJogador(),
+                (GLfloat) (jogador->getRaio() / 2),
+                (GLfloat) (jogador->getRaio() - 1)
+            );
+            jogador->addProjetil(p);
+        }
+        if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN){
+            Bomba *b = new Bomba(
+                jogador->getX(), 
+                jogador->getY(), 
+                (GLfloat) (jogador->getRaio()/3),  
+                (GLfloat) 0.0, 
+                (GLfloat) 0.0, 
+                (GLfloat) 0.0, 
+                jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora(),
+                jogador->getAnguloJogador()
+            );
+            jogador->addBomba(b);
+        }
+    }
 
 }
 
 void mouseMove(int x, int y){
-    // if(jogador->isVoando() && jogador->isVivo()){
-    //     if(jogador->getMouseX() == 0.0){
-    //         jogador->setMouseX(x);
-    //     }else{
-    //         GLfloat angulo = (jogador->getMouseX() - x) / 2.0;
-    //         if(jogador->getAnguloCanhao() + angulo >= -45 && jogador->getAnguloCanhao() + angulo <= 45){
-    //             jogador->setAnguloCanhao(angulo);
-    //         }
-    //     }
-    //     jogador->setMouseX(x);
-    // }
+    if(jogador->isVoando() && jogador->isVivo()){
+        if(jogador->getMouseX() == 0.0){
+            jogador->setMouseX(x);
+        }else{
+            GLfloat angulo = (jogador->getMouseX() - x) / 2.0;
+            if(jogador->getAnguloCanhao() + angulo >= -45 && jogador->getAnguloCanhao() + angulo <= 45){
+                jogador->setAnguloCanhao(angulo);
+            }
+        }
+        jogador->setMouseX(x);
+    }
 }
 
 void display(void){
     // Inicialização das variáveis
     float theta, px, py;
     jogador = arena->getJogador();
+    Linha* linha = arena->getLinha();
+    list<Inimigo*> inimigosAereos = arena->getInimigosAereos();
+    list<Circulo*> inimigosTerrestres = arena->getInimigosTerrestres();
 
-    // glTranslatef(0,0,-camDist);
-    // Linha* linha = arena->getLinha();
-    // list<Inimigo*> inimigosAereos = arena->getInimigosAereos();
-    // list<Circulo*> inimigosTerrestres = arena->getInimigosTerrestres();
-
-    // // Limpar todos os pixels
-    // glClear(GL_COLOR_BUFFER_BIT);
-    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    // Limpar todos os pixels
+    glClear(GL_COLOR_BUFFER_BIT);
+    glRotatef(M_PI/2, 1, 0, 0);
     if(arena != NULL){
         arena->desenhaArena();
     }
     
-    // if(linha != NULL){
-    //     linha->desenhaLinha();
-    // }
+    if(linha != NULL){
+        linha->desenhaLinha();
+    }
     
-    // for(list<Circulo*>::iterator c = inimigosTerrestres.begin(); c != inimigosTerrestres.end(); ++c){
-    //     (*c)->desenha();
-    // }
+    for(list<Circulo*>::iterator c = inimigosTerrestres.begin(); c != inimigosTerrestres.end(); ++c){
+        (*c)->desenha();
+    }
     
-    // if(jogador != NULL){
-    //     jogador->desenhaBombas();
-    // }
+    if(jogador != NULL){
+        jogador->desenhaBombas();
+    }
 
     if(jogador != NULL){
         jogador->desenhaJogador();
-        // gluLookAt(jogador->getX(),jogador->getY(), 10, jogador->getX(),jogador->getY(),0, 0,1,0);
     }
 
-    // for(list<Inimigo*>::iterator c = inimigosAereos.begin(); c != inimigosAereos.end(); ++c){
-    //     (*c)->desenhaInimigo();
-    // }
-    // if(jogador != NULL){
-    //     if(!jogador->isLigado() && !jogador->isVoando()){
-    //         arena->exibeDecolagem(arena->getX() - 110, arena->getY() + 40);
-    //     }
-    //     if(!jogador->isVivo()){ 
-    //             arena->exibeGameOver(arena->getX() - 155, arena->getY() + 40);
-    //     }
-    //     if(jogador->isVivo() && arena->getInimigosTerrestres().size() == 0){
-    //         arena->exibeVitoria(arena->getX() - 155, arena->getY() + 40);
-    //     }
-    // }
-    // arena->exibePontuacao(arena->getX() + arena->getRaio() - 210, arena->getY() + arena->getRaio() - 20); 
+    for(list<Inimigo*>::iterator c = inimigosAereos.begin(); c != inimigosAereos.end(); ++c){
+        (*c)->desenhaInimigo();
+    }
+    if(jogador != NULL){
+        if(!jogador->isLigado() && !jogador->isVoando()){
+            arena->exibeDecolagem(arena->getX() - 110, arena->getY() + 40);
+        }
+        if(!jogador->isVivo()){ 
+                arena->exibeGameOver(arena->getX() - 155, arena->getY() + 40);
+        }
+        if(jogador->isVivo() && arena->getInimigosTerrestres().size() == 0){
+            arena->exibeVitoria(arena->getX() - 155, arena->getY() + 40);
+        }
+    }
+    arena->exibePontuacao(arena->getX() + arena->getRaio() - 210, arena->getY() + arena->getRaio() - 20); 
     
-
-    // glClearColor (0.0,0.0,0.0,1.0);
-    glLoadIdentity();
-
     glutSwapBuffers();
 }
 
 void inicializaInimigosAereos(GLfloat vel){
-    // for(Inimigo* c : arena->getInimigosAereos()){
-    //     c->setVelocidade(vel);
-    //     c->setTempoIA(glutGet(GLUT_ELAPSED_TIME) / 1000.0);
-    //     c->setTempoAtira(glutGet(GLUT_ELAPSED_TIME) / 1000.0);
-    //     c->setVoando(true);
-    // }
+    for(Inimigo* c : arena->getInimigosAereos()){
+        c->setVelocidade(vel);
+        c->setTempoIA(glutGet(GLUT_ELAPSED_TIME) / 1000.0);
+        c->setTempoAtira(glutGet(GLUT_ELAPSED_TIME) / 1000.0);
+        c->setVoando(true);
+    }
 }
 
 void atualizaTempoInimigosAereos(GLfloat tempo){
-    // for(Inimigo* c : arena->getInimigosAereos()){
-    //     c->setTempoAjustador(tempo);
-    // }
+    for(Inimigo* c : arena->getInimigosAereos()){
+        c->setTempoAjustador(tempo);
+    }
 }
 
 GLfloat calculaVelocidadeFinal(){
-    // GLfloat dx = arena->getLinha()->getX2() - arena->getLinha()->getX1();
-    // GLfloat x = 2 * dx / pow(4.0, 2);
+    GLfloat dx = arena->getLinha()->getX2() - arena->getLinha()->getX1();
+    GLfloat x = 2 * dx / pow(4.0, 2);
 
-    // GLfloat dy = arena->getLinha()->getY2() - arena->getLinha()->getY1();
-    // GLfloat y = 2 * dy / pow(4.0, 2);
-    // return sqrt(pow(x, 2) + pow(y, 2)) * 4.0;
-}
-
-void reshape (int w, int h) {
-    // ------ Método de mudança de câmera ------
-    // glViewport (0, 0, (GLsizei)w, (GLsizei)h);
-
-    // changeCamera(camAngle, w, h);
+    GLfloat dy = arena->getLinha()->getY2() - arena->getLinha()->getY1();
+    GLfloat y = 2 * dy / pow(4.0, 2);
+    return sqrt(pow(x, 2) + pow(y, 2)) * 4.0;
 }
 
 void idle(void){
-    // Jogador* jogador = arena->getJogador();
-    // GLfloat curva = 100.0;
-    // // Cálculo do tempo de sincronização.
-    // tempoNovo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
-    // GLfloat t = tempoNovo - tempoAntigo;
-    // tempoAntigo = tempoNovo;
-    // jogador->setTempoAjustador(t);
-    // atualizaTempoInimigosAereos(t);
+    Jogador* jogador = arena->getJogador();
+    GLfloat curva = 100.0;
+    // Cálculo do tempo de sincronização.
+    tempoNovo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
+    GLfloat t = tempoNovo - tempoAntigo;
+    tempoAntigo = tempoNovo;
+    jogador->setTempoAjustador(t);
+    atualizaTempoInimigosAereos(t);
 
-    // if(jogador->isVivo() && arena->getInimigosTerrestres().size() > 0){
-    //     if(arena->getInimigosAereos().size() > 0 && !arena->getInimigosAereos().front()->isVoando()){
-    //         inicializaInimigosAereos(calculaVelocidadeFinal());
-    //     }
-    //     arena->voaInimigosAereos(curva, t);
-    //     if((teclasTeclado['u'] || teclasTeclado['U']) && !jogador->isLigado()){
-    //         jogador->setLigado(true);
-    //         tempoAntigoDecolagem = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
-    //     }
-    //     if(jogador->isLigado() && !jogador->isVoando()){
-    //         tempoDecolagem = (glutGet(GLUT_ELAPSED_TIME) / 1000.0) - tempoAntigoDecolagem;
-    //         jogador->decola(arena->getLinha(), tempoAntigoDecolagem, tempoDecolagem);
-    //     }
-    //     if(jogador->isLigado() && jogador->isVoando()){
-    //         GLfloat vel = jogador->getVelocidade();
-    //         if(teclasTeclado['a'] || teclasTeclado['A']){
-    //             jogador->moveX(curva);
-    //         }else if(teclasTeclado['d'] || teclasTeclado['D']){
-    //             jogador->moveX(-curva);
-    //         }
-    //         if(teclasTeclado['='] || teclasTeclado['+']){
-    //             jogador->incrementaVelocidade(3.0);
-    //         }
-    //         if(teclasTeclado['-']){
-    //             jogador->decrementaVelocidade(3.0);
-    //         }
-    //         jogador->voa(vel);
-    //         jogador->voaProjeteis(t);
-    //         jogador->voaBombas(t);
-    //     }
-    // }
-    // if(teclasTeclado['r']){
-    //     jogador->reseta();
-    //     arena->reseta();
-    //     limpaTeclas();
-    // }
+    if(jogador->isVivo() && arena->getInimigosTerrestres().size() > 0){
+        if(arena->getInimigosAereos().size() > 0 && !arena->getInimigosAereos().front()->isVoando()){
+            inicializaInimigosAereos(calculaVelocidadeFinal());
+        }
+        arena->voaInimigosAereos(curva, t);
+        if((teclasTeclado['u'] || teclasTeclado['U']) && !jogador->isLigado()){
+            jogador->setLigado(true);
+            tempoAntigoDecolagem = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
+        }
+        if(jogador->isLigado() && !jogador->isVoando()){
+            tempoDecolagem = (glutGet(GLUT_ELAPSED_TIME) / 1000.0) - tempoAntigoDecolagem;
+            jogador->decola(arena->getLinha(), tempoAntigoDecolagem, tempoDecolagem);
+        }
+        if(jogador->isLigado() && jogador->isVoando()){
+            GLfloat vel = jogador->getVelocidade();
+            if(teclasTeclado['a'] || teclasTeclado['A']){
+                jogador->moveX(curva);
+            }else if(teclasTeclado['d'] || teclasTeclado['D']){
+                jogador->moveX(-curva);
+            }
+            if(teclasTeclado['='] || teclasTeclado['+']){
+                jogador->incrementaVelocidade(3.0);
+            }
+            if(teclasTeclado['-']){
+                jogador->decrementaVelocidade(3.0);
+            }
+            jogador->voa(vel);
+            jogador->voaProjeteis(t);
+            jogador->voaBombas(t);
+        }
+    }
+    if(teclasTeclado['r']){
+        jogador->reseta();
+        arena->reseta();
+        limpaTeclas();
+    }
     
     glutPostRedisplay();
 }
 
 void init(float fundoR, float fundoG, float fundoB){
-    // ------ 2D ------
-
     glClearColor(fundoR, fundoG, fundoB, 0.0);
-    glMatrixMode(GL_MODELVIEW);
+
+    // Iniciar sistema de viz
+    glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    // // Iniciar sistema de viz
-    // glMatrixMode(GL_PROJECTION);
-    // glLoadIdentity();
+    gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, 900.0);
+    gluLookAt(arena->getX(),arena->getY(), arena->getRaio()*2, arena->getX(),arena->getY(),0, 0,1,0);
     // glOrtho(
     //     arena->getX() - arena->getRaio(), 
     //     arena->getX() + arena->getRaio(), 
     //     arena->getY() - arena->getRaio(), 
     //     arena->getY() + arena->getRaio(), 
     //     -1.0, 1.0);
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_LIGHTING);
-//    glShadeModel (GL_FLAT);
-    glShadeModel (GL_SMOOTH);
-
-    glDepthFunc(GL_LEQUAL);
-    glEnable(GL_LIGHT0);
 }
 
 bool lerXML(char* caminhoArquivo){
@@ -411,14 +385,13 @@ int main(int argc, char** argv){
     srand(time(NULL));
     if(argc > 1){
         if(lerXML(argv[1])){
-
             fundoR = 1.0;
             fundoG = 1.0;
             fundoB = 1.0;
             tempoAntigo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
             // Inicializa
             glutInit(&argc, argv);
-            glutInitDisplayMode (GLUT_DOUBLE | GLUT_DEPTH);
+            glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
             glutInitWindowSize(larguraDimensao, alturaDimensao);
             glutInitWindowPosition(50, 50);
             glutCreateWindow("Airplane Combat");
@@ -430,7 +403,6 @@ int main(int argc, char** argv){
             glutPassiveMotionFunc(mouseMove);
             glutIdleFunc(idle);
             glutMainLoop();
-
         }
     }else{
         std::cout << "Localização do arquivo config.xml não foi informada." << std::endl;

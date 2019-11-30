@@ -17,7 +17,7 @@ class Bomba
     private:
         GLfloat x;
         GLfloat y;
-        Glfloat z;
+        GLfloat z;
         GLfloat raio;
         GLfloat raioInicial;
         GLfloat corR;
