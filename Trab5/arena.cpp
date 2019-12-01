@@ -125,15 +125,33 @@ void Arena::desenhaArena(){
 	glPushMatrix();
     glTranslatef(this->x, this->y, 0);
 	defineIluminacao(this->getCorR(), this->getCorG(), this->getCorB());
+	
+	// Base da arena
 	glBegin(GL_POLYGON);
-		for (int i = 0; i < 360; i++) {
-			theta = (i * M_PI) / 180.0;
-			px = cos(theta) * this->getRaio();
-			py = sin(theta) * this->getRaio();
-			glVertex3f(px, py, 0);
-			glVertex3f(px, py, this->getRaio()/2);
-		}
-	glEnd();
+        for (int i = 0; i < 360; i++) {
+            theta = (i * M_PI) / 180.0;
+            px = cos(theta) * this->getRaio();
+            py = sin(theta) * this->getRaio();
+            glVertex3f(px, py, 0);
+        }
+    glEnd();
+
+    // Corpo da arena
+    GLUquadric* qobj;
+    qobj = gluNewQuadric();
+    gluQuadricNormals(qobj, GLU_SMOOTH);
+    gluCylinder(qobj, this->getRaio(), this->getRaio(), this->getRaio(), 360, 360);
+
+    // Topo da arena
+	glBegin(GL_POLYGON);
+        for (int i = 0; i < 360; i++) {
+            theta = (i * M_PI) / 180.0;
+            px = cos(theta) * this->getRaio();
+            py = sin(theta) * this->getRaio();
+            glVertex3f(px, py, this->getRaio());
+        }
+    glEnd();
+
 	glPopMatrix();
 }
 
