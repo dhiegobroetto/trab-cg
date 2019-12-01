@@ -4,6 +4,7 @@
 #include "tinyxml/tinyxml.h"
 #include "math.h"
 #include "circulo.h"
+#include "config.h"
 #include "inimigo.h"
 #include "linha.h"
 #include "arena.h"
@@ -267,19 +268,25 @@ void init(float fundoR, float fundoG, float fundoB){
     glClearColor(fundoR, fundoG, fundoB, 0.0);
     glShadeModel(GL_SMOOTH);
     glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
+    // glEnable(GL_TEXTURE_2D);
+    glDepthFunc(GL_LEQUAL);
+    glEnable(GL_LIGHT0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
     // Iniciar sistema de visão
     gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, 900.0);
+
+    arena->setTexturaCeu(LoadTextureRAW("sun1.bmp"));
+    arena->setTexturaMar(LoadTextureRAW("stars1.bmp"));
     // glOrtho(
     //     arena->getX() - arena->getRaio(), 
     //     arena->getX() + arena->getRaio(), 
     //     arena->getY() - arena->getRaio(), 
     //     arena->getY() + arena->getRaio(), 
     //     -1.0, 1.0);
+    
 }
 
 bool lerXML(char* caminhoArquivo){

@@ -36,6 +36,8 @@ class Arena
         std::list<Inimigo*> inimigosAereosMortos;
         std::list<Circulo*> inimigosTerrestres;
         std::list<Circulo*> inimigosTerrestresMortos;
+        GLuint texturaMar;
+        GLuint texturaCeu;
 
     public:
     	// ------------ Construtor ------------ //
@@ -64,6 +66,10 @@ class Arena
         bool getIluminacao();
         void trocaIluminacao();
         void setLinha(Linha* linha);
+        GLuint getTexturaMar();
+        void setTexturaMar(GLuint texturaMar);
+        GLuint getTexturaCeu();
+        void setTexturaCeu(GLuint texturaCeu);
         std::list<Inimigo*> getInimigosAereos();
         void mataInimigoAereo(Inimigo* inimigo);
         void mataInimigoTerrestre(Circulo* inimigo);

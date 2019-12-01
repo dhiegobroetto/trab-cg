@@ -94,6 +94,23 @@ void Arena::setLinha(Linha* linha){
 	this->linha = linha;
 }
 
+GLuint Arena::getTexturaMar(){
+	return this->texturaMar;
+}
+
+void Arena::setTexturaMar(GLuint texturaMar){
+	this->texturaMar = texturaMar;
+}
+
+GLuint Arena::getTexturaCeu(){
+	return this->texturaCeu;
+}
+
+void Arena::setTexturaCeu(GLuint texturaCeu){
+	this->texturaCeu = texturaCeu;
+}
+
+
 bool Arena::getIluminacao(){
 	return this->iluminacao;
 }
@@ -123,34 +140,37 @@ void Arena::desenhaArena(){
 	float theta, px, py;
 
 	glPushMatrix();
-    glTranslatef(this->x, this->y, 0);
-	defineIluminacao(this->getCorR(), this->getCorG(), this->getCorB());
-	
-	// Base da arena
-	glBegin(GL_POLYGON);
-        for (int i = 0; i < 360; i++) {
-            theta = (i * M_PI) / 180.0;
-            px = cos(theta) * this->getRaio();
-            py = sin(theta) * this->getRaio();
-            glVertex3f(px, py, 0);
-        }
-    glEnd();
+	    glTranslatef(this->x, this->y, 0);
+		defineIluminacao(this->getCorR(), this->getCorG(), this->getCorB());
+		
+	    // Corpo da arena
+	    
+	    GLUquadric* qobj;
+	    qobj = gluNewQuadric();
+	    gluQuadricNormals(qobj, GLU_SMOOTH);
+	    gluCylinder(qobj, this->getRaio(), this->getRaio(), this->getRaio(), 360, 360);
 
-    // Corpo da arena
-    GLUquadric* qobj;
-    qobj = gluNewQuadric();
-    gluQuadricNormals(qobj, GLU_SMOOTH);
-    gluCylinder(qobj, this->getRaio(), this->getRaio(), this->getRaio(), 360, 360);
+		// Base da arena
+		// glBindTexture(GL_TEXTURE_2D, this->getTexturaMar());
+		glBegin(GL_POLYGON);
+	        for (int i = 0; i < 360; i++) {
+	            theta = (i * M_PI) / 180.0;
+	            px = cos(theta) * this->getRaio();
+	            py = sin(theta) * this->getRaio();
+	            glVertex3f(px, py, 0);
+	        }
+	    glEnd();
 
-    // Topo da arena
-	glBegin(GL_POLYGON);
-        for (int i = 0; i < 360; i++) {
-            theta = (i * M_PI) / 180.0;
-            px = cos(theta) * this->getRaio();
-            py = sin(theta) * this->getRaio();
-            glVertex3f(px, py, this->getRaio());
-        }
-    glEnd();
+	    // Topo da arena
+	    // glBindTexture(GL_TEXTURE_2D, this->getTexturaCeu());
+		glBegin(GL_POLYGON);
+	        for (int i = 0; i < 360; i++) {
+	            theta = (i * M_PI) / 180.0;
+	            px = cos(theta) * this->getRaio();
+	            py = sin(theta) * this->getRaio();
+	            glVertex3f(px, py, 4);
+	        }
+	    glEnd();
 
 	glPopMatrix();
 }
