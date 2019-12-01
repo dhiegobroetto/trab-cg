@@ -122,21 +122,11 @@ void display(void){
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     
-    gluLookAt(arena->getJogador()->getX(),arena->getJogador()->getY(),10, arena->getJogador()->getX() + arena->getJogador()->getRaio()*cos(arena->getJogador()->getAnguloJogador() *M_PI/180),arena->getJogador()->getY() + arena->getJogador()->getRaio()*sin(arena->getJogador()->getAnguloJogador() *M_PI/180),0, 0,0,1);
-    // gluLookAt(arena->getJogador()->getX(),arena->getJogador()->getY(),arena->getRaio(), arena->getJogador()->getX() + arena->getJogador()->getRaio()*cos(arena->getJogador()->getAnguloJogador() *M_PI/180),arena->getJogador()->getY() + arena->getJogador()->getRaio()*sin(arena->getJogador()->getAnguloJogador() *M_PI/180),0, 0,1,0);
+    // gluLookAt(arena->getJogador()->getX(),arena->getJogador()->getY(),10, arena->getJogador()->getX() + arena->getJogador()->getRaio()*cos(arena->getJogador()->getAnguloJogador() *M_PI/180),arena->getJogador()->getY() + arena->getJogador()->getRaio()*sin(arena->getJogador()->getAnguloJogador() *M_PI/180),0, 0,0,1);
+    gluLookAt(arena->getJogador()->getX(),arena->getJogador()->getY(),arena->getRaio(), arena->getJogador()->getX() + arena->getJogador()->getRaio()*cos(arena->getJogador()->getAnguloJogador() *M_PI/180),arena->getJogador()->getY() + arena->getJogador()->getRaio()*sin(arena->getJogador()->getAnguloJogador() *M_PI/180),0, 0,1,0);
     
     GLfloat posicaoLuz[] = {arena->getX(), arena->getY(), 20, 1.0};
     glLightfv(GL_LIGHT0, GL_POSITION, posicaoLuz);
-
-    GLfloat materialEmission[] = {0.00, 0.00, 0.00, 1.0};
-    GLfloat materialColor[] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat mat_shininess[] = {128};
-    glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
-    glMaterialfv(GL_FRONT, GL_AMBIENT, materialColor);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColor);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
     if(arena != NULL){
         arena->desenhaArena();
