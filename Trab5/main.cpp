@@ -19,6 +19,8 @@ GLfloat azul[] = {0.0, 0.0, 1.0};
 GLfloat laranja[] = {1.0, 0.7, 0.0};
 GLfloat amarelo[] = {1.0, 1.0, 0.0};
 GLfloat preto[] = {0.0, 0.0, 0.0};
+GLfloat upCamera[] = {0.0, 1.0, 0.0};
+GLfloat zCamera = 0;
 
 // Variáveis globais de configuração
 Jogador* jogador;
@@ -122,8 +124,14 @@ void display(void){
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     
-    // gluLookAt(arena->getJogador()->getX(),arena->getJogador()->getY(),10, arena->getJogador()->getX() + arena->getJogador()->getRaio()*cos(arena->getJogador()->getAnguloJogador() *M_PI/180),arena->getJogador()->getY() + arena->getJogador()->getRaio()*sin(arena->getJogador()->getAnguloJogador() *M_PI/180),0, 0,0,1);
-    gluLookAt(arena->getJogador()->getX(),arena->getJogador()->getY(),arena->getRaio(), arena->getJogador()->getX() + arena->getJogador()->getRaio()*cos(arena->getJogador()->getAnguloJogador() *M_PI/180),arena->getJogador()->getY() + arena->getJogador()->getRaio()*sin(arena->getJogador()->getAnguloJogador() *M_PI/180),0, 0,1,0);
+    // gluLookAt(arena->getJogador()->getX(),arena->getJogador()->getY(),10, 
+    //  arena->getJogador()->getX() + arena->getJogador()->getRaio()*cos(arena->getJogador()->getAnguloJogador() *M_PI/180),
+    //  arena->getJogador()->getY() + arena->getJogador()->getRaio()*sin(arena->getJogador()->getAnguloJogador() *M_PI/180),
+    //  0, 0,0,1);
+    gluLookAt(arena->getJogador()->getX(),arena->getJogador()->getY(),zCamera, 
+        arena->getJogador()->getX() + arena->getJogador()->getRaio()*cos(arena->getJogador()->getAnguloJogador() *M_PI/180),
+        arena->getJogador()->getY() + arena->getJogador()->getRaio()*sin(arena->getJogador()->getAnguloJogador() *M_PI/180),
+        0, upCamera[0], upCamera[1], upCamera[2]);
     
     GLfloat posicaoLuz[] = {arena->getX(), arena->getY(), 20, 1.0};
     glLightfv(GL_LIGHT0, GL_POSITION, posicaoLuz);
@@ -201,6 +209,20 @@ void idle(void){
     atualizaTempoInimigosAereos(t);
 
     if(jogador->isVivo() && arena->getInimigosTerrestres().size() > 0){
+        if(teclasTeclado['1']){
+            upCamera[1] = 1.0;
+            upCamera[2] = 0.0;
+            zCamera = arena->getRaio();
+        }
+        if(teclasTeclado['2']){
+            upCamera[1] = 0.0;
+            upCamera[2] = 1.0;
+            zCamera = 10;
+        }
+        if(teclasTeclado['l']){
+            arena->trocaIluminacao();
+        }
+
         if(arena->getInimigosAereos().size() > 0 && !arena->getInimigosAereos().front()->isVoando()){
             inicializaInimigosAereos(calculaVelocidadeFinal());
         }
@@ -242,13 +264,11 @@ void idle(void){
 
 void init(float fundoR, float fundoG, float fundoB){
     glClearColor(fundoR, fundoG, fundoB, 0.0);
-    glShadeModel(GL_SMOOTH);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_DEPTH_TEST);
+    habilitaIluminacao(arena->getIluminacao());
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    // Iniciar sistema de viz
+
+    // Iniciar sistema de visão
     gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, 900.0);
     // glOrtho(
     //     arena->getX() - arena->getRaio(), 
@@ -397,6 +417,7 @@ int main(int argc, char** argv){
             fundoG = 1.0;
             fundoB = 1.0;
             tempoAntigo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
+            zCamera = arena->getRaio();
             // Inicializa
             glutInit(&argc, argv);
             glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);

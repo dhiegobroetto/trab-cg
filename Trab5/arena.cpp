@@ -11,6 +11,7 @@ Arena::Arena(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR, GL
     this->corR = corR;
     this->corG = corG;
     this->corB = corB;
+    this->iluminacao = true;
 }
 
 GLint Arena::getId(){
@@ -93,6 +94,13 @@ void Arena::setLinha(Linha* linha){
 	this->linha = linha;
 }
 
+bool Arena::getIluminacao(){
+	return this->iluminacao;
+}
+void Arena::trocaIluminacao(){
+	this->iluminacao = !this->iluminacao;
+}
+
 std::list<Inimigo*> Arena::getInimigosAereos(){
 	return this->inimigosAereos;
 }
@@ -122,7 +130,8 @@ void Arena::desenhaArena(){
 			theta = (i * M_PI) / 180.0;
 			px = cos(theta) * this->getRaio();
 			py = sin(theta) * this->getRaio();
-			glVertex2f(px, py);
+			glVertex3f(px, py, 0);
+			glVertex3f(px, py, this->getRaio()/2);
 		}
 	glEnd();
 	glPopMatrix();

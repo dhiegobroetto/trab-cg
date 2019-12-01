@@ -3,17 +3,19 @@
 
 #include <GL/glut.h>
 #include "math.h"
+#include "config.h"
 #include "linha.h"
 #include "jogador.h"
 #include "inimigo.h"
 #include "circulo.h"
-#include "config.h"
 #include <iostream>
 #include <string>
 #include <list>
 
 class Jogador;
 class Inimigo;
+class Linha;
+class Circulo;
 
 class Arena
 {
@@ -26,6 +28,7 @@ class Arena
         GLfloat corR;
         GLfloat corG;
         GLfloat corB;
+        bool iluminacao;
         GLfloat velocidade;
         Jogador* jogador;
         Linha* linha;
@@ -58,6 +61,8 @@ class Arena
         Jogador* getJogador();
         void setJogador(Jogador* jogador);
         Linha* getLinha();
+        bool getIluminacao();
+        void trocaIluminacao();
         void setLinha(Linha* linha);
         std::list<Inimigo*> getInimigosAereos();
         void mataInimigoAereo(Inimigo* inimigo);

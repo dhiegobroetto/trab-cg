@@ -17,6 +17,7 @@
 class Arena;
 class Projetil;
 class Bomba;
+class Linha;
 
 class Jogador
 {
