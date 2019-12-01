@@ -1,7 +1,7 @@
 #include "config.h"
 
 void defineIluminacao(GLfloat corR, GLfloat corG, GLfloat corB){
-	glColor3f(corR, corG, corB);
+	// glColor3f(corR, corG, corB);
 	GLfloat materialEmission[] = {corR, corG, corB, 1.0};
 	GLfloat materialColor[] = {corR, corG, corB, 1.0};
 	GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
@@ -15,10 +15,7 @@ void defineIluminacao(GLfloat corR, GLfloat corG, GLfloat corB){
 
 void habilitaIluminacao(bool iluminacao){
 	if(iluminacao){
-		glShadeModel(GL_SMOOTH);
 	    glEnable(GL_LIGHTING);
-	    glEnable(GL_LIGHT0);
-	    glEnable(GL_DEPTH_TEST);
 	}else{
 		glDisable(GL_LIGHTING);
 	}

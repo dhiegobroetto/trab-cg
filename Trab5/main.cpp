@@ -51,6 +51,10 @@ GLfloat* retornaCor(std::string fill){
 
 void keyPress(unsigned char key, int x, int y){
   teclasTeclado[key] = 1;
+  if(key == 'l'){
+        arena->trocaIluminacao();
+        habilitaIluminacao(arena->getIluminacao());
+    }
 }
 
 void keyup(unsigned char key, int x, int y){
@@ -219,9 +223,6 @@ void idle(void){
             upCamera[2] = 1.0;
             zCamera = 10;
         }
-        if(teclasTeclado['l']){
-            arena->trocaIluminacao();
-        }
 
         if(arena->getInimigosAereos().size() > 0 && !arena->getInimigosAereos().front()->isVoando()){
             inicializaInimigosAereos(calculaVelocidadeFinal());
@@ -264,7 +265,10 @@ void idle(void){
 
 void init(float fundoR, float fundoG, float fundoB){
     glClearColor(fundoR, fundoG, fundoB, 0.0);
-    habilitaIluminacao(arena->getIluminacao());
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_DEPTH_TEST);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
