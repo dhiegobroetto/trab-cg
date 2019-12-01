@@ -4,10 +4,9 @@
 #include <GL/glut.h>
 #include "math.h"
 #include "linha.h"
+#include "config.h"
 #include <iostream>
 #include <string>
-
-using namespace std;
 
 class Circulo
 {
@@ -51,9 +50,6 @@ class Circulo
         void desenhaCruz(GLfloat base, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaCirculo(GLfloat raio, GLfloat x, GLfloat y, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaCirculoLinha(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
-        void moveX(GLfloat x);
-        void moveY(GLfloat y);
-        void decola(Linha* linha);
 
 };
 

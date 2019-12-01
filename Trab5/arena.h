@@ -7,11 +7,10 @@
 #include "jogador.h"
 #include "inimigo.h"
 #include "circulo.h"
+#include "config.h"
 #include <iostream>
 #include <string>
 #include <list>
-
-using namespace std;
 
 class Jogador;
 class Inimigo;
@@ -30,10 +29,10 @@ class Arena
         GLfloat velocidade;
         Jogador* jogador;
         Linha* linha;
-        list<Inimigo*> inimigosAereos;
-        list<Inimigo*> inimigosAereosMortos;
-        list<Circulo*> inimigosTerrestres;
-        list<Circulo*> inimigosTerrestresMortos;
+        std::list<Inimigo*> inimigosAereos;
+        std::list<Inimigo*> inimigosAereosMortos;
+        std::list<Circulo*> inimigosTerrestres;
+        std::list<Circulo*> inimigosTerrestresMortos;
 
     public:
     	// ------------ Construtor ------------ //
@@ -60,10 +59,10 @@ class Arena
         void setJogador(Jogador* jogador);
         Linha* getLinha();
         void setLinha(Linha* linha);
-        list<Inimigo*> getInimigosAereos();
+        std::list<Inimigo*> getInimigosAereos();
         void mataInimigoAereo(Inimigo* inimigo);
         void mataInimigoTerrestre(Circulo* inimigo);
-        list<Circulo*> getInimigosTerrestres();
+        std::list<Circulo*> getInimigosTerrestres();
         void desenhaArena();
         void criaInimigosAereos(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b, Arena* arena, GLfloat vel, GLfloat velTiro, GLfloat freqTiro);
         void criaInimigosTerrestres(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b);

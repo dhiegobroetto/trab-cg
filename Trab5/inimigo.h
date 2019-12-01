@@ -7,6 +7,7 @@
 #include "circulo.h"
 #include "arena.h"
 #include "projetil.h"
+#include "config.h"
 #include <iostream>
 #include <string>
 #include <cmath>
@@ -16,8 +17,6 @@
 #define RETO 0
 #define ESQUERDA 1
 #define DIREITA 2
-
-using namespace std;
 
 class Arena;
 class Projetil;
@@ -47,7 +46,7 @@ class Inimigo
         GLfloat tempoRaio;
         GLfloat segundosIA;
         Arena* arena;
-        vector<Projetil*> projeteis;
+        std::vector<Projetil*> projeteis;
         GLfloat anguloInimigo;
         GLfloat anguloCanhao;
         GLfloat anguloHelice;

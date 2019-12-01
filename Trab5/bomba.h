@@ -6,10 +6,9 @@
 #include "linha.h"
 #include "circulo.h"
 #include "arena.h"
+#include "config.h"
 #include <iostream>
 #include <string>
-
-using namespace std;
 
 
 class Bomba

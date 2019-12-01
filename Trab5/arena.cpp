@@ -93,7 +93,7 @@ void Arena::setLinha(Linha* linha){
 	this->linha = linha;
 }
 
-list<Inimigo*> Arena::getInimigosAereos(){
+std::list<Inimigo*> Arena::getInimigosAereos(){
 	return this->inimigosAereos;
 }
 
@@ -107,7 +107,7 @@ void Arena::mataInimigoTerrestre(Circulo* inimigo){
 	this->inimigosTerrestres.remove(inimigo);
 }
 
-list<Circulo*> Arena::getInimigosTerrestres(){
+std::list<Circulo*> Arena::getInimigosTerrestres(){
 	return this->inimigosTerrestres;
 }
 
@@ -116,7 +116,7 @@ void Arena::desenhaArena(){
 
 	glPushMatrix();
     glTranslatef(this->x, this->y, 0);
-	glColor3f(this->getCorR(), this->getCorG(), this->getCorB());
+	defineIluminacao(this->getCorR(), this->getCorG(), this->getCorB());
 	glBegin(GL_POLYGON);
 		for (int i = 0; i < 360; i++) {
 			theta = (i * M_PI) / 180.0;

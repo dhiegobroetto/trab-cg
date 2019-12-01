@@ -259,7 +259,7 @@ void Inimigo::setLimiteCanhaoY(GLfloat limiteCanhaoY){
 }
 
 void Inimigo::desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB){
-	glColor3f(corR, corG, corB);
+	defineIluminacao(corR, corG, corB);
 	glBegin(GL_POLYGON);
 		glVertex3f(base/2, 0.0, 0.0);
 		glVertex3f(base/2, altura, 0.0);
@@ -269,13 +269,12 @@ void Inimigo::desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloa
 }
 
 void Inimigo::desenhaTriangulo(GLfloat tamanho){
-	glColor3f(1.0, 1.0, 0.0);
+	defineIluminacao(1.0, 1.0, 0.0);
 	glBegin(GL_TRIANGLES);
 		glVertex3f(0.0, 0.0, 0.0);
 		glVertex3f(-tamanho, -tamanho/2, 0.0);
 		glVertex3f(-tamanho, tamanho/2, 0.0);
 	glEnd();
-	glColor3f(1.0, 1.0, 0.0);
 	glBegin(GL_TRIANGLES);
 		glVertex3f(0.0, 0.0, 0.0);
 		glVertex3f(tamanho, -tamanho/2, 0.0);
@@ -284,7 +283,7 @@ void Inimigo::desenhaTriangulo(GLfloat tamanho){
 }
 
 void Inimigo::desenhaAsa(int asa){
-		glColor3f(0.0, 0.0, 0.0);
+		defineIluminacao(0.0, 0.0, 0.0);
 		if(asa == 0){
 			glBegin(GL_POLYGON);
 				glVertex3f(this->raio/4, 0.0, 0.0);
@@ -303,7 +302,7 @@ void Inimigo::desenhaAsa(int asa){
 }
 
 void Inimigo::desenhaAerodinamica(GLfloat tamanho, GLfloat corR, GLfloat corG, GLfloat corB){
-	glColor3f(corR, corG, corB);
+	defineIluminacao(corR, corG, corB);
 	glBegin(GL_TRIANGLES);
 		glVertex3f(0.0, tamanho, 0.0);
 		glVertex3f(tamanho, 0.0, 0.0);
@@ -343,7 +342,7 @@ void Inimigo::desenhaHelice(int asa){
 
 
 void Inimigo::desenhaElipseBorda(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB){
-	glColor3f(corR, corG, corB);
+	defineIluminacao(corR, corG, corB);
 	float x,y,z;
 	int t;
 	glPointSize(1.0);
@@ -358,7 +357,7 @@ void Inimigo::desenhaElipseBorda(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat c
 }
 
 void Inimigo::desenhaElipse(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB){
-	glColor3f(corR, corG, corB);
+	defineIluminacao(corR, corG, corB);
 	float x,y,z;
 	int t;
 	glBegin(GL_POLYGON);

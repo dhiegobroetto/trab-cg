@@ -107,7 +107,7 @@ GLfloat Projetil::getAlturaCanhao(){
 
 void Projetil::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
     float theta, px, py;
-    glColor3f(corR, corG, corB);
+    defineIluminacao(corR, corG, corB);
 	glBegin(GL_POLYGON);
 		for (int i = 0; i < 360; i++) {
 			theta = (i * M_PI) / 180.0;
@@ -117,7 +117,7 @@ void Projetil::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat 
 		}
 	glEnd();
 
-	glColor3f(1.0, 1.0, 1.0);
+	defineIluminacao(1.0, 1.0, 1.0);
 	glPointSize(0.5);
 	glBegin(GL_POINTS);
         for (int i = 0; i < 360; i++) {

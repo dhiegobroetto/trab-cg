@@ -240,7 +240,7 @@ void Jogador::setLimiteCanhaoY(GLfloat limiteCanhaoY){
 
 void Jogador::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
     float theta, px, py;
-    glColor3f(1.0, 1.0, 1.0);
+    defineIluminacao(corR, corG, corB);
 	glBegin(GL_POLYGON);
 		for (int i = 0; i < 360; i++) {
 			theta = (i * M_PI) / 180.0;
@@ -252,7 +252,7 @@ void Jogador::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat c
 }
 
 void Jogador::desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB){
-	glColor3f(corR, corG, corB);
+	defineIluminacao(corR, corG, corB);
 	glBegin(GL_POLYGON);
 		glVertex3f(base/2, 0.0, 0.0);
 		glVertex3f(base/2, altura, 0.0);
@@ -262,13 +262,15 @@ void Jogador::desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloa
 }
 
 void Jogador::desenhaTriangulo(GLfloat tamanho){
-	glColor3f(1.0, 1.0, 0.0);
+	GLfloat corR = 1.0;
+	GLfloat corG = 1.0;
+	GLfloat corB = 0.0;
+	defineIluminacao(corR, corG, corB);
 	glBegin(GL_TRIANGLES);
 		glVertex3f(0.0, 0.0, 0.0);
 		glVertex3f(-tamanho, -tamanho/2, 0.0);
 		glVertex3f(-tamanho, tamanho/2, 0.0);
 	glEnd();
-	glColor3f(1.0, 1.0, 0.0);
 	glBegin(GL_TRIANGLES);
 		glVertex3f(0.0, 0.0, 0.0);
 		glVertex3f(tamanho, -tamanho/2, 0.0);
@@ -277,26 +279,29 @@ void Jogador::desenhaTriangulo(GLfloat tamanho){
 }
 
 void Jogador::desenhaAsa(int asa){
-		glColor3f(0.0, 0.0, 0.0);
-		if(asa == 0){
-			glBegin(GL_POLYGON);
-				glVertex3f(this->raio/4, 0.0, 0.0);
-				glVertex3f(this->raio/4, this->raio/2, 0.0);
-				glVertex3f(-this->raio/2, this->raio/2, 0.0);
-				glVertex3f(-this->raio/2, this->raio/4, 0.0);
-			glEnd();
-		}else if(asa == 1){
-			glBegin(GL_POLYGON);
-				glVertex3f(0.0, this->raio/4, 0.0);
-				glVertex3f(0.0, this->raio/2, 0.0);
-				glVertex3f(-(this->raio/4)*3, this->raio/2, 0.0);
-				glVertex3f(-(this->raio/4)*3, 0.0, 0.0);
-			glEnd();
-		}
+	GLfloat corR = 0.0;
+	GLfloat corG = 0.0;
+	GLfloat corB = 0.0;
+	defineIluminacao(corR, corG, corB);
+	if(asa == 0){
+		glBegin(GL_POLYGON);
+			glVertex3f(this->raio/4, 0.0, 0.0);
+			glVertex3f(this->raio/4, this->raio/2, 0.0);
+			glVertex3f(-this->raio/2, this->raio/2, 0.0);
+			glVertex3f(-this->raio/2, this->raio/4, 0.0);
+		glEnd();
+	}else if(asa == 1){
+		glBegin(GL_POLYGON);
+			glVertex3f(0.0, this->raio/4, 0.0);
+			glVertex3f(0.0, this->raio/2, 0.0);
+			glVertex3f(-(this->raio/4)*3, this->raio/2, 0.0);
+			glVertex3f(-(this->raio/4)*3, 0.0, 0.0);
+		glEnd();
+	}
 }
 
 void Jogador::desenhaAerodinamica(GLfloat tamanho, GLfloat corR, GLfloat corG, GLfloat corB){
-	glColor3f(corR, corG, corB);
+	defineIluminacao(corR, corG, corB);
 	glBegin(GL_TRIANGLES);
 		glVertex3f(0.0, tamanho, 0.0);
 		glVertex3f(tamanho, 0.0, 0.0);
@@ -336,7 +341,8 @@ void Jogador::desenhaHelice(int asa){
 
 
 void Jogador::desenhaElipseBorda(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB){
-	glColor3f(corR, corG, corB);
+	defineIluminacao(corR, corG, corB);
+	
 	float x,y,z;
 	int t;
 	glPointSize(1.0);
@@ -351,7 +357,7 @@ void Jogador::desenhaElipseBorda(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat c
 }
 
 void Jogador::desenhaElipse(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB){
-	glColor3f(corR, corG, corB);
+	defineIluminacao(corR, corG, corB);
 	float x,y,z;
 	int t;
 	glBegin(GL_POLYGON);
@@ -491,7 +497,7 @@ bool Jogador::verificaColisaoProjetil(GLfloat x, GLfloat y){
 
 void Jogador::verificaColisaoBomba(GLfloat x, GLfloat y, GLfloat raio){
 	// Verifica colisão com inimigos terrestres
-	list<Circulo*> inimigosMortos;
+	std::list<Circulo*> inimigosMortos;
 	for (auto inimigo : this->arena->getInimigosTerrestres()) {
 		GLfloat distanciaInimigo = this->distanciaEntrePontos(x, y, inimigo->getX(), inimigo->getY());
 		GLfloat raioInimigo = inimigo->getRaio();

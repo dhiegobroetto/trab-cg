@@ -3,8 +3,7 @@
 
 #include <GL/glut.h>
 #include "math.h"
-
-using namespace std;
+#include "config.h"
 
 class Linha
 {

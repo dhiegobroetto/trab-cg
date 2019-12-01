@@ -1,5 +1,5 @@
 CC = g++ -std=c++11
-DOMAIN_FILES = main.cpp circulo.cpp linha.cpp jogador.cpp inimigo.cpp arena.cpp projetil.cpp bomba.cpp
+DOMAIN_FILES = main.cpp circulo.cpp linha.cpp jogador.cpp inimigo.cpp arena.cpp projetil.cpp bomba.cpp config.cpp
 TINYXML_FOLDER = tinyxml
 TINYXML_FILES = $(TINYXML_FOLDER)/tinyxml.cpp 		\
 				$(TINYXML_FOLDER)/tinyxmlparser.cpp \

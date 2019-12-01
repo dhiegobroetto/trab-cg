@@ -8,12 +8,11 @@
 #include "arena.h"
 #include "projetil.h"
 #include "bomba.h"
+#include "config.h"
 #include <iostream>
 #include <string>
 #include <cmath>
 #include <vector>
-
-using namespace std;
 
 class Arena;
 class Projetil;
@@ -42,8 +41,8 @@ class Jogador
         GLfloat raioInicial;
         GLfloat tempoRaio;
         Arena* arena;
-        vector<Projetil*> projeteis;
-        vector<Bomba*> bombas;
+        std::vector<Projetil*> projeteis;
+        std::vector<Bomba*> bombas;
         GLfloat anguloJogador;
         GLfloat anguloCanhao;
         GLfloat anguloHelice;

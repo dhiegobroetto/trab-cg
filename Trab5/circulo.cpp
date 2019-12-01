@@ -85,7 +85,7 @@ void Circulo::desenha(){
 }
 
 void Circulo::desenhaQuadrado(GLfloat base, GLfloat corR, GLfloat corG, GLfloat corB){
-	glColor3f(corR, corG, corB);
+	defineIluminacao(corR, corG, corB);
 	glBegin(GL_POLYGON);
 		glVertex3f(base, -base, 0.0);
 		glVertex3f(base, base, 0.0);
@@ -95,7 +95,7 @@ void Circulo::desenhaQuadrado(GLfloat base, GLfloat corR, GLfloat corG, GLfloat 
 }
 
 void Circulo::desenhaQuadradoLinha(GLfloat base, GLfloat corR, GLfloat corG, GLfloat corB){
-	glColor3f(corR, corG, corB);
+	defineIluminacao(corR, corG, corB);
 	glPointSize(1.0);
 	glBegin(GL_LINES);
 		glVertex3f(base, -base, 0.0);
@@ -110,7 +110,7 @@ void Circulo::desenhaQuadradoLinha(GLfloat base, GLfloat corR, GLfloat corG, GLf
 }
 
 void Circulo::desenhaCruz(GLfloat base, GLfloat corR, GLfloat corG, GLfloat corB){
-	glColor3f(corR, corG, corB);
+	defineIluminacao(corR, corG, corB);
 	glPointSize(1.0);
 	glBegin(GL_LINES);
 		glVertex3f(0.0, -base, 0.0);
@@ -122,7 +122,7 @@ void Circulo::desenhaCruz(GLfloat base, GLfloat corR, GLfloat corG, GLfloat corB
 
 void Circulo::desenhaCirculoLinha(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
 	float theta, px, py;
-	glColor3f(corR, corG, corB);
+	defineIluminacao(corR, corG, corB);
 	glPointSize(1.0);
 	glBegin(GL_POINTS);
 		for (int i = 0; i < 360; i++) {
@@ -138,7 +138,7 @@ void Circulo::desenhaCirculo(GLfloat raio, GLfloat x, GLfloat y, GLfloat corR, G
 	float theta, px, py;
 	glPushMatrix();
 		glTranslatef(x, y, 0);
-		glColor3f(corR, corG, corB);
+		defineIluminacao(corR, corG, corB);
 		glBegin(GL_POLYGON);
 			for (int i = 0; i < 360; i++) {
 				theta = (i * M_PI) / 180.0;
@@ -148,15 +148,4 @@ void Circulo::desenhaCirculo(GLfloat raio, GLfloat x, GLfloat y, GLfloat corR, G
 			}
 		glEnd();
 	glPopMatrix();
-}
-void Circulo::moveX(GLfloat x){
-    this->x += x;
-}
-void Circulo::moveY(GLfloat y){
-    this->y += y;
-}
-void Circulo::decola(Linha* linha){
-	std::cout << this->x << endl;
-	this->moveX(1.0);
-	this->desenhaCirculo(this->raio, this->x, this->y, this->corR, this->corG, this->corB);
 }
