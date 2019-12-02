@@ -129,16 +129,12 @@ void display(void){
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     
-    // gluLookAt(arena->getJogador()->getX(),arena->getJogador()->getY(),10, 
-    //  arena->getJogador()->getX() + arena->getJogador()->getRaio()*cos(arena->getJogador()->getAnguloJogador() *M_PI/180),
-    //  arena->getJogador()->getY() + arena->getJogador()->getRaio()*sin(arena->getJogador()->getAnguloJogador() *M_PI/180),
-    //  0, 0,0,1);
     gluLookAt(arena->getJogador()->getX(),arena->getJogador()->getY(),zCamera, 
         arena->getJogador()->getX() + arena->getJogador()->getRaio()*cos(arena->getJogador()->getAnguloJogador() *M_PI/180),
         arena->getJogador()->getY() + arena->getJogador()->getRaio()*sin(arena->getJogador()->getAnguloJogador() *M_PI/180),
         0, upCamera[0], upCamera[1], upCamera[2]);
     
-    GLfloat posicaoLuz[] = {arena->getX(), arena->getY(), 20, 1.0};
+    GLfloat posicaoLuz[] = {arena->getX(), arena->getY(), 1, 0.0};
     glLightfv(GL_LIGHT0, GL_POSITION, posicaoLuz);
 
     if(arena != NULL){
@@ -217,7 +213,7 @@ void idle(void){
         if(teclasTeclado['1']){
             upCamera[1] = 1.0;
             upCamera[2] = 0.0;
-            zCamera = arena->getRaio();
+            zCamera = arena->getRaio()/2;
         }
         if(teclasTeclado['2']){
             upCamera[1] = 0.0;
@@ -277,7 +273,7 @@ void init(float fundoR, float fundoG, float fundoB){
     glLoadIdentity();
 
     // Iniciar sistema de visão
-    gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, 900.0);
+    gluPerspective(45, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, 900.0);
 
     arena->setTexturaCeu(LoadTextureRAW("sky.bmp"));
     arena->setTexturaMar(LoadTextureRAW("water.bmp"));
@@ -429,7 +425,7 @@ int main(int argc, char** argv){
             fundoG = 0.0;
             fundoB = 0.0;
             tempoAntigo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
-            zCamera = arena->getRaio();
+            zCamera = arena->getRaio()/2;
             // Inicializa
             glutInit(&argc, argv);
             glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);

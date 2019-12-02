@@ -370,9 +370,17 @@ void Inimigo::desenhaElipse(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, 
 	glEnd();
 }
 
+void Inimigo::desenhaElipsoide(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB){
+	defineIluminacao(corR, corG, corB);
+	GLfloat raioMenor = cx/cy;
+	glScalef(raioMenor, 1, raioMenor);
+	glutSolidSphere(cy, 180, 180);
+}
+
 void Inimigo::desenhaBase(){
 	glPushMatrix();
-		desenhaElipse((this->getRaio()/3), this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB());
+		desenhaElipsoide((this->getRaio()/3), this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB());
+		// desenhaElipse((this->getRaio()/3), this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB());
 	glPopMatrix();
 }
 

@@ -378,11 +378,11 @@ void Jogador::desenhaElipse(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, 
 	glEnd();
 }
 
-void desenhaElipsoide(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB){
+void Jogador::desenhaElipsoide(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB){
 	defineIluminacao(corR, corG, corB);
 	GLfloat raioMenor = cx/cy;
 	glScalef(raioMenor, 1, raioMenor);
-	glutSolidSphere(cy, 360, 360);
+	glutSolidSphere(cy, 180, 180);
 }
 
 void Jogador::desenhaBase(){
@@ -408,10 +408,22 @@ void Jogador::desenhaAsas(int asa){
 
 }
 
+void Jogador::desenhaCilindro(GLfloat raio, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB){
+	glColor3f(corR, corG, corB);
+	GLUquadric* qobj = gluNewQuadric();
+    gluQuadricTexture(qobj, GLU_TRUE);
+    gluQuadricDrawStyle(qobj, GLU_FILL);
+    gluQuadricNormals(qobj, GLU_SMOOTH);
+    gluCylinder(qobj, raio, raio, altura, 180, 180);
+}
+
 void Jogador::desenhaCanhao(){
 	glPushMatrix();
 		glTranslatef(0.0, this->raio - 1, 0);
 		glRotatef(this->anguloCanhao, 0.0, 0.0, 1.0);
+
+		// desenhaCilindro(this->raio/this->raio, this->raio/2 + 1, 0.0, 0.0, 0.0);
+
 		desenhaQuadrado(this->raio/4, this->raio/2 + 1, 0.0, 0.0, 0.0);
 	glPopMatrix();
 }
