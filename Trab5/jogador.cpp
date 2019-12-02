@@ -262,42 +262,44 @@ void Jogador::desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloa
 }
 
 void Jogador::desenhaTriangulo(GLfloat tamanho){
-	GLfloat corR = 1.0;
-	GLfloat corG = 1.0;
-	GLfloat corB = 0.0;
-	defineIluminacao(corR, corG, corB);
-	glBegin(GL_TRIANGLES);
-		glVertex3f(0.0, 0.0, 0.0);
-		glVertex3f(-tamanho, -tamanho/2, 0.0);
-		glVertex3f(-tamanho, tamanho/2, 0.0);
-	glEnd();
-	glBegin(GL_TRIANGLES);
-		glVertex3f(0.0, 0.0, 0.0);
-		glVertex3f(tamanho, -tamanho/2, 0.0);
-		glVertex3f(tamanho, tamanho/2, 0.0);
-	glEnd();
+    GLfloat corR = 1.0;
+    GLfloat corG = 1.0;
+    GLfloat corB = 0.0;
+    defineIluminacao(corR, corG, corB);
+    glBegin(GL_QUADS);
+        glVertex3f(0.0, 0.0, 0.0);
+        glVertex3f(-tamanho, -tamanho/2, 2.0);
+        glVertex3f(-tamanho, tamanho/2, 2.0);
+        glVertex3f(-tamanho, tamanho/2, 0.0);
+        glVertex3f(-tamanho, -tamanho/2, 0.0);
+    glEnd();
+    glBegin(GL_QUADS);
+        glVertex3f(0.0, 0.0, 0.0);
+        glVertex3f(tamanho, -tamanho/2, 0.0);
+        glVertex3f(tamanho, tamanho/2, 2.0);
+    glEnd();
 }
 
 void Jogador::desenhaAsa(int asa){
-	GLfloat corR = 0.0;
-	GLfloat corG = 0.0;
-	GLfloat corB = 0.0;
-	defineIluminacao(corR, corG, corB);
-	if(asa == 0){
-		glBegin(GL_POLYGON);
-			glVertex3f(this->raio/4, 0.0, 0.0);
-			glVertex3f(this->raio/4, this->raio/2, 0.0);
-			glVertex3f(-this->raio/2, this->raio/2, 0.0);
-			glVertex3f(-this->raio/2, this->raio/4, 0.0);
-		glEnd();
-	}else if(asa == 1){
-		glBegin(GL_POLYGON);
-			glVertex3f(0.0, this->raio/4, 0.0);
-			glVertex3f(0.0, this->raio/2, 0.0);
-			glVertex3f(-(this->raio/4)*3, this->raio/2, 0.0);
-			glVertex3f(-(this->raio/4)*3, 0.0, 0.0);
-		glEnd();
-	}
+    GLfloat corR = 0.0;
+    GLfloat corG = 0.0;
+    GLfloat corB = 0.0;
+    defineIluminacao(corR, corG, corB);
+    if(asa == 0){
+        glPushMatrix();
+            glColor3f(0.0, 0.0, 0.0);
+
+            glScalef(2.0, 1.0, 0.1625);
+            glutSolidCube(this->raio/2);
+        glPopMatrix();
+    }else if(asa == 1){
+        glPushMatrix();
+            glColor3f(0.0, 0.0, 0.0);
+
+            glScalef(2.0, 1.0, 0.1625);
+            glutSolidCube(this->raio/2);
+        glPopMatrix();
+    }
 }
 
 void Jogador::desenhaAerodinamica(GLfloat tamanho, GLfloat corR, GLfloat corG, GLfloat corB){
@@ -311,32 +313,38 @@ void Jogador::desenhaAerodinamica(GLfloat tamanho, GLfloat corR, GLfloat corG, G
 
 
 void Jogador::desenhaHelice(int asa){
-	GLfloat angulo = this->anguloHelice;
-	glPushMatrix();
-		if(asa == 0){
-			glTranslatef(-this->raio/8, this->raio/2, 0);
-			angulo *= -1;
-		}else if (asa == 1){
-			glTranslatef((-(this->raio/4)*3)/2, this->raio/2, 0);
-		}
-		desenhaQuadrado(this->raio/6, this->raio/4, 0.0, 0.0, 0.0);
-		glTranslatef(0.0, this->raio/4, 0.0);
-			glRotatef(angulo, 0.0, 1.0, 0.0);
-			desenhaTriangulo(this->raio/4);
-			glRotatef(-angulo, 0.0, 1.0, 0.0);
+    GLfloat angulo = this->anguloHelice;
+    glPushMatrix();
+        if(asa == 0){
+            glTranslatef(-this->raio/8, this->raio/2, 0);
+            angulo *= -1;
+        }else if (asa == 1){
+            glTranslatef((-(this->raio/4)*3)/2, this->raio/2, 0);
+        }
+        glPushMatrix();
+            // glColor3f(1.0, 0.2, 0.2);
 
-			glRotatef(angulo + 90, 0.0, 1.0, 0.0);
-			desenhaTriangulo(this->raio/4);
-			glRotatef(-(angulo + 90), 0.0, 1.0, 0.0);
+            glScalef(0.3, 1.0, 0.0825);
+            glutSolidCube(this->raio/2);
+        glPopMatrix();
+        // desenhaQuadrado(this->raio/6, this->raio/4, 0.0, 0.0, 0.0);
+        glTranslatef(0.0, this->raio/4, 0.0);
+            glRotatef(angulo, 0.0, 1.0, 0.0);
+            desenhaTriangulo(this->raio/4);
+            glRotatef(-angulo, 0.0, 1.0, 0.0);
 
-			glRotatef(angulo + 180, 0.0, 1.0, 0.0);
-			desenhaTriangulo(this->raio/4);
-			glRotatef(-(angulo + 180), 0.0, 1.0, 0.0);
+            glRotatef(angulo + 90, 0.0, 1.0, 0.0);
+            desenhaTriangulo(this->raio/4);
+            glRotatef(-(angulo + 90), 0.0, 1.0, 0.0);
 
-			glRotatef(angulo + 270, 0.0, 1.0, 0.0);
-			desenhaTriangulo(this->raio/4);
-			glRotatef(-(angulo + 270), 0.0, 1.0, 0.0);
-	glPopMatrix();
+            glRotatef(angulo + 180, 0.0, 1.0, 0.0);
+            desenhaTriangulo(this->raio/4);
+            glRotatef(-(angulo + 180), 0.0, 1.0, 0.0);
+
+            glRotatef(angulo + 270, 0.0, 1.0, 0.0);
+            desenhaTriangulo(this->raio/4);
+            glRotatef(-(angulo + 270), 0.0, 1.0, 0.0);
+    glPopMatrix();
 }
 
 
@@ -370,22 +378,33 @@ void Jogador::desenhaElipse(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, 
 	glEnd();
 }
 
+void desenhaElipsoide(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB){
+	defineIluminacao(corR, corG, corB);
+	GLfloat raioMenor = cx/cy;
+	glScalef(raioMenor, 1, raioMenor);
+	glutSolidSphere(cy, 360, 360);
+}
+
 void Jogador::desenhaBase(){
 	glPushMatrix();
-		desenhaElipse((this->getRaio()/3), this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB());
+		desenhaElipsoide((this->getRaio()/3), this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB());
 	glPopMatrix();
 }
 
 void Jogador::desenhaAsas(int asa){
-	glPushMatrix();
-		if(asa == 0){
-			glTranslatef(-this->raio/2, -this->raio/3, 0);
-		}else if(asa == 1){
-			glTranslatef(this->raio, -this->raio/3, 0);
-		}
-		desenhaAsa(asa);
-		desenhaHelice(asa);
-	glPopMatrix();
+    glPushMatrix();
+        if(asa == 0){
+            glTranslatef(-this->raio/2, -this->raio/3, 0);
+            desenhaHelice(asa);
+            glTranslatef(0, this->raio/3, 0);
+            desenhaAsa(asa);
+        }else if(asa == 1){
+            glTranslatef(this->raio, -this->raio/3, 0);
+            desenhaHelice(asa);
+            glTranslatef(-this->raio/2, this->raio/3, 0);
+            desenhaAsa(asa);
+        }
+    glPopMatrix();
 
 }
 

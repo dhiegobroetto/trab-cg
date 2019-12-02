@@ -2,8 +2,6 @@
 
 void defineIluminacao(GLfloat corR, GLfloat corG, GLfloat corB){
 	glColor3f(corR, corG, corB);
-    // glDisable(GL_TEXTURE_2D);
-    // glDisable(GL_LIGHTING);
 	GLfloat materialEmission[] = {corR, corG, corB, 1.0};
 	GLfloat materialColor[] = {corR, corG, corB, 1.0};
 	GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
@@ -14,8 +12,8 @@ void defineIluminacao(GLfloat corR, GLfloat corG, GLfloat corB){
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//X
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);//Y
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//X
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);//Y
 }
 
 void habilitaIluminacao(bool iluminacao){

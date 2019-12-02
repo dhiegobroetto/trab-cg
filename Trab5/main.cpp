@@ -271,6 +271,7 @@ void init(float fundoR, float fundoG, float fundoB){
     glEnable(GL_DEPTH_TEST);
     // glEnable(GL_TEXTURE_2D);
     glDepthFunc(GL_LEQUAL);
+    glEnable(GL_NORMALIZE);
     glEnable(GL_LIGHT0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -278,8 +279,8 @@ void init(float fundoR, float fundoG, float fundoB){
     // Iniciar sistema de visão
     gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, 900.0);
 
-    arena->setTexturaCeu(LoadTextureRAW("sun1.bmp"));
-    arena->setTexturaMar(LoadTextureRAW("stars1.bmp"));
+    arena->setTexturaCeu(LoadTextureRAW("sky.bmp"));
+    arena->setTexturaMar(LoadTextureRAW("water.bmp"));
     // glOrtho(
     //     arena->getX() - arena->getRaio(), 
     //     arena->getX() + arena->getRaio(), 
@@ -424,9 +425,9 @@ int main(int argc, char** argv){
     srand(time(NULL));
     if(argc > 1){
         if(lerXML(argv[1])){
-            fundoR = 1.0;
-            fundoG = 1.0;
-            fundoB = 1.0;
+            fundoR = 0.0;
+            fundoG = 0.0;
+            fundoB = 0.0;
             tempoAntigo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
             zCamera = arena->getRaio();
             // Inicializa

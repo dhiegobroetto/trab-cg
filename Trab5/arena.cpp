@@ -141,37 +141,56 @@ void Arena::desenhaArena(){
 
 	glPushMatrix();
 	    glTranslatef(this->x, this->y, 0);
-		defineIluminacao(this->getCorR(), this->getCorG(), this->getCorB());
 		
 	    // Corpo da arena
-	    
-	    GLUquadric* qobj;
-	    qobj = gluNewQuadric();
+
+	    // Habilitando texturas aqui por não haver outros objs com textura.
+	    glEnable(GL_TEXTURE_2D);
+
+		defineIluminacao(1.0, 1.0, 1.0);
+		glBindTexture(GL_TEXTURE_2D, this->getTexturaMar());
+		// Base da arena
+		GLUquadric* obj = gluNewQuadric();
+	    gluQuadricOrientation(obj, GLU_OUTSIDE);
+	    gluQuadricTexture(obj, GLU_TRUE);
+	    gluQuadricDrawStyle(obj, GLU_FILL);
+	    gluQuadricNormals(obj, GLU_SMOOTH);
+		gluDisk(obj, 0, this->getRaio(), 360, 360);
+		gluDeleteQuadric(obj);
+    
+		glBindTexture(GL_TEXTURE_2D, this->getTexturaCeu());
+
+	    GLUquadric* qobj = gluNewQuadric();
+	    gluQuadricOrientation(qobj, GLU_INSIDE);
+	    gluQuadricTexture(qobj, GLU_TRUE);
+	    gluQuadricDrawStyle(qobj, GLU_FILL);
 	    gluQuadricNormals(qobj, GLU_SMOOTH);
 	    gluCylinder(qobj, this->getRaio(), this->getRaio(), this->getRaio(), 360, 360);
 
-		// Base da arena
-		// glBindTexture(GL_TEXTURE_2D, this->getTexturaMar());
-		glBegin(GL_POLYGON);
-	        for (int i = 0; i < 360; i++) {
-	            theta = (i * M_PI) / 180.0;
-	            px = cos(theta) * this->getRaio();
-	            py = sin(theta) * this->getRaio();
-	            glVertex3f(px, py, 0);
-	        }
-	    glEnd();
+	    gluDeleteQuadric(qobj);
+	    glPushMatrix();
+	    obj = gluNewQuadric();
+	    gluQuadricOrientation(obj, GLU_INSIDE);
+	    gluQuadricTexture(obj, GLU_TRUE);
+	    gluQuadricDrawStyle(obj, GLU_FILL);
+	    gluQuadricNormals(obj, GLU_SMOOTH);
+	    glTranslatef(0.0, 0.0, this->getRaio());
+		gluDisk(obj, 0, this->getRaio(), 360, 360);
+		gluDeleteQuadric(obj);
+		glPopMatrix();
 
-	    // Topo da arena
-	    // glBindTexture(GL_TEXTURE_2D, this->getTexturaCeu());
-		glBegin(GL_POLYGON);
-	        for (int i = 0; i < 360; i++) {
-	            theta = (i * M_PI) / 180.0;
-	            px = cos(theta) * this->getRaio();
-	            py = sin(theta) * this->getRaio();
-	            glVertex3f(px, py, 4);
-	        }
-	    glEnd();
+		    // Topo da arena
+			// glBegin(GL_POLYGON);
+		 //        for (int i = 0; i < 360; i++) {
+		 //            theta = (i * M_PI) / 180.0;
+		 //            px = cos(theta) * this->getRaio();
+		 //            py = sin(theta) * this->getRaio();
+		 //            glVertex3f(px, py, 4);
+		 //        }
+		 //    glEnd();
 
+	    // Desabilitando texturas pelo mesmo motivo de habilitar.
+		glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 }
 
