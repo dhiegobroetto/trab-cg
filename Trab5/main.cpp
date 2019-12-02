@@ -218,7 +218,7 @@ void idle(void){
         if(teclasTeclado['2']){
             upCamera[1] = 0.0;
             upCamera[2] = 1.0;
-            zCamera = 10;
+            zCamera = 20;
         }
 
         if(arena->getInimigosAereos().size() > 0 && !arena->getInimigosAereos().front()->isVoando()){
@@ -273,7 +273,7 @@ void init(float fundoR, float fundoG, float fundoB){
     glLoadIdentity();
 
     // Iniciar sistema de visão
-    gluPerspective(45, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, 900.0);
+    gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, 900.0);
 
     arena->setTexturaCeu(LoadTextureRAW("sky.bmp"));
     arena->setTexturaMar(LoadTextureRAW("water.bmp"));

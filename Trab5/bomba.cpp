@@ -86,14 +86,7 @@ GLfloat Bomba::getAnguloJogadorBase(){
 void Bomba::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
     float theta, px, py;
     defineIluminacao(corR, corG, corB);
-	glBegin(GL_POLYGON);
-		for (int i = 0; i < 360; i++) {
-			theta = (i * M_PI) / 180.0;
-			px = cos(theta) * raio;
-			py = sin(theta) * raio;
-			glVertex2f(px, py);
-		}
-	glEnd();
+	glutSolidSphere(raio, 180, 180);
 }
 
 void Bomba::desenhaBomba(){
