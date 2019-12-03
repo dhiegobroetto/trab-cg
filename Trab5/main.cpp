@@ -20,8 +20,7 @@ GLfloat azul[] = {0.0, 0.0, 1.0};
 GLfloat laranja[] = {1.0, 0.7, 0.0};
 GLfloat amarelo[] = {1.0, 1.0, 0.0};
 GLfloat preto[] = {0.0, 0.0, 0.0};
-GLfloat upCamera[] = {0.0, 1.0, 0.0};
-GLfloat zCamera = 0;
+GLint flagCamera = 1;
 
 // Variáveis globais de configuração
 Jogador* jogador;
@@ -109,15 +108,25 @@ void mouseMove(int x, int y){
             jogador->setMouseX(x);
         }else{
             GLfloat angulo = (jogador->getMouseX() - x) / 2.0;
-            if(jogador->getAnguloCanhao() + angulo >= -45 && jogador->getAnguloCanhao() + angulo <= 45){
+            if(jogador->getAnguloCanhao() + angulo >= -30 && jogador->getAnguloCanhao() + angulo <= 30){
                 jogador->setAnguloCanhao(angulo);
             }
         }
         jogador->setMouseX(x);
+
+        if(jogador->getMouseY() == 0.0){
+            jogador->setMouseY(y);
+        }else{
+            GLfloat anguloVertical = (jogador->getMouseY() - y) / 2.0;
+            if(jogador->getAnguloCanhaoVertical() + anguloVertical >= -30 && jogador->getAnguloCanhaoVertical() + anguloVertical <= 30){
+                jogador->setAnguloCanhaoVertical(anguloVertical);
+            }
+        }
+        jogador->setMouseY(y);
     }
 }
 
-void configCamera(){
+void configCamera1(){
   GLfloat distPontaAviao_x = jogador->getRaio()*cos(jogador->getAnguloJogadorVertical() *M_PI/180)*cos(jogador->getAnguloJogador() *M_PI/180);
   GLfloat distPontaAviao_y = jogador->getRaio()*cos(jogador->getAnguloJogadorVertical() *M_PI/180)*sin(jogador->getAnguloJogador() *M_PI/180);
   GLfloat distPontaAviao_z = jogador->getRaio()*sin(jogador->getAnguloJogadorVertical() *M_PI/180);
@@ -132,7 +141,35 @@ void configCamera(){
       jogador->getX() + distPontaAviao_x*2,
       jogador->getY() + distPontaAviao_y*2,
       jogador->getZ() + distPontaAviao_z*2,
-      upCamera[0], upCamera[1], upCamera[2]);
+      0, 0, 1);
+}
+
+void configCamera2() {
+  GLfloat distPontaAviao_x = jogador->getRaio()*cos(jogador->getAnguloJogadorVertical() *M_PI/180)*cos(jogador->getAnguloJogador() *M_PI/180);
+  GLfloat distPontaAviao_y = jogador->getRaio()*cos(jogador->getAnguloJogadorVertical() *M_PI/180)*sin(jogador->getAnguloJogador() *M_PI/180);
+  GLfloat distPontaAviao_z = jogador->getRaio()*sin(jogador->getAnguloJogadorVertical() *M_PI/180);
+
+  gluLookAt(jogador->getX() + distPontaAviao_x,
+      jogador->getY() + distPontaAviao_y,
+      jogador->getZ() + distPontaAviao_z,
+      jogador->getX() + distPontaAviao_x*2,
+      jogador->getY() + distPontaAviao_y*2,
+      jogador->getZ() + distPontaAviao_z*2,
+      0, 0, 1);
+}
+
+void configCamera(){
+  switch (flagCamera) {
+    case 1:
+      configCamera1();
+      break;
+    case 2:
+      configCamera2();
+      break;
+    // case 3:
+    //   configCamera3();
+    //   break;
+  }
 }
 
 void display(void){
@@ -226,14 +263,13 @@ void idle(void){
 
     if(jogador->isVivo() && arena->getInimigosTerrestres().size() > 0){
         if(teclasTeclado['1']){
-            upCamera[1] = 1.0;
-            upCamera[2] = 0.0;
-            zCamera = arena->getRaio();
+            flagCamera = 1;
         }
         if(teclasTeclado['2']){
-            upCamera[1] = 0.0;
-            upCamera[2] = 1.0;
-            zCamera = 20;
+            flagCamera = 2;
+        }
+        if(teclasTeclado['3']){
+            flagCamera = 3;
         }
 
         if(arena->getInimigosAereos().size() > 0 && !arena->getInimigosAereos().front()->isVoando()){
@@ -291,7 +327,7 @@ void init(float fundoR, float fundoG, float fundoB){
     // glEnable(GL_LIGHT0);
     glMatrixMode(GL_TEXTURE);
     glLoadIdentity();
-    
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
@@ -300,7 +336,7 @@ void init(float fundoR, float fundoG, float fundoB){
     gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, arena->getRaio() * 2);
 
     glEnable(GL_DEPTH_TEST);
-    
+
     //glEnable(GL_TEXTURE_2D);
     glEnable(GL_LIGHTING);
     glShadeModel(GL_SMOOTH);
@@ -336,8 +372,8 @@ void init(float fundoR, float fundoG, float fundoB){
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
 
-    
-    
+
+
     // glOrtho(
     //     arena->getX() - arena->getRaio(),
     //     arena->getX() + arena->getRaio(),
@@ -486,7 +522,6 @@ int main(int argc, char** argv){
             fundoG = 0.0;
             fundoB = 0.0;
             tempoAntigo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
-            zCamera = arena->getRaio();
             // Inicializa
             glutInit(&argc, argv);
             glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);

@@ -47,8 +47,10 @@ class Jogador
         GLfloat anguloJogador;
         GLfloat anguloJogadorVertical;
         GLfloat anguloCanhao;
+        GLfloat anguloCanhaoVertical;
         GLfloat anguloHelice;
         GLfloat mouseX;
+        GLfloat mouseY;
         GLfloat limiteCanhaoX;
         GLfloat limiteCanhaoY;
         bool ligado;
@@ -95,12 +97,16 @@ class Jogador
         void setRaioInicial(GLfloat& raioInicial);
         GLfloat getMouseX();
         void setMouseX(GLfloat mouseX);
+        GLfloat getMouseY();
+        void setMouseY(GLfloat mouseY);
         GLfloat getLimiteCanhaoX();
         void setLimiteCanhaoX(GLfloat limiteCanhaoX);
         GLfloat getLimiteCanhaoY();
         void setLimiteCanhaoY(GLfloat limiteCanhaoY);
         GLfloat getAnguloCanhao();
         void setAnguloCanhao(GLfloat anguloCanhao);
+        GLfloat getAnguloCanhaoVertical();
+        void setAnguloCanhaoVertical(GLfloat anguloCanhaoVertical);
         bool isLigado();
         void setLigado(bool ligado);
         bool isVoando();

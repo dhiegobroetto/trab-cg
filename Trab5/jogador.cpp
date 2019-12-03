@@ -20,8 +20,10 @@ Jogador::Jogador(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
 	this->anguloJogador = 0.0;
 	this->anguloJogadorVertical = 0.0;
 	this->anguloCanhao = 0.0;
+	this->anguloCanhaoVertical = 0.0;
 	this->anguloHelice = 0.0;
 	this->mouseX = 0.0;
+	this->mouseY = 0.0;
 	this->vivo = true;
 }
 
@@ -224,12 +226,28 @@ void Jogador::setAnguloCanhao(GLfloat anguloCanhao){
 	this->anguloCanhao += anguloCanhao;
 }
 
+GLfloat Jogador::getAnguloCanhaoVertical(){
+	return this->anguloCanhaoVertical;
+}
+
+void Jogador::setAnguloCanhaoVertical(GLfloat anguloCanhaoVertical){
+	this->anguloCanhaoVertical += anguloCanhaoVertical;
+}
+
 GLfloat Jogador::getMouseX(){
 	return this->mouseX;
 }
 
 void Jogador::setMouseX(GLfloat mouseX){
 	this->mouseX = mouseX;
+}
+
+GLfloat Jogador::getMouseY(){
+	return this->mouseY;
+}
+
+void Jogador::setMouseY(GLfloat mouseY){
+	this->mouseY = mouseY;
 }
 
 GLfloat Jogador::getLimiteCanhaoX(){
@@ -431,6 +449,7 @@ void Jogador::desenhaCanhao(){
 	glPushMatrix();
 		glTranslatef(0.0, this->raio - 1, 0);
 		glRotatef(this->anguloCanhao, 0.0, 0.0, 1.0);
+		glRotatef(this->anguloCanhaoVertical, 1.0, 0.0, 0.0);
 
 		// desenhaCilindro(this->raio/this->raio, this->raio/2 + 1, 0.0, 0.0, 0.0);
 
