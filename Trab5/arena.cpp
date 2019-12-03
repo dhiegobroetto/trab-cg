@@ -146,9 +146,9 @@ void Arena::desenhaArena(){
 
 	    // Habilitando texturas aqui por não haver outros objs com textura.
 	    glEnable(GL_TEXTURE_2D);
-
+	    
 		defineIluminacao(1.0, 1.0, 1.0);
-
+		glMatrixMode(GL_TEXTURE);
 		GLfloat mat_emission[] = {1.0, 1.0, 1.0, 1.0};
 	    glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
 
@@ -161,7 +161,8 @@ void Arena::desenhaArena(){
 	    gluQuadricNormals(obj, GLU_SMOOTH);
 		gluDisk(obj, 0, this->getRaio(), 180, 1);
 		gluDeleteQuadric(obj);
-    
+    	glMatrixMode(GL_MODELVIEW);
+
 		glBindTexture(GL_TEXTURE_2D, this->getTexturaCeu());
 
 	    GLUquadric* qobj = gluNewQuadric();
@@ -170,6 +171,7 @@ void Arena::desenhaArena(){
 	    gluQuadricDrawStyle(qobj, GLU_FILL);
 	    gluQuadricNormals(qobj, GLU_SMOOTH);
 	    gluCylinder(qobj, this->getRaio(), this->getRaio(), this->getRaio(), 180, 1);
+
 
 	    gluDeleteQuadric(qobj);
 	    glPushMatrix();

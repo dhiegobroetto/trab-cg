@@ -289,12 +289,15 @@ void init(float fundoR, float fundoG, float fundoB){
     // glDepthFunc(GL_LEQUAL);
     // glEnable(GL_NORMALIZE);
     // glEnable(GL_LIGHT0);
+    glMatrixMode(GL_TEXTURE);
+    glLoadIdentity();
     
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
+
     // Iniciar sistema de visão
-    gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, 900.0);
+    gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, arena->getRaio() * 2);
 
     glEnable(GL_DEPTH_TEST);
     
