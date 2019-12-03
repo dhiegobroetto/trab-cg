@@ -109,8 +109,8 @@ void Projetil::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat 
     float theta, px, py;
     defineIluminacao(corR, corG, corB);
 
-    glutSolidSphere(raio, 180, 180);
-    
+    glutSolidSphere(raio, 30, 30);
+
 	defineIluminacao(1.0, 1.0, 1.0);
 	glPointSize(0.5);
 	glBegin(GL_POINTS);

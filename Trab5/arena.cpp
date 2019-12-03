@@ -148,6 +148,10 @@ void Arena::desenhaArena(){
 	    glEnable(GL_TEXTURE_2D);
 
 		defineIluminacao(1.0, 1.0, 1.0);
+
+		GLfloat mat_emission[] = {1.0, 1.0, 1.0, 1.0};
+	    glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
+
 		glBindTexture(GL_TEXTURE_2D, this->getTexturaMar());
 		// Base da arena
 		GLUquadric* obj = gluNewQuadric();
@@ -155,7 +159,7 @@ void Arena::desenhaArena(){
 	    gluQuadricTexture(obj, GLU_TRUE);
 	    gluQuadricDrawStyle(obj, GLU_FILL);
 	    gluQuadricNormals(obj, GLU_SMOOTH);
-		gluDisk(obj, 0, this->getRaio(), 180, 180);
+		gluDisk(obj, 0, this->getRaio(), 180, 1);
 		gluDeleteQuadric(obj);
     
 		glBindTexture(GL_TEXTURE_2D, this->getTexturaCeu());
@@ -165,7 +169,7 @@ void Arena::desenhaArena(){
 	    gluQuadricTexture(qobj, GLU_TRUE);
 	    gluQuadricDrawStyle(qobj, GLU_FILL);
 	    gluQuadricNormals(qobj, GLU_SMOOTH);
-	    gluCylinder(qobj, this->getRaio(), this->getRaio(), this->getRaio(), 180, 180);
+	    gluCylinder(qobj, this->getRaio(), this->getRaio(), this->getRaio(), 180, 1);
 
 	    gluDeleteQuadric(qobj);
 	    glPushMatrix();
@@ -175,9 +179,12 @@ void Arena::desenhaArena(){
 	    gluQuadricDrawStyle(obj, GLU_FILL);
 	    gluQuadricNormals(obj, GLU_SMOOTH);
 	    glTranslatef(0.0, 0.0, this->getRaio());
-		gluDisk(obj, 0, this->getRaio(), 180, 180);
+		gluDisk(obj, 0, this->getRaio(), 180, 1);
 		gluDeleteQuadric(obj);
 		glPopMatrix();
+
+		GLfloat mat_emission2[] = {0.1, 0.1, 0.1, 1.0};
+    	glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission2);
 
 		    // Topo da arena
 			// glBegin(GL_POLYGON);

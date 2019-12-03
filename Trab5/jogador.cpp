@@ -392,7 +392,7 @@ void Jogador::desenhaElipsoide(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat cor
 	defineIluminacao(corR, corG, corB);
 	GLfloat raioMenor = cx/cy;
 	glScalef(raioMenor, 1, raioMenor);
-	glutSolidSphere(cy, 180, 180);
+	glutSolidSphere(cy, 30, 30);
 }
 
 void Jogador::desenhaBase(){
@@ -663,6 +663,8 @@ void Jogador::calculaAngulo(Linha* linha){
 void Jogador::reseta(){
 	this->x = this->xInicial;
 	this->y = this->yInicial;
+	this->z = 0;
+	this->anguloJogadorVertical = 0;
 	this->ligado = false;
 	this->voando = false;
 	this->distanciaPontos = 0.0;

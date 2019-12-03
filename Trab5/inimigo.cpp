@@ -374,7 +374,7 @@ void Inimigo::desenhaElipsoide(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat cor
 	defineIluminacao(corR, corG, corB);
 	GLfloat raioMenor = cx/cy;
 	glScalef(raioMenor, 1, raioMenor);
-	glutSolidSphere(cy, 180, 180);
+	glutSolidSphere(cy, 30, 30);
 }
 
 void Inimigo::desenhaBase(){

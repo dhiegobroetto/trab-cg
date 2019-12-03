@@ -228,7 +228,7 @@ void idle(void){
         if(teclasTeclado['1']){
             upCamera[1] = 1.0;
             upCamera[2] = 0.0;
-            zCamera = arena->getRaio()/2;
+            zCamera = arena->getRaio();
         }
         if(teclasTeclado['2']){
             upCamera[1] = 0.0;
@@ -282,21 +282,59 @@ void idle(void){
 
 void init(float fundoR, float fundoG, float fundoB){
     glClearColor(fundoR, fundoG, fundoB, 0.0);
-    glShadeModel(GL_SMOOTH);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_DEPTH_TEST);
-    // glEnable(GL_TEXTURE_2D);
-    glDepthFunc(GL_LEQUAL);
-    glEnable(GL_NORMALIZE);
-    glEnable(GL_LIGHT0);
+    // glShadeModel(GL_SMOOTH);
+    // glEnable(GL_LIGHTING);
+    // glEnable(GL_DEPTH_TEST);
+    // // glEnable(GL_TEXTURE_2D);
+    // glDepthFunc(GL_LEQUAL);
+    // glEnable(GL_NORMALIZE);
+    // glEnable(GL_LIGHT0);
+    
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
     // Iniciar sistema de visão
     gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, 900.0);
 
+    glEnable(GL_DEPTH_TEST);
+    
+    //glEnable(GL_TEXTURE_2D);
+    glEnable(GL_LIGHTING);
+    glShadeModel(GL_SMOOTH);
+
+    glDepthFunc(GL_LEQUAL);
+
     arena->setTexturaCeu(LoadTextureRAW("sky.bmp"));
     arena->setTexturaMar(LoadTextureRAW("water.bmp"));
+
+    glEnable(GL_LIGHT0);
+    glColorMaterial(GL_FRONT, GL_DIFFUSE);
+    glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_NORMALIZE);
+
+    GLfloat light_ambient[] = {0.2, 0.2, 0.2, 1.0};
+    GLfloat light_diffuse[] = {0.8, 0.8, 0.8, 1.0};
+    GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};
+    GLfloat light_position[] = {arena->getX(), arena->getY(), arena->getRaio(), 1.0};
+
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+    //GLfloat mat_emission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
+    GLfloat mat_shininess[] = {100.0};
+
+    //glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+
+    
+    
     // glOrtho(
     //     arena->getX() - arena->getRaio(),
     //     arena->getX() + arena->getRaio(),
@@ -445,10 +483,10 @@ int main(int argc, char** argv){
             fundoG = 0.0;
             fundoB = 0.0;
             tempoAntigo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
-            zCamera = arena->getRaio()/2;
+            zCamera = arena->getRaio();
             // Inicializa
             glutInit(&argc, argv);
-            glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+            glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
             glutInitWindowSize(larguraDimensao, alturaDimensao);
             glutInitWindowPosition(50, 50);
             glutCreateWindow("Airplane Combat");
