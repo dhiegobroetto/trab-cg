@@ -5,6 +5,7 @@ Jogador::Jogador(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
     this->raio = raio;
     this->x = x;
     this->y = y;
+		this->z = 0;
 	this->xInicial = x;
 	this->yInicial = y;
     this->corR = corR;
@@ -17,6 +18,7 @@ Jogador::Jogador(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
 	this->tempoRaio = 0.0;
 	this->arena = arena;
 	this->anguloJogador = 0.0;
+	this->anguloJogadorVertical = 0.0;
 	this->anguloCanhao = 0.0;
 	this->anguloHelice = 0.0;
 	this->mouseX = 0.0;
@@ -206,6 +208,14 @@ void Jogador::setAnguloJogador(GLfloat anguloJogador){
 	this->anguloJogador = anguloJogador;
 }
 
+GLfloat Jogador::getAnguloJogadorVertical(){
+	return this->anguloJogadorVertical;
+}
+
+void Jogador::setAnguloJogadorVertical(GLfloat anguloJogadorVertical){
+	this->anguloJogadorVertical = anguloJogadorVertical;
+}
+
 GLfloat Jogador::getAnguloCanhao(){
 	return this->anguloCanhao;
 }
@@ -350,7 +360,7 @@ void Jogador::desenhaHelice(int asa){
 
 void Jogador::desenhaElipseBorda(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB){
 	defineIluminacao(corR, corG, corB);
-	
+
 	float x,y,z;
 	int t;
 	glPointSize(1.0);
@@ -453,8 +463,9 @@ void Jogador::desenhaBombas(){
 
 void Jogador::desenhaJogador(){
 	glPushMatrix();
-		glTranslatef(this->x, this->y, 0);
+		glTranslatef(this->x, this->y, this->z);
 		glRotatef(this->anguloJogador, 0.0, 0.0, 1.0);
+		glRotatef(this->anguloJogadorVertical, 1.0, 0.0, 0.0);
 		desenhaAsas(0);
 		desenhaAsas(1);
 		desenhaCanhao();
@@ -491,12 +502,18 @@ void Jogador::moveY(GLfloat y){
 	}
 }
 
+void Jogador::moveZ(GLfloat z){
+	this->anguloJogadorVertical += z * this->tempoAjustador;
+}
+
 void Jogador::voa(GLfloat velocidade){
-	GLfloat cx = this->getX() + (cos(((this->getAnguloJogador()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
-    GLfloat cy = this->getY() + (sin(((this->getAnguloJogador()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
+	GLfloat cx = this->getX() + (cos(this->getAnguloJogadorVertical() * (M_PI / 180)) * cos(((this->getAnguloJogador()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
+    GLfloat cy = this->getY() + (cos(this->getAnguloJogadorVertical() * (M_PI / 180)) * sin(((this->getAnguloJogador()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
+		GLfloat cz = this->getZ() + (sin(this->getAnguloJogadorVertical() * (M_PI / 180)) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
 	if(verificaColisao(cx, cy, false, 0.0)){
-    	this->setX(cx);
+    this->setX(cx);
 		this->setY(cy);
+		this->setZ(cz);
 		this->anguloHelice += this->velocidade;
 	}
 }

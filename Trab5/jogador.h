@@ -45,6 +45,7 @@ class Jogador
         std::vector<Projetil*> projeteis;
         std::vector<Bomba*> bombas;
         GLfloat anguloJogador;
+        GLfloat anguloJogadorVertical;
         GLfloat anguloCanhao;
         GLfloat anguloHelice;
         GLfloat mouseX;
@@ -113,6 +114,8 @@ class Jogador
         void addBomba(Bomba *b);
         GLfloat getAnguloJogador();
         void setAnguloJogador(GLfloat anguloJogador);
+        GLfloat getAnguloJogadorVertical();
+        void setAnguloJogadorVertical(GLfloat anguloJogadorVertical);
         void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaCilindro(GLfloat raio, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB);
@@ -131,6 +134,7 @@ class Jogador
         void desenhaJogador();
         void moveX(GLfloat x);
         void moveY(GLfloat y);
+        void moveZ(GLfloat z);
         void voa(GLfloat velocidade);
         void voaProjeteis(GLfloat tempoAjustador);
         void voaBombas(GLfloat tempoAjustador);

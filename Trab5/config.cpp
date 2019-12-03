@@ -28,7 +28,7 @@ GLuint LoadTextureRAW( const char * filename )
 {
 
     GLuint texture;
-    
+
     Image* image = loadBMP(filename);
 
     glGenTextures( 1, &texture );

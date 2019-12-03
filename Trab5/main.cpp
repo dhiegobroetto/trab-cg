@@ -74,11 +74,11 @@ void mouseAction(int button, int state, int x, int y){
             Projetil *p = new Projetil(
                 jogador->getX() + ((jogador->getRaio()) * cos(jogador->getAnguloJogador() * M_PI / 180)) + (jogador->getRaio()/2) * cos(jogador->getAnguloJogador() * M_PI / 180 + jogador->getAnguloCanhao() * M_PI / 180),
                 jogador->getY() + ((jogador->getRaio()) * sin(jogador->getAnguloJogador() * M_PI / 180)) + (jogador->getRaio()/2) * sin(jogador->getAnguloJogador() * M_PI / 180 + jogador->getAnguloCanhao() * M_PI / 180),
-                (GLfloat) (jogador->getRaio()/8), 
-                (GLfloat) 0.0, 
-                (GLfloat) 0.0, 
-                (GLfloat) 0.0, 
-                jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora() * jogador->getVelocidadeTiro(), 
+                (GLfloat) (jogador->getRaio()/8),
+                (GLfloat) 0.0,
+                (GLfloat) 0.0,
+                (GLfloat) 0.0,
+                jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora() * jogador->getVelocidadeTiro(),
                 jogador->getAnguloCanhao(),
                 jogador->getAnguloJogador(),
                 (GLfloat) (jogador->getRaio() / 2),
@@ -88,12 +88,12 @@ void mouseAction(int button, int state, int x, int y){
         }
         if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN){
             Bomba *b = new Bomba(
-                jogador->getX(), 
-                jogador->getY(), 
-                (GLfloat) (jogador->getRaio()/3),  
-                (GLfloat) 0.0, 
-                (GLfloat) 0.0, 
-                (GLfloat) 0.0, 
+                jogador->getX(),
+                jogador->getY(),
+                (GLfloat) (jogador->getRaio()/3),
+                (GLfloat) 0.0,
+                (GLfloat) 0.0,
+                (GLfloat) 0.0,
                 jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora(),
                 jogador->getAnguloJogador()
             );
@@ -117,6 +117,24 @@ void mouseMove(int x, int y){
     }
 }
 
+void configCamera(){
+  GLfloat distPontaAviao_x = jogador->getRaio()*cos(jogador->getAnguloJogadorVertical() *M_PI/180)*cos(jogador->getAnguloJogador() *M_PI/180);
+  GLfloat distPontaAviao_y = jogador->getRaio()*cos(jogador->getAnguloJogadorVertical() *M_PI/180)*sin(jogador->getAnguloJogador() *M_PI/180);
+  GLfloat distPontaAviao_z = jogador->getRaio()*sin(jogador->getAnguloJogadorVertical() *M_PI/180);
+
+  GLfloat distCamera_x = jogador->getRaio()*cos((jogador->getAnguloJogadorVertical()+45) *M_PI/180)*cos(jogador->getAnguloJogador() *M_PI/180)*0.8;
+  GLfloat distCamera_y = jogador->getRaio()*cos((jogador->getAnguloJogadorVertical()+45) *M_PI/180)*sin(jogador->getAnguloJogador() *M_PI/180)*0.8;
+  GLfloat distCamera_z = jogador->getRaio()*sin((jogador->getAnguloJogadorVertical()+45) *M_PI/180)*0.8;
+
+  gluLookAt(jogador->getX() + distCamera_x,
+      jogador->getY() + distCamera_y,
+      jogador->getZ() + distCamera_z,
+      jogador->getX() + distPontaAviao_x*2,
+      jogador->getY() + distPontaAviao_y*2,
+      jogador->getZ() + distPontaAviao_z*2,
+      upCamera[0], upCamera[1], upCamera[2]);
+}
+
 void display(void){
     // Inicialização das variáveis
     float theta, px, py;
@@ -128,27 +146,24 @@ void display(void){
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    
-    gluLookAt(arena->getJogador()->getX(),arena->getJogador()->getY(),zCamera, 
-        arena->getJogador()->getX() + arena->getJogador()->getRaio()*cos(arena->getJogador()->getAnguloJogador() *M_PI/180),
-        arena->getJogador()->getY() + arena->getJogador()->getRaio()*sin(arena->getJogador()->getAnguloJogador() *M_PI/180),
-        0, upCamera[0], upCamera[1], upCamera[2]);
-    
+
+    configCamera();
+
     GLfloat posicaoLuz[] = {arena->getX(), arena->getY(), 1, 0.0};
     glLightfv(GL_LIGHT0, GL_POSITION, posicaoLuz);
 
     if(arena != NULL){
         arena->desenhaArena();
     }
-    
+
     if(linha != NULL){
         linha->desenhaLinha();
     }
-    
+
     for(std::list<Circulo*>::iterator c = inimigosTerrestres.begin(); c != inimigosTerrestres.end(); ++c){
         (*c)->desenha();
     }
-    
+
     if(jogador != NULL){
         jogador->desenhaBombas();
     }
@@ -164,14 +179,14 @@ void display(void){
         if(!jogador->isLigado() && !jogador->isVoando()){
             arena->exibeDecolagem(arena->getX() - 110, arena->getY() + 40);
         }
-        if(!jogador->isVivo()){ 
+        if(!jogador->isVivo()){
                 arena->exibeGameOver(arena->getX() - 155, arena->getY() + 40);
         }
         if(jogador->isVivo() && arena->getInimigosTerrestres().size() == 0){
             arena->exibeVitoria(arena->getX() - 155, arena->getY() + 40);
         }
     }
-    arena->exibePontuacao(arena->getX() + arena->getRaio() - 210, arena->getY() + arena->getRaio() - 20); 
+    arena->exibePontuacao(arena->getX() + arena->getRaio() - 210, arena->getY() + arena->getRaio() - 20);
     glutSwapBuffers();
 }
 
@@ -240,6 +255,11 @@ void idle(void){
             }else if(teclasTeclado['d'] || teclasTeclado['D']){
                 jogador->moveX(-curva);
             }
+            if(teclasTeclado['w'] || teclasTeclado['W']){
+                jogador->moveZ(curva);
+            }else if(teclasTeclado['s'] || teclasTeclado['S']){
+                jogador->moveZ(-curva);
+            }
             if(teclasTeclado['='] || teclasTeclado['+']){
                 jogador->incrementaVelocidade(3.0);
             }
@@ -256,7 +276,7 @@ void idle(void){
         arena->reseta();
         limpaTeclas();
     }
-    
+
     glutPostRedisplay();
 }
 
@@ -273,17 +293,17 @@ void init(float fundoR, float fundoG, float fundoB){
     glLoadIdentity();
 
     // Iniciar sistema de visão
-    gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, 900.0);
+    gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, 900.0);
 
     arena->setTexturaCeu(LoadTextureRAW("sky.bmp"));
     arena->setTexturaMar(LoadTextureRAW("water.bmp"));
     // glOrtho(
-    //     arena->getX() - arena->getRaio(), 
-    //     arena->getX() + arena->getRaio(), 
-    //     arena->getY() - arena->getRaio(), 
-    //     arena->getY() + arena->getRaio(), 
+    //     arena->getX() - arena->getRaio(),
+    //     arena->getX() + arena->getRaio(),
+    //     arena->getY() - arena->getRaio(),
+    //     arena->getY() + arena->getRaio(),
     //     -1.0, 1.0);
-    
+
 }
 
 bool lerXML(char* caminhoArquivo){
@@ -312,7 +332,7 @@ bool lerXML(char* caminhoArquivo){
         const char *abrirArquivo = arquivoSVG.c_str();
         TiXmlDocument svgFile(abrirArquivo);
         svgFile.LoadFile();
-        
+
         // Leitura da arena
         TiXmlElement *arenaElement = svgFile.RootElement();
         if(arenaElement != NULL) {
@@ -371,7 +391,7 @@ bool lerXML(char* caminhoArquivo){
                 }else if(((std::string)circuloElemento->Attribute("fill")).compare("orange") == 0){
                     arena->criaInimigosTerrestres(id, r, cx, cy, cores[0], cores[1], cores[2]);
                 }
-                
+
                 // circulo++
                 circuloElemento = circuloElemento->NextSiblingElement("circle");
             }
@@ -381,7 +401,7 @@ bool lerXML(char* caminhoArquivo){
 
             // Leitura da pista de lançamento (linha)
             if(linhaElemento != NULL){
-                
+
                 // Parse das cores
                 std::string estiloLinha = linhaElemento->Attribute("style");
                 int inicio, fim;
