@@ -54,15 +54,15 @@ GLfloat* retornaCor(std::string fill){
 }
 
 void keyPress(unsigned char key, int x, int y){
-  teclasTeclado[key] = 1;
-  if(key == 'l'){
+    teclasTeclado[key] = 1;
+    if(key == 'l'){
         arena->trocaIluminacao();
         habilitaIluminacao(arena->getIluminacao());
     }
 }
 
 void keyup(unsigned char key, int x, int y){
-  teclasTeclado[key] = 0;
+    teclasTeclado[key] = 0;
 }
 
 void limpaTeclas(){
@@ -412,7 +412,7 @@ void init(float fundoR, float fundoG, float fundoB){
 
 
     // Iniciar sistema de visão
-    gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, arena->getRaio() * 2);
+    gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, arena->getRaio() * 3);
 
     glEnable(GL_DEPTH_TEST);
 

@@ -20,6 +20,9 @@ void habilitaIluminacao(bool iluminacao){
 	if(iluminacao){
 	    glEnable(GL_LIGHTING);
 	}else{
+        // Tem que desabilitar o material_emission, 0.0 em tudo
+        // GLfloat materialEmission[] = {0.0, 0.0, 0.0, 1.0};
+        // glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
 		glDisable(GL_LIGHTING);
 	}
 }

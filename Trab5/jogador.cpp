@@ -332,11 +332,15 @@ void Jogador::desenhaAsa(int asa){
 
 void Jogador::desenhaAerodinamica(GLfloat tamanho, GLfloat corR, GLfloat corG, GLfloat corB){
 	defineIluminacao(corR, corG, corB);
-	glBegin(GL_TRIANGLES);
-		glVertex3f(0.0, tamanho, 0.0);
-		glVertex3f(tamanho, 0.0, 0.0);
-		glVertex3f(-tamanho, 0.0, 0.0);
-	glEnd();
+	// glBegin(GL_TRIANGLES);
+	// 	glVertex3f(0.0, tamanho, 0.0);
+	// 	glVertex3f(tamanho, 0.0, 0.0);
+	// 	glVertex3f(-tamanho, 0.0, 0.0);
+	// glEnd();
+	glPushMatrix();
+		glScalef(2.0, 0.2, 0.1625);
+        glutSolidCube(tamanho);
+       glPopMatrix();
 }
 
 
@@ -447,13 +451,14 @@ void Jogador::desenhaCilindro(GLfloat raio, GLfloat altura, GLfloat corR, GLfloa
 
 void Jogador::desenhaCanhao(){
 	glPushMatrix();
-		glTranslatef(0.0, this->raio - 1, 0);
-		glRotatef(this->anguloCanhao, 0.0, 0.0, 1.0);
+		glTranslatef(0.0, this->raio - 2, 0);
+		glRotatef(-90, 1, 0, 0);
+		glRotatef(-this->anguloCanhao, 0.0, 1.0, 0.0);
 		glRotatef(this->anguloCanhaoVertical, 1.0, 0.0, 0.0);
 
-		// desenhaCilindro(this->raio/this->raio, this->raio/2 + 1, 0.0, 0.0, 0.0);
+		desenhaCilindro(this->raio*0.1, this->raio/3, 0.0, 0.0, 0.0);
 
-		desenhaQuadrado(this->raio/4, this->raio/2 + 1, 0.0, 0.0, 0.0);
+		// desenhaQuadrado(this->raio/4, this->raio/2 + 1, 0.0, 0.0, 0.0);
 	glPopMatrix();
 }
 
@@ -499,9 +504,9 @@ void Jogador::desenhaJogador(){
 			desenhaQuadrado(this->raio/8, this->raio/3, 0.0, 0.0, 0.0);
 		glPopMatrix();
 		glPushMatrix();
-			glTranslatef(0.0, this->raio/2, 0.0);
-			desenhaElipse(this->raio/4, this->raio/8, 0.0, 0.0, 0.0);
-			desenhaElipseBorda(this->raio/4, this->raio/8, 1.0, 1.0, 1.0);
+			glTranslatef(0.0, this->raio/2, this->raio/this->raio);
+			desenhaElipsoide(this->raio/4, this->raio/6, 0.0, 0.0, 0.0);
+			// desenhaElipseBorda(this->raio/4, this->raio/8, 1.0, 1.0, 1.0);
 		glPopMatrix();
 	glPopMatrix();
 	desenhaProjeteis();
@@ -683,7 +688,8 @@ void Jogador::reseta(){
 	this->x = this->xInicial;
 	this->y = this->yInicial;
 	this->z = 0;
-	this->anguloJogadorVertical = 0;
+	this->anguloJogadorVertical = 0.0;
+	this->anguloCanhaoVertical = 0.0;
 	this->ligado = false;
 	this->voando = false;
 	this->distanciaPontos = 0.0;
