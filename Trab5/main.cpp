@@ -28,6 +28,10 @@ float larguraDimensao, alturaDimensao;
 float fundoR, fundoG, fundoB;
 int teclasTeclado[256];
 GLfloat tempoAntigo, tempoNovo, tempoAntigoDecolagem, tempoDecolagem;
+GLfloat anguloCamera3Horizontal, anguloCamera3Vertical;
+bool camera3IsMoving;
+int oldMouseX = -1;
+int oldMouseY = -1;
 
 // Objetos auxiliares
 Arena* arena = NULL;
@@ -85,7 +89,7 @@ void mouseAction(int button, int state, int x, int y){
             );
             jogador->addProjetil(p);
         }
-        if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN){
+        if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && flagCamera != 3){
             Bomba *b = new Bomba(
                 jogador->getX(),
                 jogador->getY(),
@@ -100,6 +104,13 @@ void mouseAction(int button, int state, int x, int y){
         }
     }
 
+    if(button == GLUT_RIGHT_BUTTON && flagCamera == 3){
+        if(state == GLUT_DOWN){
+          camera3IsMoving = true;
+        }else if(state == GLUT_UP){
+          camera3IsMoving = false;
+        }
+    }
 }
 
 void mouseMove(int x, int y){
@@ -124,16 +135,37 @@ void mouseMove(int x, int y){
         }
         jogador->setMouseY(y);
     }
+
+    oldMouseX = x;
+    oldMouseY = y;
+}
+
+void mouseClickedMove(int x, int y){
+    if(camera3IsMoving){
+      int newVertAng = anguloCamera3Vertical + (y - oldMouseY)*0.5;
+      if(newVertAng <= 60 && newVertAng >= -60)
+        anguloCamera3Vertical = newVertAng;
+
+      int newHorizAng = anguloCamera3Horizontal - (x - oldMouseX)*0.5;
+      if(newHorizAng <= 180 && newHorizAng >= -180)
+        anguloCamera3Horizontal = newHorizAng;
+    }
+    oldMouseX = x;
+    oldMouseY = y;
 }
 
 void configCamera1(){
-  GLfloat distPontaAviao_x = jogador->getRaio()*cos(jogador->getAnguloJogadorVertical() *M_PI/180)*cos(jogador->getAnguloJogador() *M_PI/180);
-  GLfloat distPontaAviao_y = jogador->getRaio()*cos(jogador->getAnguloJogadorVertical() *M_PI/180)*sin(jogador->getAnguloJogador() *M_PI/180);
-  GLfloat distPontaAviao_z = jogador->getRaio()*sin(jogador->getAnguloJogadorVertical() *M_PI/180);
+  GLfloat raio = jogador->getRaio();
+  GLfloat anguloHorizontal = jogador->getAnguloJogador() *M_PI/180;
+  GLfloat anguloVertical = jogador->getAnguloJogadorVertical() *M_PI/180;
 
-  GLfloat distCamera_x = jogador->getRaio()*cos((jogador->getAnguloJogadorVertical()+45) *M_PI/180)*cos(jogador->getAnguloJogador() *M_PI/180)*0.8;
-  GLfloat distCamera_y = jogador->getRaio()*cos((jogador->getAnguloJogadorVertical()+45) *M_PI/180)*sin(jogador->getAnguloJogador() *M_PI/180)*0.8;
-  GLfloat distCamera_z = jogador->getRaio()*sin((jogador->getAnguloJogadorVertical()+45) *M_PI/180)*0.8;
+  GLfloat distPontaAviao_x = raio*cos(anguloVertical)*cos(anguloHorizontal);
+  GLfloat distPontaAviao_y = raio*cos(anguloVertical)*sin(anguloHorizontal);
+  GLfloat distPontaAviao_z = raio*sin(anguloVertical);
+
+  GLfloat distCamera_x = raio*cos((anguloVertical+45))*cos(anguloHorizontal)*0.8;
+  GLfloat distCamera_y = raio*cos((anguloVertical+45))*sin(anguloHorizontal)*0.8;
+  GLfloat distCamera_z = raio*sin((anguloVertical+45))*0.8;
 
   gluLookAt(jogador->getX() + distCamera_x,
       jogador->getY() + distCamera_y,
@@ -145,16 +177,47 @@ void configCamera1(){
 }
 
 void configCamera2() {
-  GLfloat distPontaAviao_x = jogador->getRaio()*cos(jogador->getAnguloJogadorVertical() *M_PI/180)*cos(jogador->getAnguloJogador() *M_PI/180);
-  GLfloat distPontaAviao_y = jogador->getRaio()*cos(jogador->getAnguloJogadorVertical() *M_PI/180)*sin(jogador->getAnguloJogador() *M_PI/180);
-  GLfloat distPontaAviao_z = jogador->getRaio()*sin(jogador->getAnguloJogadorVertical() *M_PI/180);
+  GLfloat raio = jogador->getRaio();
+  GLfloat anguloHorizontal = jogador->getAnguloJogador() *M_PI/180;
+  GLfloat anguloVertical = jogador->getAnguloJogadorVertical() *M_PI/180;
+
+  GLfloat distPontaAviao_x = raio*cos(anguloVertical)*cos(anguloHorizontal);
+  GLfloat distPontaAviao_y = raio*cos(anguloVertical)*sin(anguloHorizontal);
+  GLfloat distPontaAviao_z = raio*sin(anguloVertical);
+
+  GLfloat anguloCanhaoHorizontal = jogador->getAnguloCanhao() *M_PI/180;
+  GLfloat anguloCanhaoVertical = jogador->getAnguloCanhaoVertical() *M_PI/180;
+
+  GLfloat distPontaCanhao_x = raio/2*cos(anguloCanhaoVertical + anguloVertical)*cos(anguloCanhaoHorizontal + anguloHorizontal);
+  GLfloat distPontaCanhao_y = raio/2*cos(anguloCanhaoVertical + anguloVertical)*sin(anguloCanhaoHorizontal + anguloHorizontal);
+  GLfloat distPontaCanhao_z = raio/2*sin(anguloCanhaoVertical + anguloVertical);
 
   gluLookAt(jogador->getX() + distPontaAviao_x,
       jogador->getY() + distPontaAviao_y,
       jogador->getZ() + distPontaAviao_z,
-      jogador->getX() + distPontaAviao_x*2,
-      jogador->getY() + distPontaAviao_y*2,
-      jogador->getZ() + distPontaAviao_z*2,
+      jogador->getX() + distPontaAviao_x + distPontaCanhao_x,
+      jogador->getY() + distPontaAviao_y + distPontaCanhao_y,
+      jogador->getZ() + distPontaAviao_z + distPontaCanhao_z,
+      0, 0, 1);
+}
+
+void configCamera3(){
+  GLfloat raio = jogador->getRaio()*3;
+  GLfloat anguloJogadorHorizontal = jogador->getAnguloJogador() *M_PI/180;
+
+  GLfloat anguloHorizontal = anguloCamera3Horizontal *M_PI/180 + anguloJogadorHorizontal + M_PI;
+  GLfloat anguloVertical = anguloCamera3Vertical *M_PI/180;
+
+  GLfloat distCamera_x = raio*cos((anguloVertical))*cos(anguloHorizontal);
+  GLfloat distCamera_y = raio*cos((anguloVertical))*sin(anguloHorizontal);
+  GLfloat distCamera_z = raio*sin((anguloVertical));
+
+  gluLookAt(jogador->getX() + distCamera_x,
+      jogador->getY() + distCamera_y,
+      jogador->getZ() + distCamera_z,
+      jogador->getX(),
+      jogador->getY(),
+      jogador->getZ(),
       0, 0, 1);
 }
 
@@ -166,9 +229,9 @@ void configCamera(){
     case 2:
       configCamera2();
       break;
-    // case 3:
-    //   configCamera3();
-    //   break;
+    case 3:
+      configCamera3();
+      break;
   }
 }
 
@@ -263,13 +326,29 @@ void idle(void){
 
     if(jogador->isVivo() && arena->getInimigosTerrestres().size() > 0){
         if(teclasTeclado['1']){
-            flagCamera = 1;
+            if(flagCamera != 1){
+              flagCamera = 1;
+              glMatrixMode(GL_PROJECTION);
+              glLoadIdentity();
+              gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, arena->getRaio() * 2);
+              camera3IsMoving = false;
+            }
         }
         if(teclasTeclado['2']){
-            flagCamera = 2;
+            if(flagCamera != 2){
+              flagCamera = 2;
+              glMatrixMode(GL_PROJECTION);
+              glLoadIdentity();
+              gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.6, arena->getRaio() * 2);
+              camera3IsMoving = false;
+            }
         }
         if(teclasTeclado['3']){
-            flagCamera = 3;
+            if(flagCamera != 3){
+              flagCamera = 3;
+              anguloCamera3Vertical = 60;
+              anguloCamera3Horizontal = 0;
+            }
         }
 
         if(arena->getInimigosAereos().size() > 0 && !arena->getInimigosAereos().front()->isVoando()){
@@ -534,6 +613,7 @@ int main(int argc, char** argv){
             glutKeyboardFunc(keyPress);
             glutMouseFunc(mouseAction);
             glutPassiveMotionFunc(mouseMove);
+            glutMotionFunc(mouseClickedMove);
             glutIdleFunc(idle);
             glutMainLoop();
         }
