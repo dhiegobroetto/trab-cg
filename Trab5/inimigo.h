@@ -141,6 +141,7 @@ class Inimigo
         void giraInimigo(GLfloat vel, GLfloat curva);
         void atira();
         void voa(GLfloat curva);
+        void desenhaCilindro(GLfloat raio, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB);
         void voaProjeteis(GLfloat tempoAjustador);
         void voaBombas(GLfloat tempoAjustador);
         bool verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raioBomba);

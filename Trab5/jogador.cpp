@@ -339,8 +339,8 @@ void Jogador::desenhaAerodinamica(GLfloat tamanho, GLfloat corR, GLfloat corG, G
 	// glEnd();
 	glPushMatrix();
 		glScalef(2.0, 0.2, 0.1625);
-        glutSolidCube(tamanho);
-       glPopMatrix();
+		glutSolidCube(tamanho);
+	glPopMatrix();
 }
 
 
@@ -533,9 +533,9 @@ void Jogador::moveZ(GLfloat z){
 void Jogador::voa(GLfloat velocidade){
 	GLfloat cx = this->getX() + (cos(this->getAnguloJogadorVertical() * (M_PI / 180)) * cos(((this->getAnguloJogador()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
     GLfloat cy = this->getY() + (cos(this->getAnguloJogadorVertical() * (M_PI / 180)) * sin(((this->getAnguloJogador()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
-		GLfloat cz = this->getZ() + (sin(this->getAnguloJogadorVertical() * (M_PI / 180)) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
+	GLfloat cz = this->getZ() + (sin(this->getAnguloJogadorVertical() * (M_PI / 180)) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
 	if(verificaColisao(cx, cy, false, 0.0)){
-    this->setX(cx);
+    	this->setX(cx);
 		this->setY(cy);
 		this->setZ(cz);
 		this->anguloHelice += this->velocidade;
