@@ -19,7 +19,9 @@ Inimigo::Inimigo(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
 	this->segundosIA = (GLfloat) (rand() % 2) + 1;
 	this->arena = arena;
 	this->anguloInimigo = (GLfloat) (rand() % 360);
+	this->anguloInimigoVertical = 0.0;
 	this->anguloCanhao = 0.0;
+	this->anguloCanhaoVertical = 0.0;
 	this->anguloHelice = 0.0;
 	this->mouseX = 0.0;
 	this->vivo = true;
@@ -226,6 +228,14 @@ void Inimigo::setAnguloInimigo(GLfloat anguloInimigo){
 	this->anguloInimigo = anguloInimigo;
 }
 
+GLfloat Inimigo::getAnguloInimigoVertical(){
+	return this->anguloInimigoVertical;
+}
+
+void Inimigo::setAnguloInimigoVertical(GLfloat anguloInimigoVertical){
+	this->anguloInimigoVertical = anguloInimigoVertical;
+}
+
 GLfloat Inimigo::getAnguloCanhao(){
 	return this->anguloCanhao;
 }
@@ -233,6 +243,15 @@ GLfloat Inimigo::getAnguloCanhao(){
 void Inimigo::setAnguloCanhao(GLfloat anguloCanhao){
 	this->anguloCanhao += anguloCanhao;
 }
+
+GLfloat Inimigo::getAnguloCanhaoVertical(){
+	return this->anguloCanhaoVertical;
+}
+
+void Inimigo::setAnguloCanhaoVertical(GLfloat anguloCanhaoVertical){
+	this->anguloCanhaoVertical += anguloCanhaoVertical;
+}
+
 
 GLfloat Inimigo::getMouseX(){
 	return this->mouseX;
@@ -424,7 +443,7 @@ void Inimigo::desenhaCanhao(){
 
 void Inimigo::desenhaProjeteis(){
 	for(int i = 0; i < projeteis.size(); i++){
-		if(this->verificaColisao(projeteis[i]->getX(), projeteis[i]->getY(), true, projeteis[i]->getRaio())){
+		if(this->verificaColisao(projeteis[i]->getX(), projeteis[i]->getY(), projeteis[i]->getZ(), true, projeteis[i]->getRaio())){
 			projeteis[i]->desenhaProjetil(this->corR, this->corG, this->corB);
 		}else{
 			projeteis.erase(projeteis.begin() + i);
@@ -485,9 +504,24 @@ void Inimigo::giraInimigo(GLfloat vel, GLfloat curva){
 	}
 }
 void Inimigo::atira(){
+	GLfloat raio = this->getRaio();
+	GLfloat anguloHorizontal = this->getAnguloInimigo() *M_PI/180;
+	GLfloat anguloVertical = this->getAnguloInimigoVertical() *M_PI/180;
+	GLfloat anguloCanhaoHorizontal = this->getAnguloCanhao() *M_PI/180;
+	GLfloat anguloCanhaoVertical = this->getAnguloCanhaoVertical() *M_PI/180;
+
+	GLfloat distPontaAviao_x = raio*cos(anguloVertical)*cos(anguloHorizontal);
+	GLfloat distPontaAviao_y = raio*cos(anguloVertical)*sin(anguloHorizontal);
+	GLfloat distPontaAviao_z = raio*sin(anguloVertical);
+
+	GLfloat distPontaCanhao_x = raio/2*cos(anguloCanhaoVertical + anguloVertical)*cos(anguloCanhaoHorizontal + anguloHorizontal);
+	GLfloat distPontaCanhao_y = raio/2*cos(anguloCanhaoVertical + anguloVertical)*sin(anguloCanhaoHorizontal + anguloHorizontal);
+	GLfloat distPontaCanhao_z = raio/2*sin(anguloCanhaoVertical + anguloVertical);
+
 	Projetil *p = new Projetil(
-		this->getX() + ((this->getRaio()) * cos(this->getAnguloInimigo() * M_PI / 180)) + (this->getRaio()/2) * cos(this->getAnguloInimigo() * M_PI / 180 + this->getAnguloCanhao() * M_PI / 180),
-		this->getY() + ((this->getRaio()) * sin(this->getAnguloInimigo() * M_PI / 180)) + (this->getRaio()/2) * sin(this->getAnguloInimigo() * M_PI / 180 + this->getAnguloCanhao() * M_PI / 180),
+		this->getX() + distPontaAviao_x + distPontaCanhao_x,
+		this->getY() + distPontaAviao_y + distPontaCanhao_y,
+		this->getZ() + distPontaAviao_z + distPontaCanhao_z,
 		(GLfloat) (this->getRaio()/8),
 		(GLfloat) 0.0,
 		(GLfloat) 0.0,
@@ -495,14 +529,17 @@ void Inimigo::atira(){
 		this->getVelocidade() * this->getVelocidadeMultiplicadora() * this->getVelocidadeTiro(),
 		this->getAnguloCanhao(),
 		this->getAnguloInimigo(),
+		this->getAnguloInimigoVertical() + this->getAnguloCanhaoVertical(),
 		(GLfloat) (this->getRaio() / 2),
 		(GLfloat) (this->getRaio() - 1)
 	);
 	this->addProjetil(p);
 }
 void Inimigo::voa(GLfloat curva){
-	GLfloat cx = this->getX() + (cos(((this->getAnguloInimigo()) * (M_PI / 180))) * this->velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
-    GLfloat cy = this->getY() + (sin(((this->getAnguloInimigo()) * (M_PI / 180))) * this->velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
+	GLfloat cx = this->getX() + (cos(this->getAnguloInimigoVertical() * (M_PI / 180)) * cos(((this->getAnguloInimigo()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
+  GLfloat cy = this->getY() + (cos(this->getAnguloInimigoVertical() * (M_PI / 180)) * sin(((this->getAnguloInimigo()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
+	GLfloat cz = this->getZ() + (sin(this->getAnguloInimigoVertical() * (M_PI / 180)) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
+
 	GLfloat tempoAgora = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
 	if(this->tempoIA + this->segundosIA <= tempoAgora){
 
@@ -525,9 +562,10 @@ void Inimigo::voa(GLfloat curva){
 		this->tempoAtira = tempoAgora;
 	}
 	this->giraInimigo(velocidade, curva);
-	if(verificaColisao(cx, cy, false, 0.0)){
+	if(verificaColisao(cx, cy, cz, false, 0.0)){
 		this->setX(cx);
 		this->setY(cy);
+		this->setZ(cz);
 		this->anguloHelice += this->velocidade;
 	}
 }
@@ -538,8 +576,8 @@ void Inimigo::voaProjeteis(GLfloat tempoAjustador){
 	}
 }
 
-bool Inimigo::verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raio){
-	GLfloat distanciaBorda = this->distanciaEntrePontos(this->arena->getX(), this->arena->getY(), x, y);
+bool Inimigo::verificaColisao(GLfloat x, GLfloat y, GLfloat z, bool projetil, GLfloat raio){
+	GLfloat distanciaBorda = this->distanciaEntrePontos(this->arena->getX(), this->arena->getY(), 0, x, y, 0);
 	// Verifica colisão da borda
 	if(raio != 0){
 		distanciaBorda += raio;
@@ -552,7 +590,7 @@ bool Inimigo::verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raio)
     }
 	// Verifica colisão com jogador
 	if(projetil && arena->getJogador()->isLigado() && arena->getJogador()->isVoando()) {
-		GLfloat distanciaJogador = this->distanciaEntrePontos(x, y, arena->getJogador()->getX(), arena->getJogador()->getY());
+		GLfloat distanciaJogador = this->distanciaEntrePontos(x, y, z, arena->getJogador()->getX(), arena->getJogador()->getY(), arena->getJogador()->getZ());
 		GLfloat raioJogador = arena->getJogador()->getRaio();
 		raioJogador += raio;
 		if ((distanciaJogador < raioJogador) && this->isVoando()) {
@@ -589,7 +627,7 @@ void Inimigo::decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem){
 		GLfloat y1 = linha->getY1() + (y * pow(tempoDecolagem, 2)) / 2;
 		this->setX(x1);
 		this->setY(y1);
-		this->distanciaPontos = this->distanciaEntrePontos(this->x, this->y, linha->getX2(), linha->getY2());
+		this->distanciaPontos = this->distanciaEntrePontos(this->x, this->y, 0, linha->getX2(), linha->getY2(), 0);
 		GLfloat aceleracao = (this->distanciaPontos/tempoFinal);
 		this->anguloHelice = this->anguloHelice + aceleracao * tempoDecolagem;
 
@@ -618,12 +656,12 @@ void Inimigo::decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem){
 	}
 }
 
-GLfloat Inimigo::distanciaEntrePontos(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2){
-	return sqrt(pow((x2 - x1), 2) + pow((y2 - y1), 2));
+GLfloat Inimigo::distanciaEntrePontos(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2){
+	return sqrt(pow((x2 - x1), 2) + pow((y2 - y1), 2) + pow((z2 - z1), 2));
 }
 
 void Inimigo::calculaPontoCrescimento(Linha* linha){
-	GLfloat pontoCrescimento = this->distanciaEntrePontos(linha->getX1(), linha->getY1(), linha->getX2(), linha->getY2()) / 2.0;
+	GLfloat pontoCrescimento = this->distanciaEntrePontos(linha->getX1(), linha->getY1(), 0, linha->getX2(), linha->getY2(), 0) / 2.0;
 	this->pontoCrescimento = pontoCrescimento;
 }
 

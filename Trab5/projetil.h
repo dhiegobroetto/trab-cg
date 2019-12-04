@@ -22,13 +22,14 @@ class Projetil
         GLfloat corB;
         GLfloat velocidade;
         GLfloat anguloProjetil;
+        GLfloat anguloProjetilVertical;
         GLfloat anguloJogadorBase;
         GLfloat alturaCanhao;
         GLfloat baseCanhao;
 
     public:
     	// ------------ Construtor ------------ //
-        Projetil(GLfloat x, GLfloat y, GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB, GLfloat velocidade, GLfloat anguloProjetil, GLfloat anguloJogadorBase, GLfloat baseCanhao, GLfloat alturaCanhao);
+        Projetil(GLfloat x, GLfloat y, GLfloat z, GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB, GLfloat velocidade, GLfloat anguloProjetil, GLfloat anguloJogadorBase, GLfloat anguloProjetilVertical, GLfloat baseCanhao, GLfloat alturaCanhao);
 
         // ------------ Getters e Setters ------------ //
         GLfloat getX();
@@ -49,6 +50,8 @@ class Projetil
         void setVelocidade(GLfloat velocidade);
         GLfloat getAnguloProjetil();
         void setAnguloProjetil(GLfloat anguloProjetil);
+        GLfloat getAnguloProjetilVertical();
+        void setAnguloProjetilVertical(GLfloat anguloProjetilVertical);
         GLfloat getAnguloJogadorBase();
         void setAnguloJogadorBase(GLfloat anguloJogadorBase);
         GLfloat getAnguloFinal();

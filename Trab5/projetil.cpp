@@ -1,14 +1,16 @@
 #include "projetil.h"
 
-Projetil::Projetil(GLfloat x, GLfloat y, GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB, GLfloat velocidade, GLfloat anguloProjetil, GLfloat anguloJogadorBase, GLfloat alturaCanhao, GLfloat baseCanhao){
+Projetil::Projetil(GLfloat x, GLfloat y, GLfloat z, GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB, GLfloat velocidade, GLfloat anguloProjetil, GLfloat anguloJogadorBase, GLfloat anguloProjetilVertical, GLfloat alturaCanhao, GLfloat baseCanhao){
     this->x = x;
     this->y = y;
+    this->z = z;
     this->raio = raio;
     this->corR = corR;
     this->corG = corG;
     this->corB = corB;
 	this->velocidade = velocidade;
     this->anguloProjetil = anguloProjetil;
+    this->anguloProjetilVertical = anguloProjetilVertical;
 	this->anguloJogadorBase = anguloJogadorBase;
 	this->alturaCanhao = alturaCanhao;
 	this->baseCanhao = baseCanhao;
@@ -86,6 +88,14 @@ void Projetil::setAnguloProjetil(GLfloat anguloProjetil){
     this->anguloProjetil = anguloProjetil;
 }
 
+GLfloat Projetil::getAnguloProjetilVertical(){
+    return this->anguloProjetilVertical;
+}
+
+void Projetil::setAnguloProjetilVertical(GLfloat anguloProjetilVertical){
+    this->anguloProjetilVertical = anguloProjetilVertical;
+}
+
 GLfloat Projetil::getAnguloJogadorBase(){
     return this->anguloJogadorBase - 90;
 }
@@ -125,15 +135,17 @@ void Projetil::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat 
 
 void Projetil::desenhaProjetil(GLfloat corR, GLfloat corG, GLfloat corB){
 	glPushMatrix();
-		glTranslatef(this->x, this->y, 0);
+		glTranslatef(this->x, this->y, this->z);
 		glRotatef(this->anguloProjetil, 0.0, 0.0, 1.0);
 		desenhaCirculo(this->raio, corR, corG, corB);
 	glPopMatrix();
 }
 
 void Projetil::voa(GLfloat tempoAjustador){
-	GLfloat cx = this->getX() + (cos(((this->getAnguloFinal()) * (M_PI / 180))) * this->velocidade * tempoAjustador);
-    GLfloat cy = this->getY() + (sin(((this->getAnguloFinal()) * (M_PI / 180))) * this->velocidade * tempoAjustador);
+	GLfloat cx = this->getX() + (cos(this->getAnguloProjetilVertical() * (M_PI / 180)) * cos(((this->getAnguloFinal()) * (M_PI / 180))) * this->velocidade * tempoAjustador);
+  GLfloat cy = this->getY() + (cos(this->getAnguloProjetilVertical() * (M_PI / 180)) * sin(((this->getAnguloFinal()) * (M_PI / 180))) * this->velocidade * tempoAjustador);
+  GLfloat cz = this->getZ() + (sin(this->getAnguloProjetilVertical() * (M_PI / 180)) * this->velocidade * tempoAjustador);
 	this->setX(cx);
 	this->setY(cy);
+  this->setZ(cz);
 }

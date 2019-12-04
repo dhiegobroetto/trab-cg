@@ -73,10 +73,25 @@ void limpaTeclas(){
 
 void mouseAction(int button, int state, int x, int y){
     if(jogador->isVoando() && jogador->isVivo()){
+        GLfloat raio = jogador->getRaio();
+        GLfloat anguloHorizontal = jogador->getAnguloJogador() *M_PI/180;
+        GLfloat anguloVertical = jogador->getAnguloJogadorVertical() *M_PI/180;
+        GLfloat anguloCanhaoHorizontal = jogador->getAnguloCanhao() *M_PI/180;
+        GLfloat anguloCanhaoVertical = jogador->getAnguloCanhaoVertical() *M_PI/180;
+
+        GLfloat distPontaAviao_x = raio*cos(anguloVertical)*cos(anguloHorizontal);
+        GLfloat distPontaAviao_y = raio*cos(anguloVertical)*sin(anguloHorizontal);
+        GLfloat distPontaAviao_z = raio*sin(anguloVertical);
+
+        GLfloat distPontaCanhao_x = raio/2*cos(anguloCanhaoVertical + anguloVertical)*cos(anguloCanhaoHorizontal + anguloHorizontal);
+        GLfloat distPontaCanhao_y = raio/2*cos(anguloCanhaoVertical + anguloVertical)*sin(anguloCanhaoHorizontal + anguloHorizontal);
+        GLfloat distPontaCanhao_z = raio/2*sin(anguloCanhaoVertical + anguloVertical);
+
         if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
             Projetil *p = new Projetil(
-                jogador->getX() + ((jogador->getRaio()) * cos(jogador->getAnguloJogador() * M_PI / 180)) + (jogador->getRaio()/2) * cos(jogador->getAnguloJogador() * M_PI / 180 + jogador->getAnguloCanhao() * M_PI / 180),
-                jogador->getY() + ((jogador->getRaio()) * sin(jogador->getAnguloJogador() * M_PI / 180)) + (jogador->getRaio()/2) * sin(jogador->getAnguloJogador() * M_PI / 180 + jogador->getAnguloCanhao() * M_PI / 180),
+                jogador->getX() + distPontaAviao_x + distPontaCanhao_x,
+                jogador->getY() + distPontaAviao_y + distPontaCanhao_y,
+                jogador->getZ() + distPontaAviao_z + distPontaCanhao_z,
                 (GLfloat) (jogador->getRaio()/8),
                 (GLfloat) 0.0,
                 (GLfloat) 0.0,
@@ -84,6 +99,7 @@ void mouseAction(int button, int state, int x, int y){
                 jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora() * jogador->getVelocidadeTiro(),
                 jogador->getAnguloCanhao(),
                 jogador->getAnguloJogador(),
+                jogador->getAnguloCanhaoVertical() + jogador->getAnguloJogadorVertical(),
                 (GLfloat) (jogador->getRaio() / 2),
                 (GLfloat) (jogador->getRaio() - 1)
             );

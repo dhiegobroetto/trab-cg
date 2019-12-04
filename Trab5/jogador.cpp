@@ -464,7 +464,7 @@ void Jogador::desenhaCanhao(){
 
 void Jogador::desenhaProjeteis(){
 	for(int i = 0; i < projeteis.size(); i++){
-		if(this->verificaColisao(projeteis[i]->getX(), projeteis[i]->getY(), true, projeteis[i]->getRaio())){
+		if(this->verificaColisao(projeteis[i]->getX(), projeteis[i]->getY(), projeteis[i]->getZ(), true, projeteis[i]->getRaio())){
 			projeteis[i]->desenhaProjetil(this->corR, this->corG, this->corB);
 		}else{
 			projeteis.erase(projeteis.begin() + i);
@@ -474,10 +474,10 @@ void Jogador::desenhaProjeteis(){
 
 void Jogador::desenhaBombas(){
 	for(int i = 0; i < bombas.size(); i++){
-		if(this->verificaColisao(bombas[i]->getX(), bombas[i]->getY(), true, bombas[i]->getRaio()) && !bombas[i]->explodiu()){
+		if(this->verificaColisao(bombas[i]->getX(), bombas[i]->getY(), bombas[i]->getZ(), true, bombas[i]->getRaio()) && !bombas[i]->explodiu()){
 			bombas[i]->desenhaBomba();
 		}else if(bombas[i]->explodiu()){
-			this->verificaColisaoBomba(bombas[i]->getX(), bombas[i]->getY(), bombas[i]->getRaio());
+			this->verificaColisaoBomba(bombas[i]->getX(), bombas[i]->getY(), bombas[i]->getZ(), bombas[i]->getRaio());
 			bombas.erase(bombas.begin() + i);
 		}else{
 			bombas.erase(bombas.begin() + i);
@@ -520,7 +520,7 @@ void Jogador::moveY(GLfloat y){
 	GLfloat cx = this->getX();
     GLfloat cy = this->getY() + (y * this->velocidadeMultiplicadora * this->tempoAjustador);
 
-    if(verificaColisao(cx, cy, false, 0.0)){
+    if(verificaColisao(cx, cy, 0, false, 0.0)){
     	this->setY(cy);
 		this->anguloHelice += this->velocidade;
 	}
@@ -534,7 +534,7 @@ void Jogador::voa(GLfloat velocidade){
 	GLfloat cx = this->getX() + (cos(this->getAnguloJogadorVertical() * (M_PI / 180)) * cos(((this->getAnguloJogador()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
     GLfloat cy = this->getY() + (cos(this->getAnguloJogadorVertical() * (M_PI / 180)) * sin(((this->getAnguloJogador()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
 	GLfloat cz = this->getZ() + (sin(this->getAnguloJogadorVertical() * (M_PI / 180)) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
-	if(verificaColisao(cx, cy, false, 0.0)){
+	if(verificaColisao(cx, cy, cz, false, 0.0)){
     	this->setX(cx);
 		this->setY(cy);
 		this->setZ(cz);
@@ -545,7 +545,7 @@ void Jogador::voa(GLfloat velocidade){
 void Jogador::voaProjeteis(GLfloat tempoAjustador){
 	int i = 0;
 	for(Projetil *p : this->projeteis){
-		if(verificaColisaoProjetil(p->getX(), p->getY())){
+		if(verificaColisaoProjetil(p->getX(), p->getY(), p->getZ())){
 			p->voa(tempoAjustador);
 		}else{
 			this->projeteis.erase(this->projeteis.begin()+i);
@@ -554,10 +554,10 @@ void Jogador::voaProjeteis(GLfloat tempoAjustador){
 	}
 }
 
-bool Jogador::verificaColisaoProjetil(GLfloat x, GLfloat y){
+bool Jogador::verificaColisaoProjetil(GLfloat x, GLfloat y, GLfloat z){
 	// Verifica colisão com inimigos aéreos
 	for (auto inimigo : this->arena->getInimigosAereos()) {
-		GLfloat distanciaInimigo = this->distanciaEntrePontos(x, y, inimigo->getX(), inimigo->getY());
+		GLfloat distanciaInimigo = this->distanciaEntrePontos(x, y, z, inimigo->getX(), inimigo->getY(), inimigo->getZ());
 		GLfloat raioInimigo = inimigo->getRaio();
 		if ((distanciaInimigo < raioInimigo) && this->isVoando()) {
 			arena->mataInimigoAereo(inimigo);
@@ -567,11 +567,11 @@ bool Jogador::verificaColisaoProjetil(GLfloat x, GLfloat y){
 	return true;
 }
 
-void Jogador::verificaColisaoBomba(GLfloat x, GLfloat y, GLfloat raio){
+void Jogador::verificaColisaoBomba(GLfloat x, GLfloat y, GLfloat z, GLfloat raio){
 	// Verifica colisão com inimigos terrestres
 	std::list<Circulo*> inimigosMortos;
 	for (auto inimigo : this->arena->getInimigosTerrestres()) {
-		GLfloat distanciaInimigo = this->distanciaEntrePontos(x, y, inimigo->getX(), inimigo->getY());
+		GLfloat distanciaInimigo = this->distanciaEntrePontos(x, y, z, inimigo->getX(), inimigo->getY(), inimigo->getZ());
 		GLfloat raioInimigo = inimigo->getRaio();
 		raioInimigo += raio;
 		if ((distanciaInimigo < raioInimigo) && this->isVoando()) {
@@ -587,8 +587,8 @@ void Jogador::voaBombas(GLfloat tempoAjustador){
 	}
 }
 
-bool Jogador::verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raio){
-	GLfloat distanciaBorda = this->distanciaEntrePontos(this->arena->getX(), this->arena->getY(), x, y);
+bool Jogador::verificaColisao(GLfloat x, GLfloat y, GLfloat z, bool projetil, GLfloat raio){
+	GLfloat distanciaBorda = this->distanciaEntrePontos(this->arena->getX(), this->arena->getY(), 0, x, y, 0);
 
 	// Verifica colisão da borda
 	if(raio != 0){
@@ -604,7 +604,7 @@ bool Jogador::verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raio)
 	// Verifica colisão com inimigos aéreos
 	if(!projetil) {
 		for (auto inimigo : this->arena->getInimigosAereos()) {
-			GLfloat distanciaInimigo = this->distanciaEntrePontos(x, y, inimigo->getX(), inimigo->getY());
+			GLfloat distanciaInimigo = this->distanciaEntrePontos(x, y, z, inimigo->getX(), inimigo->getY(), inimigo->getZ());
 			GLfloat raioInimigo = inimigo->getRaio();
 			raioInimigo += this->getRaio();
 			if ((distanciaInimigo < raioInimigo) && this->isVoando()) {
@@ -642,7 +642,7 @@ void Jogador::decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem){
 		GLfloat y1 = linha->getY1() + (y * pow(tempoDecolagem, 2)) / 2;
 		this->setX(x1);
 		this->setY(y1);
-		this->distanciaPontos = this->distanciaEntrePontos(this->x, this->y, linha->getX2(), linha->getY2());
+		this->distanciaPontos = this->distanciaEntrePontos(this->x, this->y, 0, linha->getX2(), linha->getY2(), 0);
 		GLfloat aceleracao = (this->distanciaPontos/tempoFinal);
 		this->anguloHelice = this->anguloHelice + aceleracao * tempoDecolagem;
 
@@ -671,12 +671,12 @@ void Jogador::decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem){
 	}
 }
 
-GLfloat Jogador::distanciaEntrePontos(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2){
-	return sqrt(pow((x2 - x1), 2) + pow((y2 - y1), 2));
+GLfloat Jogador::distanciaEntrePontos(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2){
+	return sqrt(pow((x2 - x1), 2) + pow((y2 - y1), 2) + pow((z2 - z1), 2));
 }
 
 void Jogador::calculaPontoCrescimento(Linha* linha){
-	GLfloat pontoCrescimento = this->distanciaEntrePontos(linha->getX1(), linha->getY1(), linha->getX2(), linha->getY2()) / 2.0;
+	GLfloat pontoCrescimento = this->distanciaEntrePontos(linha->getX1(), linha->getY1(), 0, linha->getX2(), linha->getY2(), 0) / 2.0;
 	this->pontoCrescimento = pontoCrescimento;
 }
 

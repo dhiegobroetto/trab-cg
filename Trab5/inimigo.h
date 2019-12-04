@@ -48,7 +48,9 @@ class Inimigo
         Arena* arena;
         std::vector<Projetil*> projeteis;
         GLfloat anguloInimigo;
+        GLfloat anguloInimigoVertical;
         GLfloat anguloCanhao;
+        GLfloat anguloCanhaoVertical;
         GLfloat anguloHelice;
         GLfloat mouseX;
         GLfloat limiteCanhaoX;
@@ -108,6 +110,8 @@ class Inimigo
         void setLimiteCanhaoY(GLfloat limiteCanhaoY);
         GLfloat getAnguloCanhao();
         void setAnguloCanhao(GLfloat anguloCanhao);
+        GLfloat getAnguloCanhaoVertical();
+        void setAnguloCanhaoVertical(GLfloat anguloCanhaoVertical);
         void setTempoIA(GLfloat tempoIA);
         void setTempoAtira(GLfloat tempoAtira);
         bool isLigado();
@@ -122,6 +126,8 @@ class Inimigo
         void addProjetil(Projetil *p);
         GLfloat getAnguloInimigo();
         void setAnguloInimigo(GLfloat anguloInimigo);
+        GLfloat getAnguloInimigoVertical();
+        void setAnguloInimigoVertical(GLfloat anguloInimigoVertical);
         void desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaTriangulo(GLfloat tamanho);
         void desenhaElipse(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB);
@@ -144,10 +150,10 @@ class Inimigo
         void desenhaCilindro(GLfloat raio, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB);
         void voaProjeteis(GLfloat tempoAjustador);
         void voaBombas(GLfloat tempoAjustador);
-        bool verificaColisao(GLfloat x, GLfloat y, bool projetil, GLfloat raioBomba);
+        bool verificaColisao(GLfloat x, GLfloat y, GLfloat z, bool projetil, GLfloat raioBomba);
         void atravessaBorda();
         void decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem);
-        GLfloat distanciaEntrePontos(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
+        GLfloat distanciaEntrePontos(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2);
         void calculaPontoCrescimento(Linha* linha);
         void calculaAngulo();
         void reseta();
