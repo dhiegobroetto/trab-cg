@@ -1,15 +1,16 @@
 #include "bomba.h"
 
-Bomba::Bomba(GLfloat x, GLfloat y, GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB, GLfloat velocidade, GLfloat anguloJogadorBase){
+Bomba::Bomba(GLfloat x, GLfloat y, GLfloat z, GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB, GLfloat velocidade, GLfloat anguloJogadorBase){
     this->x = x;
     this->y = y;
-    this->z = 0;
+    this->z = z;
     this->raio = raio;
 	this->raioInicial = raio;
     this->corR = corR;
     this->corG = corG;
     this->corB = corB;
 	this->velocidade = velocidade;
+  this->velocidadeVertical = 10;
     this->anguloJogadorBase = anguloJogadorBase;
 	this->tempoInicial = (glutGet(GLUT_ELAPSED_TIME) / 1000.0);
 	this->explode = false;
@@ -91,7 +92,7 @@ void Bomba::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat cor
 
 void Bomba::desenhaBomba(){
 	glPushMatrix();
-		glTranslatef(this->x, this->y, 0);
+		glTranslatef(this->x, this->y, this->z);
         glRotatef(this->getAnguloJogadorBase(), 0.0, 0.0, 1.0);
 		desenhaCirculo(this->raio, this->corR, this->corG, this->corB);
 	glPopMatrix();
@@ -99,27 +100,31 @@ void Bomba::desenhaBomba(){
 
 void Bomba::voa(GLfloat tempoAjustador){
 	GLfloat cx = this->getX() + (cos(((this->getAnguloJogadorBase() + 90) * (M_PI / 180))) * this->velocidade * tempoAjustador);
-    GLfloat cy = this->getY() + (sin(((this->getAnguloJogadorBase() + 90) * (M_PI / 180))) * this->velocidade * tempoAjustador);
+  GLfloat cy = this->getY() + (sin(((this->getAnguloJogadorBase() + 90) * (M_PI / 180))) * this->velocidade * tempoAjustador);
 	this->setX(cx);
 	this->setY(cy);
-	this->cai();
+	this->cai(tempoAjustador);
 }
 
-void Bomba::cai(){
-	GLfloat tempoFinal = 2.0;
-	GLfloat tempoAtual = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
-	GLfloat tempoQueda = tempoAtual - this->tempoInicial;
-	if(tempoQueda < tempoFinal){
-		// V = del(S) / del(t)
-		GLfloat	velocidadeRaio = ((this->raioInicial / 2) - this->raioInicial) / tempoFinal;
-		// S = So + Vt
-		GLfloat passoRaio = velocidadeRaio * tempoQueda;
-		GLfloat raioDecrescente = this->raioInicial + passoRaio;
-		this->setRaio(raioDecrescente);
-	}else{
-		this->setRaio(this->raioInicial / 2);
-		this->explodeBomba();
-	}
+void Bomba::cai(GLfloat tempoAjustador){
+	// GLfloat tempoFinal = 2.0;
+	// GLfloat tempoAtual = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
+	// GLfloat tempoQueda = tempoAtual - this->tempoInicial;
+	// if(this->getZ() > 0){
+    GLfloat cz = this->getZ() - this->velocidadeVertical*tempoAjustador;
+    this->setZ(cz);
+
+    this->velocidadeVertical += 2;
+		// // V = del(S) / del(t)
+		// GLfloat	velocidadeRaio = ((this->raioInicial / 2) - this->raioInicial) / tempoFinal;
+		// // S = So + Vt
+		// GLfloat passoRaio = velocidadeRaio * tempoQueda;
+		// GLfloat raioDecrescente = this->raioInicial + passoRaio;
+		// this->setRaio(raioDecrescente);
+	// }else{
+		// this->setRaio(this->raioInicial / 2);
+	// 	this->explodeBomba();
+	// }
 }
 
 void Bomba::explodeBomba(){

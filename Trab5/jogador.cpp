@@ -5,7 +5,7 @@ Jogador::Jogador(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
     this->raio = raio;
     this->x = x;
     this->y = y;
-	this->z = 0;
+	this->z = raio/3;
 	this->xInicial = x;
 	this->yInicial = y;
     this->corR = corR;
@@ -25,6 +25,7 @@ Jogador::Jogador(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
 	this->mouseX = 0.0;
 	this->mouseY = 0.0;
 	this->vivo = true;
+	this->velocidade = 0.0;
 }
 
 GLint Jogador::getId(){
@@ -474,11 +475,8 @@ void Jogador::desenhaProjeteis(){
 
 void Jogador::desenhaBombas(){
 	for(int i = 0; i < bombas.size(); i++){
-		if(this->verificaColisao(bombas[i]->getX(), bombas[i]->getY(), bombas[i]->getZ(), true, bombas[i]->getRaio()) && !bombas[i]->explodiu()){
+		if(this->verificaColisao(bombas[i]->getX(), bombas[i]->getY(), bombas[i]->getZ(), true, bombas[i]->getRaio()) && !this->verificaColisaoBomba(bombas[i]->getX(), bombas[i]->getY(), bombas[i]->getZ(), bombas[i]->getRaio()) && bombas[i]->getZ() > bombas[i]->getRaio()){
 			bombas[i]->desenhaBomba();
-		}else if(bombas[i]->explodiu()){
-			this->verificaColisaoBomba(bombas[i]->getX(), bombas[i]->getY(), bombas[i]->getZ(), bombas[i]->getRaio());
-			bombas.erase(bombas.begin() + i);
 		}else{
 			bombas.erase(bombas.begin() + i);
 		}
@@ -526,7 +524,33 @@ void Jogador::moveY(GLfloat y){
 }
 
 void Jogador::moveZ(GLfloat z){
-	this->anguloJogadorVertical += z * this->tempoAjustador;
+	GLfloat anguloLimite = 45;
+	GLfloat novoAngulo = this->anguloJogadorVertical + z * this->tempoAjustador;
+
+	if(z > 0 && novoAngulo > anguloLimite)
+			novoAngulo = anguloLimite;
+	else if(z < 0 && novoAngulo < -anguloLimite)
+			novoAngulo = -anguloLimite;
+
+	this->anguloJogadorVertical = novoAngulo;
+}
+
+void Jogador::resetZ(GLfloat angSpeed){
+	if(this->anguloJogadorVertical == 0)
+		return;
+
+	GLfloat novoAngulo;
+	if(this->anguloJogadorVertical > 0){
+		novoAngulo = this->anguloJogadorVertical - angSpeed * this->tempoAjustador;
+		if(novoAngulo < 0)
+			novoAngulo = 0;
+	}else{
+		novoAngulo = this->anguloJogadorVertical + angSpeed * this->tempoAjustador;
+		if(novoAngulo > 0)
+			novoAngulo = 0;
+	}
+
+	this->anguloJogadorVertical = novoAngulo;
 }
 
 void Jogador::voa(GLfloat velocidade){
@@ -566,7 +590,8 @@ bool Jogador::verificaColisaoProjetil(GLfloat x, GLfloat y, GLfloat z){
 	return true;
 }
 
-void Jogador::verificaColisaoBomba(GLfloat x, GLfloat y, GLfloat z, GLfloat raio){
+bool Jogador::verificaColisaoBomba(GLfloat x, GLfloat y, GLfloat z, GLfloat raio){
+	bool resposta = false;
 	// Verifica colisão com inimigos terrestres
 	std::list<Circulo*> inimigosMortos;
 	for (auto inimigo : this->arena->getInimigosTerrestres()) {
@@ -575,9 +600,11 @@ void Jogador::verificaColisaoBomba(GLfloat x, GLfloat y, GLfloat z, GLfloat raio
 		raioInimigo += raio;
 		if ((distanciaInimigo < raioInimigo) && this->isVoando()) {
 			arena->mataInimigoTerrestre(inimigo);
+			resposta = true;
 		}
 	}
 	inimigosMortos.clear();
+	return resposta;
 }
 
 void Jogador::voaBombas(GLfloat tempoAjustador){
@@ -626,36 +653,59 @@ void Jogador::atravessaBorda(){
 	this->setY(novoY);
 }
 
-void Jogador::decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem){
+void Jogador::decola(Linha* linha, GLfloat tempoDiferencial, GLfloat tempoDecolagem){
 	if(this->ligado && !this->voando){
-		// S = So + Vo * t + (a * t^2)/2
-		GLfloat tempoFinal = 4.0;
+		GLfloat distancia = this->distanciaEntrePontos(linha->getX1(), linha->getY1(), 0, linha->getX2(), linha->getY2(), 0);
+		GLfloat tempo = 4.0;
+		GLfloat velFinal = 2 * distancia / tempo;
+		GLfloat aceleracao = 2*distancia/(pow(tempo, 2));
 
-		GLfloat dx = linha->getX2() - linha->getX1();
-		GLfloat x = 2 * dx / pow(tempoFinal, 2);
+		this->velocidade += aceleracao*tempoDiferencial;
+		printf("%f\n", this->velocidade);
 
-		GLfloat dy = linha->getY2() - linha->getY1();
-		GLfloat y = 2 * dy / pow(tempoFinal, 2);
+		this->voa(this->velocidade);
 
-		GLfloat x1 = linha->getX1() + (x * pow(tempoDecolagem, 2)) / 2;
-		GLfloat y1 = linha->getY1() + (y * pow(tempoDecolagem, 2)) / 2;
-		this->setX(x1);
-		this->setY(y1);
-		this->distanciaPontos = this->distanciaEntrePontos(this->x, this->y, 0, linha->getX2(), linha->getY2(), 0);
-		GLfloat aceleracao = (this->distanciaPontos/tempoFinal);
-		this->anguloHelice = this->anguloHelice + aceleracao * tempoDecolagem;
-
-		// Subindo voo (dobrando o raio)
-		if(this->distanciaPontos <= this->pontoCrescimento and this->ligado and !this->voando){
-			// TODO: Subir avião em Z
+		if(tempoDecolagem >= tempo/2){
+			this->moveZ(20.0);
 		}
 
-		// Completado decolagem
-		if(this->distanciaPontos <= 1 or tempoDecolagem >= 4.0){
-			GLfloat vel = sqrt(pow(x, 2) + pow(y, 2)) * 4.0;
-			this->setVelocidade(vel);
+		if(tempoDecolagem > tempo){
 			this->setVoando(true);
 		}
+
+		// // S = So + Vo * t + (a * t^2)/2
+		// GLfloat tempoFinal = 4.0;
+		//
+		// GLfloat dx = linha->getX2() - linha->getX1();
+		// GLfloat x = 2 * dx / pow(tempoFinal, 2);
+		//
+		// GLfloat dy = linha->getY2() - linha->getY1();
+		// GLfloat y = 2 * dy / pow(tempoFinal, 2);
+		//
+		// GLfloat x1 = linha->getX1() + (x * pow(tempoDecolagem, 2)) / 2;
+		// GLfloat y1 = linha->getY1() + (y * pow(tempoDecolagem, 2)) / 2;
+		// this->setX(x1);
+		// this->setY(y1);
+		// this->distanciaPontos = this->distanciaEntrePontos(this->x, this->y, 0, linha->getX2(), linha->getY2(), 0);
+		// GLfloat aceleracao = (this->distanciaPontos/tempoFinal);
+		// this->anguloHelice = this->anguloHelice + aceleracao * tempoDecolagem;
+		//
+		// // Subindo voo (dobrando o raio)
+		// if(this->distanciaPontos <= this->pontoCrescimento and this->ligado and !this->voando){
+		// 	GLfloat dz = this->getRaio()*2;
+		// 	GLfloat z = 2 * dz / pow(tempoFinal, 2);
+		//
+		// 	this->moveZ(50.0);
+		// 	GLfloat z1 = z * pow(tempoDecolagem, 2) / 2;
+		// 	this->setZ(z1);
+		// }
+		//
+		// // Completado decolagem
+		// if(this->distanciaPontos <= 1 or tempoDecolagem >= 4.0){
+		// 	GLfloat vel = sqrt(pow(x, 2) + pow(y, 2)) * 4.0;
+		// 	this->setVelocidade(vel);
+		// 	this->setVoando(true);
+		// }
 	}
 }
 

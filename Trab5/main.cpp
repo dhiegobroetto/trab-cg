@@ -27,11 +27,12 @@ Jogador* jogador;
 float larguraDimensao, alturaDimensao;
 float fundoR, fundoG, fundoB;
 int teclasTeclado[256];
-GLfloat tempoAntigo, tempoNovo, tempoAntigoDecolagem, tempoDecolagem;
+GLfloat tempoAntigo, tempoNovo, tempoAntigoDecolagem, tempoDecolagem, tempoParaIncrementar, tempoParaIncrementarOld;
 GLfloat anguloCamera3Horizontal, anguloCamera3Vertical;
 bool camera3IsMoving;
 int oldMouseX = -1;
 int oldMouseY = -1;
+GLfloat maiorRaioTerrestre = 0;
 
 // Objetos auxiliares
 Arena* arena = NULL;
@@ -105,10 +106,11 @@ void mouseAction(int button, int state, int x, int y){
             );
             jogador->addProjetil(p);
         }
-        if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && flagCamera != 3){
+        if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && jogador->getAnguloJogadorVertical() == 0){
             Bomba *b = new Bomba(
                 jogador->getX(),
                 jogador->getY(),
+                jogador->getZ(),
                 (GLfloat) (jogador->getRaio()/3),
                 (GLfloat) 0.0,
                 (GLfloat) 0.0,
@@ -374,10 +376,13 @@ void idle(void){
         if((teclasTeclado['u'] || teclasTeclado['U']) && !jogador->isLigado()){
             jogador->setLigado(true);
             tempoAntigoDecolagem = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
+            tempoParaIncrementarOld = tempoAntigoDecolagem;
         }
         if(jogador->isLigado() && !jogador->isVoando()){
             tempoDecolagem = (glutGet(GLUT_ELAPSED_TIME) / 1000.0) - tempoAntigoDecolagem;
-            jogador->decola(arena->getLinha(), tempoAntigoDecolagem, tempoDecolagem);
+            tempoParaIncrementar = (glutGet(GLUT_ELAPSED_TIME) / 1000.0);
+            jogador->decola(arena->getLinha(), tempoParaIncrementar - tempoParaIncrementarOld, tempoDecolagem);
+            tempoParaIncrementarOld = tempoParaIncrementar;
         }
         if(jogador->isLigado() && jogador->isVoando()){
             GLfloat vel = jogador->getVelocidade();
@@ -386,10 +391,12 @@ void idle(void){
             }else if(teclasTeclado['d'] || teclasTeclado['D']){
                 jogador->moveX(-curva);
             }
-            if(teclasTeclado['w'] || teclasTeclado['W']){
+            if((teclasTeclado['w'] || teclasTeclado['W']) && jogador->getZ() < arena->getRaio() - 50){
                 jogador->moveZ(curva);
-            }else if(teclasTeclado['s'] || teclasTeclado['S']){
+            }else if((teclasTeclado['s'] || teclasTeclado['S']) && jogador->getZ() > maiorRaioTerrestre + 50){
                 jogador->moveZ(-curva);
+            } else {
+              jogador->resetZ(curva);
             }
             if(teclasTeclado['='] || teclasTeclado['+']){
                 jogador->incrementaVelocidade(3.0);
@@ -406,6 +413,8 @@ void idle(void){
         jogador->reseta();
         arena->reseta();
         limpaTeclas();
+        anguloCamera3Vertical = 60;
+        anguloCamera3Horizontal = 0;
     }
 
     glutPostRedisplay();
@@ -563,6 +572,8 @@ bool lerXML(char* caminhoArquivo){
                     // Leitura dos inimigos terrestres
                 }else if(((std::string)circuloElemento->Attribute("fill")).compare("orange") == 0){
                     arena->criaInimigosTerrestres(id, r, cx, cy, cores[0], cores[1], cores[2]);
+                    if(r > maiorRaioTerrestre)
+                      maiorRaioTerrestre = r;
                 }
 
                 // circulo++

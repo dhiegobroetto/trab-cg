@@ -141,14 +141,15 @@ class Jogador
         void moveX(GLfloat x);
         void moveY(GLfloat y);
         void moveZ(GLfloat z);
+        void resetZ(GLfloat angSpeed);
         void voa(GLfloat velocidade);
         void voaProjeteis(GLfloat tempoAjustador);
         void voaBombas(GLfloat tempoAjustador);
         bool verificaColisao(GLfloat x, GLfloat y, GLfloat z, bool projetil, GLfloat raioBomba);
         bool verificaColisaoProjetil(GLfloat x, GLfloat y, GLfloat z);
-        void verificaColisaoBomba(GLfloat x, GLfloat y, GLfloat z, GLfloat raio);
+        bool verificaColisaoBomba(GLfloat x, GLfloat y, GLfloat z, GLfloat raio);
         void atravessaBorda();
-        void decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem);
+        void decola(Linha* linha, GLfloat tempoDiferencial, GLfloat tempoDecolagem);
         GLfloat distanciaEntrePontos(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2);
         void calculaPontoCrescimento(Linha* linha);
         void calculaAngulo(Linha* linha);

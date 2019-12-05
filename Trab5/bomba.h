@@ -23,13 +23,14 @@ class Bomba
         GLfloat corG;
         GLfloat corB;
         GLfloat velocidade;
+        GLfloat velocidadeVertical;
         GLfloat anguloJogadorBase;
         GLfloat tempoInicial;
         bool explode;
 
     public:
     	// ------------ Construtor ------------ //
-        Bomba(GLfloat x, GLfloat y, GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB, GLfloat velocidade, GLfloat anguloJogadorBase);
+        Bomba(GLfloat x, GLfloat y, GLfloat z, GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB, GLfloat velocidade, GLfloat anguloJogadorBase);
 
         // ------------ Getters e Setters ------------ //
         GLfloat getX();
@@ -52,7 +53,7 @@ class Bomba
         void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaBomba();
         void voa(GLfloat tempoAjustador);
-        void cai();
+        void cai(GLfloat tempoAjustador);
         void explodeBomba();
         bool explodiu();
 };

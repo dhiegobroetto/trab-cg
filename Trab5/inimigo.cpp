@@ -5,7 +5,7 @@ Inimigo::Inimigo(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
     this->raio = raio;
     this->x = x;
     this->y = y;
-	this->z = 0;
+	this->z = arena->getRaio()/2;
 	this->xInicial = x;
 	this->yInicial = y;
     this->corR = corR;
@@ -461,7 +461,7 @@ void Inimigo::desenhaProjeteis(){
 
 void Inimigo::desenhaInimigo(){
 	glPushMatrix();
-		glTranslatef(this->x, this->y, 0);
+		glTranslatef(this->x, this->y, this->z);
 		glRotatef(this->anguloInimigo, 0.0, 0.0, 1.0);
 		desenhaAsas(0);
 		desenhaAsas(1);
