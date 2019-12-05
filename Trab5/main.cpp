@@ -92,7 +92,7 @@ void mouseAction(int button, int state, int x, int y){
                 jogador->getX() + distPontaAviao_x + distPontaCanhao_x,
                 jogador->getY() + distPontaAviao_y + distPontaCanhao_y,
                 jogador->getZ() + distPontaAviao_z + distPontaCanhao_z,
-                (GLfloat) (jogador->getRaio()/8),
+                (GLfloat) (jogador->getRaio()*0.1),
                 (GLfloat) 0.0,
                 (GLfloat) 0.0,
                 (GLfloat) 0.0,
@@ -543,6 +543,7 @@ bool lerXML(char* caminhoArquivo){
 
                 // Leitura do jogador
                 if(((std::string)circuloElemento->Attribute("fill")).compare("green") == 0){
+                    r *= 2;
                     Jogador* jogador = new Jogador(id, r, cx, cy, cores[0], cores[1], cores[2], arena);
                     GLfloat vel = atof(jogadorElemento->Attribute("vel"));
                     GLfloat velTiro = atof(jogadorElemento->Attribute("velTiro"));

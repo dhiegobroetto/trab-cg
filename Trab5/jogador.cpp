@@ -5,7 +5,7 @@ Jogador::Jogador(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
     this->raio = raio;
     this->x = x;
     this->y = y;
-		this->z = 0;
+	this->z = 0;
 	this->xInicial = x;
 	this->yInicial = y;
     this->corR = corR;
@@ -332,11 +332,6 @@ void Jogador::desenhaAsa(int asa){
 
 void Jogador::desenhaAerodinamica(GLfloat tamanho, GLfloat corR, GLfloat corG, GLfloat corB){
 	defineIluminacao(corR, corG, corB);
-	// glBegin(GL_TRIANGLES);
-	// 	glVertex3f(0.0, tamanho, 0.0);
-	// 	glVertex3f(tamanho, 0.0, 0.0);
-	// 	glVertex3f(-tamanho, 0.0, 0.0);
-	// glEnd();
 	glPushMatrix();
 		glScalef(2.0, 0.2, 0.1625);
 		glutSolidCube(tamanho);
@@ -354,12 +349,9 @@ void Jogador::desenhaHelice(int asa){
             glTranslatef((-(this->raio/4)*3)/2, this->raio/2, 0);
         }
         glPushMatrix();
-            // glColor3f(1.0, 0.2, 0.2);
-
             glScalef(0.3, 1.0, 0.0825);
             glutSolidCube(this->raio/2);
         glPopMatrix();
-        // desenhaQuadrado(this->raio/6, this->raio/4, 0.0, 0.0, 0.0);
         glTranslatef(0.0, this->raio/4, 0.0);
             glRotatef(angulo, 0.0, 1.0, 0.0);
             desenhaTriangulo(this->raio/4);
@@ -457,8 +449,16 @@ void Jogador::desenhaCanhao(){
 		glRotatef(this->anguloCanhaoVertical, 1.0, 0.0, 0.0);
 
 		desenhaCilindro(this->raio*0.1, this->raio/3, 0.0, 0.0, 0.0);
-
-		// desenhaQuadrado(this->raio/4, this->raio/2 + 1, 0.0, 0.0, 0.0);
+		glPushMatrix();
+			glTranslatef(0.0, 0.0, this->raio/3);
+			GLUquadric* obj = gluNewQuadric();
+		    gluQuadricOrientation(obj, GLU_OUTSIDE);
+		    gluQuadricTexture(obj, GLU_TRUE);
+		    gluQuadricDrawStyle(obj, GLU_FILL);
+		    gluQuadricNormals(obj, GLU_SMOOTH);
+			gluDisk(obj, 0, this->raio*0.1, 180, 1);
+			gluDeleteQuadric(obj);
+		glPopMatrix();
 	glPopMatrix();
 }
 
@@ -505,8 +505,7 @@ void Jogador::desenhaJogador(){
 		glPopMatrix();
 		glPushMatrix();
 			glTranslatef(0.0, this->raio/2, this->raio/this->raio);
-			desenhaElipsoide(this->raio/4, this->raio/6, 0.0, 0.0, 0.0);
-			// desenhaElipseBorda(this->raio/4, this->raio/8, 1.0, 1.0, 1.0);
+			desenhaElipsoide(this->raio/4, this->raio/4, 0.0, 0.0, 0.0);
 		glPopMatrix();
 	glPopMatrix();
 	desenhaProjeteis();
@@ -648,16 +647,7 @@ void Jogador::decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem){
 
 		// Subindo voo (dobrando o raio)
 		if(this->distanciaPontos <= this->pontoCrescimento and this->ligado and !this->voando){
-			GLfloat	velocidadeRaio = 0.0;
-			if(this->tempoRaio == 0.0){
-				this->tempoRaio = (glutGet(GLUT_ELAPSED_TIME) / 1000.0) - tempoAntigo;
-			}
-			// V = S / t
-			velocidadeRaio = this->raioInicial / (tempoFinal - this->tempoRaio);
-			// S = So + Vt
-			GLfloat passoRaio = velocidadeRaio * (tempoDecolagem - this->tempoRaio);
-			GLfloat raioCrescente = this->raioInicial + passoRaio;
-			this->setRaio(raioCrescente);
+			// TODO: Subir avião em Z
 		}
 
 		// Completado decolagem
@@ -665,8 +655,6 @@ void Jogador::decola(Linha* linha, GLfloat tempoAntigo, GLfloat tempoDecolagem){
 			GLfloat vel = sqrt(pow(x, 2) + pow(y, 2)) * 4.0;
 			this->setVelocidade(vel);
 			this->setVoando(true);
-			GLfloat raioFinal = this->raioInicial * 2;
-			this->setRaio(raioFinal);
 		}
 	}
 }

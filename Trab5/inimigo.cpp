@@ -436,8 +436,16 @@ void Inimigo::desenhaCanhao(){
 		glRotatef(-this->anguloCanhao, 0.0, 1.0, 0.0);
 
 		desenhaCilindro(this->raio*0.1, this->raio/3, 0.0, 0.0, 0.0);
-
-		// desenhaQuadrado(this->raio/4, this->raio/2 + 1, 0.0, 0.0, 0.0);
+		glPushMatrix();
+			glTranslatef(0.0, 0.0, this->raio/3);
+			GLUquadric* obj = gluNewQuadric();
+		    gluQuadricOrientation(obj, GLU_OUTSIDE);
+		    gluQuadricTexture(obj, GLU_TRUE);
+		    gluQuadricDrawStyle(obj, GLU_FILL);
+		    gluQuadricNormals(obj, GLU_SMOOTH);
+			gluDisk(obj, 0, this->raio*0.1, 180, 1);
+			gluDeleteQuadric(obj);
+		glPopMatrix();
 	glPopMatrix();
 }
 
@@ -470,7 +478,7 @@ void Inimigo::desenhaInimigo(){
 		glPopMatrix();
 		glPushMatrix();
 			glTranslatef(0.0, this->raio/2, this->raio/this->raio);
-			desenhaElipsoide(this->raio/4, this->raio/6, 0.0, 0.0, 0.0);
+			desenhaElipsoide(this->raio/4, this->raio/4, 0.0, 0.0, 0.0);
 			// desenhaElipseBorda(this->raio/4, this->raio/8, 1.0, 1.0, 1.0);
 		glPopMatrix();
 	glPopMatrix();
@@ -522,7 +530,7 @@ void Inimigo::atira(){
 		this->getX() + distPontaAviao_x + distPontaCanhao_x,
 		this->getY() + distPontaAviao_y + distPontaCanhao_y,
 		this->getZ() + distPontaAviao_z + distPontaCanhao_z,
-		(GLfloat) (this->getRaio()/8),
+		(GLfloat) (this->getRaio()*0.1),
 		(GLfloat) 0.0,
 		(GLfloat) 0.0,
 		(GLfloat) 0.0,
@@ -537,7 +545,7 @@ void Inimigo::atira(){
 }
 void Inimigo::voa(GLfloat curva){
 	GLfloat cx = this->getX() + (cos(this->getAnguloInimigoVertical() * (M_PI / 180)) * cos(((this->getAnguloInimigo()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
-  GLfloat cy = this->getY() + (cos(this->getAnguloInimigoVertical() * (M_PI / 180)) * sin(((this->getAnguloInimigo()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
+  	GLfloat cy = this->getY() + (cos(this->getAnguloInimigoVertical() * (M_PI / 180)) * sin(((this->getAnguloInimigo()) * (M_PI / 180))) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
 	GLfloat cz = this->getZ() + (sin(this->getAnguloInimigoVertical() * (M_PI / 180)) * velocidade * this->velocidadeMultiplicadora * this->tempoAjustador);
 
 	GLfloat tempoAgora = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
