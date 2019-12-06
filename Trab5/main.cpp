@@ -132,7 +132,7 @@ void mouseAction(int button, int state, int x, int y){
 }
 
 void mouseMove(int x, int y){
-    if(jogador->isVoando() && jogador->isVivo()){
+    if(jogador->isVoando() && jogador->isVivo() && arena->getInimigosTerrestres().size() > 0){
         if(jogador->getMouseX() == 0.0){
             jogador->setMouseX(x);
         }else{
@@ -164,8 +164,7 @@ void mouseClickedMove(int x, int y){
       if(newVertAng <= 60 && newVertAng >= -60)
         anguloCamera3Vertical = newVertAng;
 
-      int newHorizAng = anguloCamera3Horizontal - (x - oldMouseX)*0.5;
-      if(newHorizAng <= 180 && newHorizAng >= -180)
+        int newHorizAng = anguloCamera3Horizontal - (x - oldMouseX)*0.5;
         anguloCamera3Horizontal = newHorizAng;
     }
     oldMouseX = x;
@@ -348,7 +347,7 @@ void idle(void){
               flagCamera = 1;
               glMatrixMode(GL_PROJECTION);
               glLoadIdentity();
-              gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, arena->getRaio() * 2);
+              gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, arena->getRaio() * 3);
               camera3IsMoving = false;
             }
         }
@@ -357,7 +356,7 @@ void idle(void){
               flagCamera = 2;
               glMatrixMode(GL_PROJECTION);
               glLoadIdentity();
-              gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.6, arena->getRaio() * 2);
+              gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.6, arena->getRaio() * 3);
               camera3IsMoving = false;
             }
         }
@@ -396,7 +395,7 @@ void idle(void){
             }else if((teclasTeclado['s'] || teclasTeclado['S']) && jogador->getZ() > maiorRaioTerrestre + 50){
                 jogador->moveZ(-curva);
             } else {
-              jogador->resetZ(curva);
+              jogador->resetZ(curva*jogador->getVelocidade()*jogador->getVelocidadeMultiplicadora()/103);
             }
             if(teclasTeclado['='] || teclasTeclado['+']){
                 jogador->incrementaVelocidade(3.0);

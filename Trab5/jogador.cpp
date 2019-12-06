@@ -661,7 +661,6 @@ void Jogador::decola(Linha* linha, GLfloat tempoDiferencial, GLfloat tempoDecola
 		GLfloat aceleracao = 2*distancia/(pow(tempo, 2));
 
 		this->velocidade += aceleracao*tempoDiferencial;
-		printf("%f\n", this->velocidade);
 
 		this->voa(this->velocidade);
 
