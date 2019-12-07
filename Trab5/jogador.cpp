@@ -350,6 +350,7 @@ void Jogador::desenhaHelice(int asa){
             glTranslatef((-(this->raio/4)*3)/2, this->raio/2, 0);
         }
         glPushMatrix();
+        	defineIluminacao(0, 0, 0);
             glScalef(0.3, 1.0, 0.0825);
             glutSolidCube(this->raio/2);
         glPopMatrix();
