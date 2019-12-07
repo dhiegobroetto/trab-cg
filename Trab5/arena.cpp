@@ -159,7 +159,7 @@ void Arena::desenhaArena(){
 	    gluQuadricTexture(obj, GLU_TRUE);
 	    gluQuadricDrawStyle(obj, GLU_FILL);
 	    gluQuadricNormals(obj, GLU_SMOOTH);
-		gluDisk(obj, 0, this->getRaio() + this->getJogador()->getRaio()*3, 180, 1);
+		gluDisk(obj, 0, this->getRaio() + this->getJogador()->getRaio()*5, 180, 1);
 		gluDeleteQuadric(obj);
     	glMatrixMode(GL_MODELVIEW);
 
@@ -170,7 +170,7 @@ void Arena::desenhaArena(){
 	    gluQuadricTexture(qobj, GLU_TRUE);
 	    gluQuadricDrawStyle(qobj, GLU_FILL);
 	    gluQuadricNormals(qobj, GLU_SMOOTH);
-	    gluCylinder(qobj, this->getRaio() + this->getJogador()->getRaio()*3, this->getRaio() + this->getJogador()->getRaio()*3, this->getRaio(), 180, 1);
+	    gluCylinder(qobj, this->getRaio() + this->getJogador()->getRaio()*5, this->getRaio() + this->getJogador()->getRaio()*5, this->getRaio(), 180, 1);
 
 
 	    gluDeleteQuadric(qobj);
@@ -181,7 +181,7 @@ void Arena::desenhaArena(){
 	    gluQuadricDrawStyle(obj, GLU_FILL);
 	    gluQuadricNormals(obj, GLU_SMOOTH);
 	    glTranslatef(0.0, 0.0, this->getRaio());
-		gluDisk(obj, 0, this->getRaio() + this->getJogador()->getRaio()*3, 180, 1);
+		gluDisk(obj, 0, this->getRaio() + this->getJogador()->getRaio()*5, 180, 1);
 		gluDeleteQuadric(obj);
 		glPopMatrix();
 

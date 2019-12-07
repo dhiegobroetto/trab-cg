@@ -219,7 +219,7 @@ void configCamera2() {
 }
 
 void configCamera3(){
-  GLfloat raio = jogador->getRaio()*3;
+  GLfloat raio = jogador->getRaio()*5;
   GLfloat anguloJogadorHorizontal = jogador->getAnguloJogador() *M_PI/180;
 
   GLfloat anguloHorizontal = anguloCamera3Horizontal *M_PI/180 + anguloJogadorHorizontal + M_PI;
@@ -347,7 +347,7 @@ void idle(void){
               flagCamera = 1;
               glMatrixMode(GL_PROJECTION);
               glLoadIdentity();
-              gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, arena->getRaio() * 3);
+              gluPerspective(60, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, arena->getRaio() * 3);
               camera3IsMoving = false;
             }
         }
@@ -356,7 +356,7 @@ void idle(void){
               flagCamera = 2;
               glMatrixMode(GL_PROJECTION);
               glLoadIdentity();
-              gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.6, arena->getRaio() * 3);
+              gluPerspective(60, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.6, arena->getRaio() * 3);
               camera3IsMoving = false;
             }
         }
@@ -390,9 +390,9 @@ void idle(void){
             }else if(teclasTeclado['d'] || teclasTeclado['D']){
                 jogador->moveX(-curva);
             }
-            if((teclasTeclado['w'] || teclasTeclado['W']) && jogador->getZ() < arena->getRaio() - 50){
+            if((teclasTeclado['w'] || teclasTeclado['W']) && jogador->getZ() < arena->getRaio() - 105){
                 jogador->moveZ(curva);
-            }else if((teclasTeclado['s'] || teclasTeclado['S']) && jogador->getZ() > maiorRaioTerrestre + 50){
+            }else if((teclasTeclado['s'] || teclasTeclado['S']) && jogador->getZ() > maiorRaioTerrestre + 80){
                 jogador->moveZ(-curva);
             } else {
               jogador->resetZ(curva*jogador->getVelocidade()*jogador->getVelocidadeMultiplicadora()/103);
@@ -436,7 +436,7 @@ void init(float fundoR, float fundoG, float fundoB){
 
 
     // Iniciar sistema de visão
-    gluPerspective(90, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, arena->getRaio() * 3);
+    gluPerspective(60, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, arena->getRaio() * 3);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -528,8 +528,8 @@ bool lerXML(char* caminhoArquivo){
                 // Leitura da arena
                 if(((std::string)circuloElemento->Attribute("fill")).compare("blue") == 0){
                     arenaRaio = atof(circuloElemento->Attribute("r"));
-                    larguraDimensao = arenaRaio * 2;
-                    alturaDimensao = arenaRaio * 2;
+                    larguraDimensao = 500;
+                    alturaDimensao = 500;
                     id = atoi(circuloElemento->Attribute("id"));
                     cores = retornaCor(circuloElemento->Attribute("fill"));
                     arenaX = arenaY = 0.0;
@@ -624,9 +624,9 @@ int main(int argc, char** argv){
     srand(time(NULL));
     if(argc > 1){
         if(lerXML(argv[1])){
-            fundoR = 0.0;
-            fundoG = 0.0;
-            fundoB = 0.0;
+            fundoR = 1.0;
+            fundoG = 1.0;
+            fundoB = 1.0;
             tempoAntigo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
             // Inicializa
             glutInit(&argc, argv);

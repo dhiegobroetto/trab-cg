@@ -666,7 +666,7 @@ void Jogador::decola(Linha* linha, GLfloat tempoDiferencial, GLfloat tempoDecola
 		this->voa(this->velocidade);
 
 		if(tempoDecolagem >= tempo/2){
-			this->moveZ(20.0);
+			this->moveZ(25.0);
 		}
 
 		if(tempoDecolagem > tempo){
