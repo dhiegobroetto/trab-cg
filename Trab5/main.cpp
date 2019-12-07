@@ -97,7 +97,7 @@ void mouseAction(int button, int state, int x, int y){
                 (GLfloat) 0.0,
                 (GLfloat) 0.0,
                 (GLfloat) 0.0,
-                jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora() * jogador->getVelocidadeTiro(),
+                10 + jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora() * jogador->getVelocidadeTiro(),
                 jogador->getAnguloCanhao(),
                 jogador->getAnguloJogador(),
                 jogador->getAnguloCanhaoVertical() + jogador->getAnguloJogadorVertical(),
@@ -209,12 +209,20 @@ void configCamera2() {
   GLfloat distPontaCanhao_y = raio/2*cos(anguloCanhaoVertical + anguloVertical)*sin(anguloCanhaoHorizontal + anguloHorizontal);
   GLfloat distPontaCanhao_z = raio/2*sin(anguloCanhaoVertical + anguloVertical);
 
-  gluLookAt(jogador->getX() + distPontaAviao_x,
-      jogador->getY() + distPontaAviao_y,
-      jogador->getZ() + distPontaAviao_z,
-      jogador->getX() + distPontaAviao_x + distPontaCanhao_x,
-      jogador->getY() + distPontaAviao_y + distPontaCanhao_y,
-      jogador->getZ() + distPontaAviao_z + distPontaCanhao_z,
+  GLfloat alturaCamera_x = raio/5*cos(anguloVertical + M_PI/2)*cos(anguloCanhaoHorizontal + anguloHorizontal);
+  GLfloat alturaCamera_y = raio/5*cos(anguloVertical + M_PI/2)*sin(anguloCanhaoHorizontal + anguloHorizontal);
+  GLfloat alturaCamera_z = raio/5*sin(anguloVertical + M_PI/2);
+
+  GLfloat alturaCameraLookTo_x = raio/5*cos(anguloCanhaoVertical + anguloVertical + M_PI/2)*cos(anguloCanhaoHorizontal + anguloHorizontal);
+  GLfloat alturaCameraLookTo_y = raio/5*cos(anguloCanhaoVertical + anguloVertical + M_PI/2)*sin(anguloCanhaoHorizontal + anguloHorizontal);
+  GLfloat alturaCameraLookTo_z = raio/5*sin(anguloCanhaoVertical + anguloVertical + M_PI/2);
+
+  gluLookAt(jogador->getX() + distPontaAviao_x + alturaCamera_x,
+      jogador->getY() + distPontaAviao_y + alturaCamera_y,
+      jogador->getZ() + distPontaAviao_z + alturaCamera_z,
+      jogador->getX() + distPontaAviao_x + distPontaCanhao_x + alturaCameraLookTo_x,
+      jogador->getY() + distPontaAviao_y + distPontaCanhao_y + alturaCameraLookTo_y,
+      jogador->getZ() + distPontaAviao_z + distPontaCanhao_z + alturaCameraLookTo_z,
       0, 0, 1);
 }
 
@@ -356,7 +364,7 @@ void idle(void){
               flagCamera = 2;
               glMatrixMode(GL_PROJECTION);
               glLoadIdentity();
-              gluPerspective(60, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.6, arena->getRaio() * 3);
+              gluPerspective(60, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, arena->getRaio() * 3);
               camera3IsMoving = false;
             }
         }

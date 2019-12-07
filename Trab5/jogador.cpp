@@ -725,7 +725,7 @@ void Jogador::calculaAngulo(Linha* linha){
 void Jogador::reseta(){
 	this->x = this->xInicial;
 	this->y = this->yInicial;
-	this->z = 0;
+	this->z = this->raio/3;
 	this->anguloJogadorVertical = 0.0;
 	this->anguloCanhaoVertical = 0.0;
 	this->ligado = false;
