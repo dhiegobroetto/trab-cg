@@ -38,6 +38,7 @@ class Arena
         std::list<Circulo*> inimigosTerrestresMortos;
         GLuint texturaMar;
         GLuint texturaCeu;
+        GLfloat maiorRaioTerrestre;
 
     public:
     	// ------------ Construtor ------------ //
@@ -60,6 +61,8 @@ class Arena
         void setCorG(GLfloat& corG);
         GLfloat getCorB();
         void setCorB(GLfloat& corB);
+        GLfloat getMaiorRaioTerrestre();
+        void setMaiorRaioTerrestre(GLfloat& maiorRaioTerrestre);
         Jogador* getJogador();
         void setJogador(Jogador* jogador);
         Linha* getLinha();

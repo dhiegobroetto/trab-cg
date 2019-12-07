@@ -17,6 +17,8 @@
 #define RETO 0
 #define ESQUERDA 1
 #define DIREITA 2
+#define CIMA 1
+#define BAIXO 2
 
 class Arena;
 class Projetil;
@@ -61,6 +63,7 @@ class Inimigo
         bool ligado;
         bool voando;
         bool vivo;
+        int estadoVertical;
 
     public:
     	// ------------ Construtor ------------ //
@@ -144,6 +147,8 @@ class Inimigo
         void desenhaInimigo();
         void moveX(GLfloat x);
         void moveY(GLfloat y);
+        void moveZ(GLfloat z);
+        void resetZ(GLfloat angSpeed);
         void giraInimigo(GLfloat vel, GLfloat curva);
         void atira();
         void voa(GLfloat curva);

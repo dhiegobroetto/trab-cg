@@ -31,6 +31,7 @@ Inimigo::Inimigo(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR
 	this->estado = RETO;
 	this->tempoIA = 0;
 	this->tempoAtira = 0;
+	this->estadoVertical = RETO;
 }
 
 GLint Inimigo::getId(){
@@ -463,6 +464,7 @@ void Inimigo::desenhaInimigo(){
 	glPushMatrix();
 		glTranslatef(this->x, this->y, this->z);
 		glRotatef(this->anguloInimigo, 0.0, 0.0, 1.0);
+		glRotatef(this->anguloInimigoVertical, 1.0, 0.0, 0.0);
 		desenhaAsas(0);
 		desenhaAsas(1);
 		desenhaCanhao();
@@ -497,6 +499,36 @@ void Inimigo::moveY(GLfloat y){
 	this->anguloHelice += this->velocidade;
 }
 
+void Inimigo::moveZ(GLfloat z){
+	GLfloat anguloLimite = 45;
+	GLfloat novoAngulo = this->anguloInimigoVertical + z * this->tempoAjustador;
+
+	if(z > 0 && novoAngulo > anguloLimite)
+			novoAngulo = anguloLimite;
+	else if(z < 0 && novoAngulo < -anguloLimite)
+			novoAngulo = -anguloLimite;
+
+	this->anguloInimigoVertical = novoAngulo;
+}
+
+void Inimigo::resetZ(GLfloat angSpeed){
+	if(this->anguloInimigoVertical == 0)
+		return;
+
+	GLfloat novoAngulo;
+	if(this->anguloInimigoVertical > 0){
+		novoAngulo = this->anguloInimigoVertical - angSpeed * this->tempoAjustador;
+		if(novoAngulo < 0)
+			novoAngulo = 0;
+	}else{
+		novoAngulo = this->anguloInimigoVertical + angSpeed * this->tempoAjustador;
+		if(novoAngulo > 0)
+			novoAngulo = 0;
+	}
+
+	this->anguloInimigoVertical = novoAngulo;
+}
+
 GLfloat calculaProbabilidadeGirar(){
 	return ((GLfloat) rand() / (RAND_MAX));
 }
@@ -508,6 +540,24 @@ void Inimigo::giraInimigo(GLfloat vel, GLfloat curva){
 			break;
 		case DIREITA:
 			this->moveX((-1)*curva);
+			break;
+	}
+
+	switch(this->estadoVertical){
+		case CIMA:
+			if(this->getZ() < this->getArena()->getRaio() - 105)
+				this->moveZ(curva);
+			else
+				this->resetZ(curva*this->getVelocidade()*this->getVelocidadeMultiplicadora()/103);
+			break;
+		case BAIXO:
+			if(this->getZ() > this->getArena()->getMaiorRaioTerrestre() + 80)
+				this->moveZ((-1)*curva);
+			else
+				this->resetZ(curva*this->getVelocidade()*this->getVelocidadeMultiplicadora()/103);
+			break;
+		case RETO:
+			this->resetZ(curva*this->getVelocidade()*this->getVelocidadeMultiplicadora()/103);
 			break;
 	}
 }
@@ -552,6 +602,7 @@ void Inimigo::voa(GLfloat curva){
 	if(this->tempoIA + this->segundosIA <= tempoAgora){
 
 		GLfloat prob = calculaProbabilidadeGirar();
+		GLfloat probRotateVert = calculaProbabilidadeGirar();
 		// >= 0 ~ <= 0.6: anda reto
 		// > 0.6 ~ <= 0.8: gira esquerda
 		// > 0.8 ~ <= 1.0: gira direita
@@ -561,6 +612,14 @@ void Inimigo::voa(GLfloat curva){
 			this->estado = DIREITA;
 		}else{
 			this->estado = RETO;
+		}
+
+		if(probRotateVert > 0.6 && probRotateVert <= 0.8){
+			this->estadoVertical = CIMA;
+		}else if(probRotateVert > 0.8 && probRotateVert <= 1.0){
+			this->estadoVertical = BAIXO;
+		}else{
+			this->estadoVertical = RETO;
 		}
 		this->tempoIA = tempoAgora;
 		this->segundosIA = (GLfloat) (rand() % 2) + 1;

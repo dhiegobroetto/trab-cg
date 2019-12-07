@@ -12,6 +12,7 @@ Arena::Arena(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR, GL
     this->corG = corG;
     this->corB = corB;
     this->iluminacao = true;
+		this->maiorRaioTerrestre = 0;
 }
 
 GLint Arena::getId(){
@@ -78,6 +79,14 @@ void Arena::setCorB(GLfloat& corB){
 	this->corB = corB;
 }
 
+GLfloat Arena::getMaiorRaioTerrestre(){
+	return this->maiorRaioTerrestre;
+}
+
+void Arena::setMaiorRaioTerrestre(GLfloat& maiorRaioTerrestre){
+	this->maiorRaioTerrestre = maiorRaioTerrestre;
+}
+
 Jogador* Arena::getJogador(){
 	return this->jogador;
 }
@@ -141,12 +150,12 @@ void Arena::desenhaArena(){
 
 	glPushMatrix();
 	    glTranslatef(this->x, this->y, 0);
-		
+
 	    // Corpo da arena
 
 	    // Habilitando texturas aqui por não haver outros objs com textura.
 	    glEnable(GL_TEXTURE_2D);
-	    
+
 		defineIluminacao(1.0, 1.0, 1.0);
 		glMatrixMode(GL_TEXTURE);
 		GLfloat mat_emission[] = {1.0, 1.0, 1.0, 1.0};

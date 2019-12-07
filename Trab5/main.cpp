@@ -97,7 +97,7 @@ void mouseAction(int button, int state, int x, int y){
                 (GLfloat) 0.0,
                 (GLfloat) 0.0,
                 (GLfloat) 0.0,
-                10 + jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora() * jogador->getVelocidadeTiro(),
+                jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora() * jogador->getVelocidadeTiro(),
                 jogador->getAnguloCanhao(),
                 jogador->getAnguloJogador(),
                 jogador->getAnguloCanhaoVertical() + jogador->getAnguloJogadorVertical(),
@@ -209,8 +209,8 @@ void configCamera2() {
   GLfloat distPontaCanhao_y = raio/2*cos(anguloCanhaoVertical + anguloVertical)*sin(anguloCanhaoHorizontal + anguloHorizontal);
   GLfloat distPontaCanhao_z = raio/2*sin(anguloCanhaoVertical + anguloVertical);
 
-  GLfloat alturaCamera_x = raio/5*cos(anguloVertical + M_PI/2)*cos(anguloCanhaoHorizontal + anguloHorizontal);
-  GLfloat alturaCamera_y = raio/5*cos(anguloVertical + M_PI/2)*sin(anguloCanhaoHorizontal + anguloHorizontal);
+  GLfloat alturaCamera_x = raio/5*cos(anguloVertical + M_PI/2)*cos(anguloHorizontal);
+  GLfloat alturaCamera_y = raio/5*cos(anguloVertical + M_PI/2)*sin(anguloHorizontal);
   GLfloat alturaCamera_z = raio/5*sin(anguloVertical + M_PI/2);
 
   GLfloat alturaCameraLookTo_x = raio/5*cos(anguloCanhaoVertical + anguloVertical + M_PI/2)*cos(anguloCanhaoHorizontal + anguloHorizontal);
@@ -616,6 +616,7 @@ bool lerXML(char* caminhoArquivo){
                 arena->setLinha(linha);
                 arena->getJogador()->calculaPontoCrescimento(linha);
                 arena->getJogador()->calculaAngulo(linha);
+                arena->setMaiorRaioTerrestre(maiorRaioTerrestre);
             }
             return true;
         }else{
