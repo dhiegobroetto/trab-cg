@@ -158,6 +158,52 @@ void mouseMove(int x, int y){
     oldMouseY = y;
 }
 
+
+void RasterChars(GLfloat x, GLfloat y, GLfloat z, const char * text, double r, double g, double b)
+{
+    //Push to recover original attributes
+    glPushAttrib(GL_ENABLE_BIT);
+        glDisable(GL_LIGHTING);
+        glDisable(GL_TEXTURE_2D);
+        //Draw text in the x, y, z position
+        glColor3f(r,g,b);
+        glRasterPos3f(x, y, z);
+        const char* tmpStr;
+        tmpStr = text;
+        while( *tmpStr ){
+            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *tmpStr);
+            tmpStr++;
+        }
+    glPopAttrib();
+}
+
+void PrintText(GLfloat x, GLfloat y, const char * text, double r, double g, double b)
+{
+    //Draw text considering a 2D space (disable all 3d features)
+    //Push to recover original PROJECTION MATRIX
+    glMatrixMode (GL_PROJECTION);
+        glPushMatrix();
+                glLoadIdentity ();
+                glOrtho(0,100,0,100,-1,1);
+                RasterChars(x, y, 0, text, r, g, b);
+        glPopMatrix();
+    glMatrixMode (GL_MODELVIEW);
+    
+}
+
+void exibePontuacao(GLfloat x, GLfloat y, GLfloat r, GLfloat g, GLfloat b){
+    glMatrixMode (GL_PROJECTION);
+        glPushMatrix();
+            char text[50];
+            sprintf(text, "%d/%d bases destruidas.", (int)arena->getInimigosTerrestresMortos().size(), (int)(arena->getInimigosTerrestresMortos().size() + arena->getInimigosTerrestres().size()));
+            glLoadIdentity ();
+            glOrtho(0,100,0,100,-1,1);
+            RasterChars(x, y, 0, text, r, g, b);
+        glPopMatrix();
+    glMatrixMode (GL_MODELVIEW);
+}
+
+
 void mouseClickedMove(int x, int y){
     if(camera3IsMoving){
       int newVertAng = anguloCamera3Vertical + (y - oldMouseY)*0.5;
@@ -269,11 +315,25 @@ void display(void){
     std::list<Circulo*> inimigosTerrestres = arena->getInimigosTerrestres();
     // Limpar todos os pixels
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    configCamera();
+    exibePontuacao(57, 95, 0, 0, 0);
 
+    if(jogador != NULL){
+        if(!jogador->isLigado() && !jogador->isVoando()){
+            PrintText(27, 55, "Pressione U para decolar.", 0, 0, 0);
+        }
+        if(!jogador->isVivo()){
+            PrintText(35, 60, "Game Over!", 0, 0, 0);
+            PrintText(17, 55, "Pressione R para jogar novamente!", 0, 0, 0);
+        }
+        if(jogador->isVivo() && arena->getInimigosTerrestres().size() == 0){
+            PrintText(37, 60, "Voce venceu!", 0, 0, 0);
+            PrintText(17, 55, "Pressione R para jogar novamente!", 0, 0, 0);
+        }
+    }
+    configCamera();
+    
     GLfloat posicaoLuz[] = {arena->getX(), arena->getY(), 1, 0.0};
     glLightfv(GL_LIGHT0, GL_POSITION, posicaoLuz);
 
@@ -300,18 +360,7 @@ void display(void){
     for(std::list<Inimigo*>::iterator c = inimigosAereos.begin(); c != inimigosAereos.end(); ++c){
         (*c)->desenhaInimigo();
     }
-    if(jogador != NULL){
-        if(!jogador->isLigado() && !jogador->isVoando()){
-            arena->exibeDecolagem(arena->getX() - 110, arena->getY() + 40);
-        }
-        if(!jogador->isVivo()){
-                arena->exibeGameOver(arena->getX() - 155, arena->getY() + 40);
-        }
-        if(jogador->isVivo() && arena->getInimigosTerrestres().size() == 0){
-            arena->exibeVitoria(arena->getX() - 155, arena->getY() + 40);
-        }
-    }
-    arena->exibePontuacao(arena->getX() + arena->getRaio() - 210, arena->getY() + arena->getRaio() - 20);
+    
     glutSwapBuffers();
 }
 
@@ -357,6 +406,7 @@ void idle(void){
               glLoadIdentity();
               gluPerspective(60, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, arena->getRaio() * 3);
               camera3IsMoving = false;
+              glMatrixMode(GL_MODELVIEW);
             }
         }
         if(teclasTeclado['2']){
@@ -366,6 +416,7 @@ void idle(void){
               glLoadIdentity();
               gluPerspective(60, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, arena->getRaio() * 3);
               camera3IsMoving = false;
+              glMatrixMode(GL_MODELVIEW);
             }
         }
         if(teclasTeclado['3']){
@@ -429,13 +480,11 @@ void idle(void){
 
 void init(float fundoR, float fundoG, float fundoB){
     glClearColor(fundoR, fundoG, fundoB, 0.0);
-    // glShadeModel(GL_SMOOTH);
-    // glEnable(GL_LIGHTING);
-    // glEnable(GL_DEPTH_TEST);
-    // // glEnable(GL_TEXTURE_2D);
-    // glDepthFunc(GL_LEQUAL);
-    // glEnable(GL_NORMALIZE);
-    // glEnable(GL_LIGHT0);
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_DEPTH_TEST);
+    // glEnable(GL_TEXTURE_2D);
+    glDepthFunc(GL_LEQUAL);
     glMatrixMode(GL_TEXTURE);
     glLoadIdentity();
 
@@ -445,14 +494,10 @@ void init(float fundoR, float fundoG, float fundoB){
 
     // Iniciar sistema de visão
     gluPerspective(60, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, arena->getRaio() * 3);
-
-    glEnable(GL_DEPTH_TEST);
+    glMatrixMode(GL_MODELVIEW);
 
     //glEnable(GL_TEXTURE_2D);
-    glEnable(GL_LIGHTING);
-    glShadeModel(GL_SMOOTH);
 
-    glDepthFunc(GL_LEQUAL);
 
     arena->setTexturaCeu(LoadTextureRAW("sky.bmp"));
     arena->setTexturaMar(LoadTextureRAW("water.bmp"));
@@ -483,14 +528,14 @@ void init(float fundoR, float fundoG, float fundoB){
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
 
-
-
     // glOrtho(
-    //     arena->getX() - arena->getRaio(),
-    //     arena->getX() + arena->getRaio(),
-    //     arena->getY() - arena->getRaio(),
-    //     arena->getY() + arena->getRaio(),
-    //     -1.0, 1.0);
+    //     arena->getX() - arena->getRaio() - arena->getJogador()->getRaio()*5, 
+    //     arena->getX() + arena->getRaio() + arena->getJogador()->getRaio()*5, 
+    //     arena->getY() - arena->getRaio() - arena->getJogador()->getRaio()*5, 
+    //     arena->getY() + arena->getRaio() + arena->getJogador()->getRaio()*5, 
+    //     -arena->getRaio() + 80,
+    //     1);
+
 
 }
 
