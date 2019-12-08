@@ -1,19 +1,42 @@
 #include "config.h"
 
-void defineIluminacao(GLfloat corR, GLfloat corG, GLfloat corB){
+void defineCor(GLfloat corR, GLfloat corG, GLfloat corB){
 	glColor3f(corR, corG, corB);
-	// GLfloat materialEmission[] = {corR, corG, corB, 1.0};
-	// GLfloat materialColor[] = {corR, corG, corB, 1.0};
-	// GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
-	// GLfloat mat_shininess[] = {128};
-	// glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
-	// glMaterialfv(GL_FRONT, GL_AMBIENT, materialColor);
-	// glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColor);
-	// glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-	// glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+}
 
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//X
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);//Y
+void configuraIluminacao(){
+    GLfloat light_ambient[] = {0.2, 0.2, 0.2, 1.0};
+    GLfloat light_diffuse[] = {0.8, 0.8, 0.8, 1.0};
+    GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};
+    GLfloat light0_position[] = {0, 0, 1, 0.0};
+    GLfloat light1_position[] = {0.0, 0.0, 0.0, 1.0};
+    GLfloat light1_direction[] = {0.0, 0.0, -1.0};
+    GLfloat light1_angle[] = {20.0};
+
+    // GLfloat lightModel[] = {0.0, 0.0, 0.0, 1.0};
+    // glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lightModel);
+
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+    glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+    
+    glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular);
+    glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+    glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1_direction);
+    glLightfv(GL_LIGHT1, GL_SPOT_CUTOFF, light1_angle);
+
+    //GLfloat mat_emission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
+    GLfloat mat_shininess[] = {100.0};
+
+    //glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 }
 
 void habilitaIluminacao(bool iluminacao){

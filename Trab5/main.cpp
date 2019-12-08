@@ -21,6 +21,7 @@ GLfloat laranja[] = {1.0, 0.7, 0.0};
 GLfloat amarelo[] = {1.0, 1.0, 0.0};
 GLfloat preto[] = {0.0, 0.0, 0.0};
 GLint flagCamera = 1;
+bool modoNoturno = false;
 
 // Variáveis globais de configuração
 Jogador* jogador;
@@ -59,6 +60,9 @@ void keyPress(unsigned char key, int x, int y){
     if(key == 'l'){
         arena->trocaIluminacao();
         habilitaIluminacao(arena->getIluminacao());
+    }
+    if(key == 'n'){
+        modoNoturno = !modoNoturno;
     }
 }
 
@@ -330,8 +334,8 @@ void display(void){
     std::list<Circulo*> inimigosTerrestres = arena->getInimigosTerrestres();
     // Limpar todos os pixels
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-
     exibePontuacao(57, 95, 0, 0, 0);
 
     if(jogador != NULL){
@@ -349,14 +353,23 @@ void display(void){
     }
 
     desenhaMinimapaCompleto();
-
+    if(modoNoturno){
+        glDisable(GL_LIGHT0);
+        glEnable(GL_LIGHT1);
+    }else{
+        glEnable(GL_LIGHT0);
+        glDisable(GL_LIGHT1);
+    }
     configCamera();
     
-    GLfloat posicaoLuz[] = {arena->getX(), arena->getY(), 1, 0.0};
-    glLightfv(GL_LIGHT0, GL_POSITION, posicaoLuz);
+    configuraIluminacao();
 
     if(arena != NULL){
-        arena->desenhaArena();
+        arena->desenhaArena(modoNoturno);
+    }
+
+    if(jogador != NULL){
+        jogador->desenhaJogador();
     }
 
     if(linha != NULL){
@@ -371,14 +384,10 @@ void display(void){
         jogador->desenhaBombas();
     }
 
-    if(jogador != NULL){
-        jogador->desenhaJogador();
-    }
-
     for(std::list<Inimigo*>::iterator c = inimigosAereos.begin(); c != inimigosAereos.end(); ++c){
         (*c)->desenhaInimigo();
     }
-    
+
     glutSwapBuffers();
 }
 
@@ -519,30 +528,11 @@ void init(float fundoR, float fundoG, float fundoB){
     arena->setTexturaCeu(LoadTextureRAW("sky.bmp"));
     arena->setTexturaMar(LoadTextureRAW("water.bmp"));
 
-    glEnable(GL_LIGHT0);
     glColorMaterial(GL_FRONT, GL_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_NORMALIZE);
 
-    GLfloat light_ambient[] = {0.2, 0.2, 0.2, 1.0};
-    GLfloat light_diffuse[] = {0.8, 0.8, 0.8, 1.0};
-    GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat light_position[] = {arena->getX(), arena->getY(), arena->getRaio(), 1.0};
-
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
-
-    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-    //GLfloat mat_emission[] = {0.1, 0.1, 0.1, 1.0};
-    GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat mat_shininess[] = {100.0};
-
-    //glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+    
 
 
     // glOrtho(
@@ -695,13 +685,13 @@ int main(int argc, char** argv){
     srand(time(NULL));
     if(argc > 1){
         if(lerXML(argv[1])){
-            fundoR = 1.0;
-            fundoG = 1.0;
-            fundoB = 1.0;
+            fundoR = 0.0;
+            fundoG = 0.0;
+            fundoB = 0.0;
             tempoAntigo = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
             // Inicializa
             glutInit(&argc, argv);
-            glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+            glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
             glutInitWindowSize(larguraDimensao, alturaDimensao);
             glutInitWindowPosition(50, 50);
             glutCreateWindow("Airplane Combat");

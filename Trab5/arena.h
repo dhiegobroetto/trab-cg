@@ -78,7 +78,7 @@ class Arena
         void mataInimigoTerrestre(Circulo* inimigo);
         std::list<Circulo*> getInimigosTerrestres();
         std::list<Circulo*> getInimigosTerrestresMortos();
-        void desenhaArena();
+        void desenhaArena(bool modoNoturno);
         void desenhaCirculoBorda(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
         void criaInimigosAereos(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b, Arena* arena, GLfloat vel, GLfloat velTiro, GLfloat freqTiro);
         void criaInimigosTerrestres(GLint id, GLfloat raioCirculo,GLfloat x,GLfloat y,GLfloat r,GLfloat g,GLfloat b);

@@ -117,11 +117,11 @@ GLfloat Projetil::getAlturaCanhao(){
 
 void Projetil::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
     float theta, px, py;
-    defineIluminacao(corR, corG, corB);
+    defineCor(corR, corG, corB);
 
     glutSolidSphere(raio, 30, 30);
 
-	defineIluminacao(1.0, 1.0, 1.0);
+	defineCor(1.0, 1.0, 1.0);
 	glPointSize(0.5);
 	glBegin(GL_POINTS);
         for (int i = 0; i < 360; i++) {

@@ -269,7 +269,7 @@ void Jogador::setLimiteCanhaoY(GLfloat limiteCanhaoY){
 
 void Jogador::desenhaCirculoLinha(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
 	float theta, px, py;
-	defineIluminacao(corR, corG, corB);
+	defineCor(corR, corG, corB);
 	glPointSize(1.0);
 	glBegin(GL_POINTS);
 		for (int i = 0; i < 360; i++) {
@@ -283,7 +283,7 @@ void Jogador::desenhaCirculoLinha(GLfloat raio, GLfloat corR, GLfloat corG, GLfl
 
 void Jogador::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
     float theta, px, py;
-    defineIluminacao(corR, corG, corB);
+    defineCor(corR, corG, corB);
 	glBegin(GL_POLYGON);
 		for (int i = 0; i < 360; i++) {
 			theta = (i * M_PI) / 180.0;
@@ -296,7 +296,7 @@ void Jogador::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat c
 }
 
 void Jogador::desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB){
-	defineIluminacao(corR, corG, corB);
+	defineCor(corR, corG, corB);
 	glBegin(GL_POLYGON);
 		glVertex3f(base/2, 0.0, 0.0);
 		glVertex3f(base/2, altura, 0.0);
@@ -309,7 +309,7 @@ void Jogador::desenhaTriangulo(GLfloat tamanho){
     GLfloat corR = 1.0;
     GLfloat corG = 1.0;
     GLfloat corB = 0.0;
-    defineIluminacao(corR, corG, corB);
+    defineCor(corR, corG, corB);
     glBegin(GL_QUADS);
         glVertex3f(0.0, 0.0, 0.0);
         glVertex3f(-tamanho, -tamanho/2, 2.0);
@@ -328,7 +328,7 @@ void Jogador::desenhaAsa(int asa){
     GLfloat corR = 0.0;
     GLfloat corG = 0.0;
     GLfloat corB = 0.0;
-    defineIluminacao(corR, corG, corB);
+    defineCor(corR, corG, corB);
     if(asa == 0){
         glPushMatrix();
             glColor3f(0.0, 0.0, 0.0);
@@ -347,7 +347,7 @@ void Jogador::desenhaAsa(int asa){
 }
 
 void Jogador::desenhaAerodinamica(GLfloat tamanho, GLfloat corR, GLfloat corG, GLfloat corB){
-	defineIluminacao(corR, corG, corB);
+	defineCor(corR, corG, corB);
 	glPushMatrix();
 		glScalef(2.0, 0.2, 0.1625);
 		glutSolidCube(tamanho);
@@ -365,7 +365,7 @@ void Jogador::desenhaHelice(int asa){
             glTranslatef((-(this->raio/4)*3)/2, this->raio/2, 0);
         }
         glPushMatrix();
-        	defineIluminacao(0, 0, 0);
+        	defineCor(0, 0, 0);
             glScalef(0.3, 1.0, 0.0825);
             glutSolidCube(this->raio/2);
         glPopMatrix();
@@ -390,7 +390,7 @@ void Jogador::desenhaHelice(int asa){
 
 
 void Jogador::desenhaElipseBorda(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB){
-	defineIluminacao(corR, corG, corB);
+	defineCor(corR, corG, corB);
 
 	float x,y,z;
 	int t;
@@ -406,7 +406,7 @@ void Jogador::desenhaElipseBorda(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat c
 }
 
 void Jogador::desenhaElipse(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB){
-	defineIluminacao(corR, corG, corB);
+	defineCor(corR, corG, corB);
 	float x,y,z;
 	int t;
 	glBegin(GL_POLYGON);
@@ -420,13 +420,22 @@ void Jogador::desenhaElipse(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, 
 }
 
 void Jogador::desenhaElipsoide(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB){
-	defineIluminacao(corR, corG, corB);
+	defineCor(corR, corG, corB);
 	GLfloat raioMenor = cx/cy;
 	glScalef(raioMenor, 1, raioMenor);
 	glutSolidSphere(cy, 30, 30);
 }
 
 void Jogador::desenhaBase(){
+	glPushMatrix();
+		glTranslatef(this->getRaio(), 0.0, 0);
+		glRotatef(90, 0.0, 1.0, 0.0);
+		glRotatef(-90, 1, 0, 0);
+		GLfloat light1_position[] = {0.0, 0.0, 0.0, 1.0};
+	    GLfloat light1_direction[] = {0.0, 0.0, 1.0};
+		glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+	    glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1_direction);
+	glPopMatrix();
 	glPushMatrix();
 		desenhaElipsoide((this->getRaio()/3), this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB());
 	glPopMatrix();

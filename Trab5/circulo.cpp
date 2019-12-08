@@ -112,7 +112,7 @@ void Circulo::desenha(){
 }
 
 void Circulo::desenhaQuadrado(GLfloat base, GLfloat corR, GLfloat corG, GLfloat corB){
-	defineIluminacao(corR, corG, corB);
+	defineCor(corR, corG, corB);
 	glBegin(GL_POLYGON);
 		glVertex3f(base, -base, 0.0);
 		glVertex3f(base, base, 0.0);
@@ -122,7 +122,7 @@ void Circulo::desenhaQuadrado(GLfloat base, GLfloat corR, GLfloat corG, GLfloat 
 }
 
 void Circulo::desenhaQuadradoLinha(GLfloat base, GLfloat corR, GLfloat corG, GLfloat corB){
-	defineIluminacao(corR, corG, corB);
+	defineCor(corR, corG, corB);
 	glPointSize(1.0);
 	glBegin(GL_LINES);
 		glVertex3f(base, -base, 0.0);
@@ -137,7 +137,7 @@ void Circulo::desenhaQuadradoLinha(GLfloat base, GLfloat corR, GLfloat corG, GLf
 }
 
 void Circulo::desenhaCruz(GLfloat base, GLfloat corR, GLfloat corG, GLfloat corB){
-	defineIluminacao(corR, corG, corB);
+	defineCor(corR, corG, corB);
 	glPointSize(1.0);
 	glBegin(GL_LINES);
 		glVertex3f(0.0, -base, 0.0);
@@ -149,7 +149,7 @@ void Circulo::desenhaCruz(GLfloat base, GLfloat corR, GLfloat corG, GLfloat corB
 
 void Circulo::desenhaCirculoLinha(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
 	float theta, px, py;
-	defineIluminacao(corR, corG, corB);
+	defineCor(corR, corG, corB);
 	glPointSize(1.0);
 	glBegin(GL_POINTS);
 		for (int i = 0; i < 360; i++) {
@@ -164,7 +164,7 @@ void Circulo::desenhaCirculoLinha(GLfloat raio, GLfloat corR, GLfloat corG, GLfl
 void Circulo::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
 	float theta, px, py;
 	glPushMatrix();
-		defineIluminacao(corR, corG, corB);
+		defineCor(corR, corG, corB);
 		glBegin(GL_POLYGON);
 			for (int i = 0; i < 360; i++) {
 				theta = (i * M_PI) / 180.0;

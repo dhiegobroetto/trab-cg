@@ -86,7 +86,7 @@ GLfloat Bomba::getAnguloJogadorBase(){
 
 void Bomba::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
     float theta, px, py;
-    defineIluminacao(corR, corG, corB);
+    defineCor(corR, corG, corB);
 	glutSolidSphere(raio, 30, 30);
 }
 

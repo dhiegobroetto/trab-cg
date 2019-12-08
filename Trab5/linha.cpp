@@ -94,7 +94,7 @@ void Linha::setCorB(GLfloat& corB){
 }
 
 void Linha::desenhaLinha(){
-	defineIluminacao(this->getCorR(), this->getCorG(), this->getCorB());
+	defineCor(this->getCorR(), this->getCorG(), this->getCorB());
         glPointSize(3.0);
         glBegin(GL_LINES);
         glVertex2d(this->getX1(), this->getY1());

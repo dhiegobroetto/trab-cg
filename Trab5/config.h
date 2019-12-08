@@ -7,9 +7,10 @@
 #include "imageloader.h"
 #include "stdio.h"
 
-void defineIluminacao(GLfloat corR, GLfloat corG, GLfloat corB);
+void defineCor(GLfloat corR, GLfloat corG, GLfloat corB);
 void habilitaIluminacao(bool iluminacao);
 bool lerXML(char* caminhoArquivo);
 GLuint LoadTextureRAW(const char * filename);
+void configuraIluminacao();
 
 #endif /* CONFIG_H */

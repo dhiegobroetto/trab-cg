@@ -147,7 +147,7 @@ std::list<Circulo*> Arena::getInimigosTerrestresMortos(){
 	return this->inimigosTerrestresMortos;
 }
 
-void Arena::desenhaArena(){
+void Arena::desenhaArena(bool modoNoturno){
 	float theta, px, py;
 
 	glPushMatrix();
@@ -158,10 +158,18 @@ void Arena::desenhaArena(){
 	    // Habilitando texturas aqui por não haver outros objs com textura.
 	    glEnable(GL_TEXTURE_2D);
 
-		defineIluminacao(1.0, 1.0, 1.0);
+		defineCor(1.0, 1.0, 1.0);
 		glMatrixMode(GL_TEXTURE);
-		GLfloat mat_emission[] = {1.0, 1.0, 1.0, 1.0};
-	    glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
+		if(modoNoturno){
+			GLfloat mat_emission[] = {0.0, 0.0, 0.0, 1.0};
+		    glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
+		    // this->setTexturaCeu(LoadTextureRAW("nightsky.bmp"));
+		}else{
+			GLfloat mat_emission[] = {1.0, 1.0, 1.0, 1.0};
+		    glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
+		    this->setTexturaCeu(LoadTextureRAW("sky.bmp"));
+		}
+		
 
 		glBindTexture(GL_TEXTURE_2D, this->getTexturaMar());
 		// Base da arena
@@ -182,18 +190,17 @@ void Arena::desenhaArena(){
 	    gluQuadricDrawStyle(qobj, GLU_FILL);
 	    gluQuadricNormals(qobj, GLU_SMOOTH);
 	    gluCylinder(qobj, this->getRaio() + this->getJogador()->getRaio()*5, this->getRaio() + this->getJogador()->getRaio()*5, this->getRaio(), 180, 1);
-
-
 	    gluDeleteQuadric(qobj);
+
 	    glPushMatrix();
-	    obj = gluNewQuadric();
-	    gluQuadricOrientation(obj, GLU_INSIDE);
-	    gluQuadricTexture(obj, GLU_TRUE);
-	    gluQuadricDrawStyle(obj, GLU_FILL);
-	    gluQuadricNormals(obj, GLU_SMOOTH);
-	    glTranslatef(0.0, 0.0, this->getRaio());
-		gluDisk(obj, 0, this->getRaio() + this->getJogador()->getRaio()*5, 180, 1);
-		gluDeleteQuadric(obj);
+		    obj = gluNewQuadric();
+		    gluQuadricOrientation(obj, GLU_INSIDE);
+		    gluQuadricTexture(obj, GLU_TRUE);
+		    gluQuadricDrawStyle(obj, GLU_FILL);
+		    gluQuadricNormals(obj, GLU_SMOOTH);
+		    glTranslatef(0.0, 0.0, this->getRaio());
+			gluDisk(obj, 0, this->getRaio() + this->getJogador()->getRaio()*5, 180, 1);
+			gluDeleteQuadric(obj);
 		glPopMatrix();
 
 		GLfloat mat_emission2[] = {0.1, 0.1, 0.1, 1.0};
@@ -251,7 +258,7 @@ void Arena::reseta(){
 
 void Arena::desenhaCirculoBorda(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB) {
 	float theta, px, py;
-    defineIluminacao(corR, corG, corB);
+    defineCor(corR, corG, corB);
 	glBegin(GL_LINE_LOOP);
 	// glBegin(GL_POLYGON);
 		for (int i = 0; i < 360; i++) {
