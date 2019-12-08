@@ -421,6 +421,34 @@ void Inimigo::desenhaAsas(int asa){
 
 }
 
+void Inimigo::desenhaCirculoLinha(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
+	float theta, px, py;
+	defineIluminacao(corR, corG, corB);
+	glPointSize(1.0);
+	glBegin(GL_POINTS);
+		for (int i = 0; i < 360; i++) {
+			theta = (i * M_PI) / 180.0;
+			px = cos(theta) * raio;
+			py = sin(theta) * raio;
+			glVertex2f(px, py);
+		}
+	glEnd();
+}
+
+void Inimigo::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
+    float theta, px, py;
+    defineIluminacao(corR, corG, corB);
+	glBegin(GL_POLYGON);
+		for (int i = 0; i < 360; i++) {
+			theta = (i * M_PI) / 180.0;
+			px = cos(theta) * raio;
+			py = sin(theta) * raio;
+			glVertex2f(px, py);
+		}
+	glEnd();
+	this->desenhaCirculoLinha(raio, 1, 1, 1);
+}
+
 void Inimigo::desenhaCilindro(GLfloat raio, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB){
 	glColor3f(corR, corG, corB);
 	GLUquadric* qobj = gluNewQuadric();

@@ -124,6 +124,7 @@ class Jogador
         void setAnguloJogadorVertical(GLfloat anguloJogadorVertical);
         void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB);
+        void desenhaCirculoLinha(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaCilindro(GLfloat raio, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaTriangulo(GLfloat tamanho);
         void desenhaElipse(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB);

@@ -248,3 +248,46 @@ void Arena::reseta(){
 		i->reseta();
 	}
 }
+
+void Arena::desenhaCirculoBorda(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB) {
+	float theta, px, py;
+    defineIluminacao(corR, corG, corB);
+	glBegin(GL_LINE_LOOP);
+	// glBegin(GL_POLYGON);
+		for (int i = 0; i < 360; i++) {
+			theta = (i * M_PI) / 180.0;
+			px = cos(theta) * raio;
+			py = sin(theta) * raio;
+			glVertex2f(px, py);
+		}
+	glEnd();
+}
+
+void Arena::desenhaMinimapa(GLfloat raio){
+	glPushMatrix();
+		glScalef(0.25, 0.25, 0);
+		glTranslatef(raio*2, -raio*2, 0.0);
+		this->desenhaCirculoBorda(raio, 1, 1, 1);
+		for (auto e : this->getInimigosTerrestres()) {
+			glPushMatrix();
+				glTranslatef(e->getX(), e->getY(), 0);
+				e->desenhaCirculo(e->getRaio(), e->getCorR(), e->getCorG(), e->getCorB());
+			glPopMatrix();
+		}
+
+		for (auto e : this->getInimigosAereos()) {
+			glPushMatrix();
+				glTranslatef(e->getX(), e->getY(), 0);
+				e->desenhaCirculo(e->getRaio(), e->getCorR(), e->getCorG(), e->getCorB());
+			glPopMatrix();
+		}
+		glPushMatrix();
+			glTranslatef(this->getJogador()->getX(), this->getJogador()->getY(), 0);
+			this->getJogador()->desenhaCirculo(
+				this->getJogador()->getRaio(),
+				this->getJogador()->getCorR(),
+				this->getJogador()->getCorG(),
+				this->getJogador()->getCorB());
+		glPopMatrix();
+	glPopMatrix();
+}

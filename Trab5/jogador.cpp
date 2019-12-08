@@ -267,6 +267,20 @@ void Jogador::setLimiteCanhaoY(GLfloat limiteCanhaoY){
 	this->limiteCanhaoY = limiteCanhaoY;
 }
 
+void Jogador::desenhaCirculoLinha(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
+	float theta, px, py;
+	defineIluminacao(corR, corG, corB);
+	glPointSize(1.0);
+	glBegin(GL_POINTS);
+		for (int i = 0; i < 360; i++) {
+			theta = (i * M_PI) / 180.0;
+			px = cos(theta) * raio;
+			py = sin(theta) * raio;
+			glVertex2f(px, py);
+		}
+	glEnd();
+}
+
 void Jogador::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
     float theta, px, py;
     defineIluminacao(corR, corG, corB);
@@ -278,6 +292,7 @@ void Jogador::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat c
 			glVertex2f(px, py);
 		}
 	glEnd();
+	this->desenhaCirculoLinha(raio, 1, 1, 1);
 }
 
 void Jogador::desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB){

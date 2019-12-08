@@ -158,6 +158,21 @@ void mouseMove(int x, int y){
     oldMouseY = y;
 }
 
+void desenhaMinimapaCompleto(){
+    glMatrixMode (GL_PROJECTION);
+    //Push to recover original PROJECTION MATRIX
+    glPushMatrix();
+        glLoadIdentity();
+        glOrtho(-250,250,-250,250,-1,1);
+        glPushAttrib(GL_ENABLE_BIT);
+        glDisable(GL_LIGHTING);
+        glDisable(GL_TEXTURE_2D);
+            arena->desenhaMinimapa(arena->getRaio());
+        glPopAttrib(); 
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+}
+
 
 void RasterChars(GLfloat x, GLfloat y, GLfloat z, const char * text, double r, double g, double b)
 {
@@ -332,6 +347,9 @@ void display(void){
             PrintText(17, 55, "Pressione R para jogar novamente!", 0, 0, 0);
         }
     }
+
+    desenhaMinimapaCompleto();
+
     configCamera();
     
     GLfloat posicaoLuz[] = {arena->getX(), arena->getY(), 1, 0.0};
@@ -497,7 +515,6 @@ void init(float fundoR, float fundoG, float fundoB){
     glMatrixMode(GL_MODELVIEW);
 
     //glEnable(GL_TEXTURE_2D);
-
 
     arena->setTexturaCeu(LoadTextureRAW("sky.bmp"));
     arena->setTexturaMar(LoadTextureRAW("water.bmp"));

@@ -48,7 +48,7 @@ class Circulo
         void desenhaQuadrado(GLfloat base, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaQuadradoLinha(GLfloat base, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaCruz(GLfloat base, GLfloat corR, GLfloat corG, GLfloat corB);
-        void desenhaCirculo(GLfloat raio, GLfloat x, GLfloat y, GLfloat corR, GLfloat corG, GLfloat corB);
+        void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaCirculoLinha(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
 
 };

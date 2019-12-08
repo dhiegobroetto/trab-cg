@@ -161,10 +161,9 @@ void Circulo::desenhaCirculoLinha(GLfloat raio, GLfloat corR, GLfloat corG, GLfl
 	glEnd();
 }
 
-void Circulo::desenhaCirculo(GLfloat raio, GLfloat x, GLfloat y, GLfloat corR, GLfloat corG, GLfloat corB){
+void Circulo::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
 	float theta, px, py;
 	glPushMatrix();
-		glTranslatef(x, y, 0);
 		defineIluminacao(corR, corG, corB);
 		glBegin(GL_POLYGON);
 			for (int i = 0; i < 360; i++) {
@@ -174,5 +173,6 @@ void Circulo::desenhaCirculo(GLfloat raio, GLfloat x, GLfloat y, GLfloat corR, G
 				glVertex2f(px, py);
 			}
 		glEnd();
+		this->desenhaCirculoLinha(raio, 1, 1, 1);
 	glPopMatrix();
 }

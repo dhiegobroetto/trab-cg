@@ -131,6 +131,8 @@ class Inimigo
         void setAnguloInimigo(GLfloat anguloInimigo);
         GLfloat getAnguloInimigoVertical();
         void setAnguloInimigoVertical(GLfloat anguloInimigoVertical);
+        void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
+        void desenhaCirculoLinha(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaQuadrado(GLfloat base, GLfloat altura, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaTriangulo(GLfloat tamanho);
         void desenhaElipse(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB);
