@@ -805,6 +805,7 @@ void Jogador::reseta(){
 	this->z = this->raio/3;
 	this->anguloJogadorVertical = 0.0;
 	this->anguloCanhaoVertical = 0.0;
+	this->anguloJogadorCurva = 0.0;
 	this->ligado = false;
 	this->voando = false;
 	this->distanciaPontos = 0.0;

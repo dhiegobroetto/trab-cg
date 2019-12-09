@@ -53,6 +53,7 @@ class Inimigo
         GLfloat anguloInimigoVertical;
         GLfloat anguloCanhao;
         GLfloat anguloCanhaoVertical;
+        GLfloat anguloInimigoCurva;
         GLfloat anguloHelice;
         GLfloat mouseX;
         GLfloat limiteCanhaoX;
@@ -151,6 +152,7 @@ class Inimigo
         void moveY(GLfloat y);
         void moveZ(GLfloat z);
         void resetZ(GLfloat angSpeed);
+        void resetX(GLfloat angSpeed);
         void giraInimigo(GLfloat vel, GLfloat curva);
         void atira();
         void voa(GLfloat curva);

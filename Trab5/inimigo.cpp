@@ -303,21 +303,24 @@ void Inimigo::desenhaTriangulo(GLfloat tamanho){
 }
 
 void Inimigo::desenhaAsa(int asa){
-		defineCor(0.0, 0.0, 0.0);
+		GLfloat corR = 0.0;
+		GLfloat corG = 0.0;
+		GLfloat corB = 0.0;
+		defineCor(corR, corG, corB);
 		if(asa == 0){
-			glBegin(GL_POLYGON);
-				glVertex3f(this->raio/4, 0.0, 0.0);
-				glVertex3f(this->raio/4, this->raio/2, 0.0);
-				glVertex3f(-this->raio/2, this->raio/2, 0.0);
-				glVertex3f(-this->raio/2, this->raio/4, 0.0);
-			glEnd();
+			glPushMatrix();
+				glColor3f(0.0, 0.0, 0.0);
+
+				glScalef(2.0, 1.0, 0.1625);
+				glutSolidCube(this->raio/2);
+			glPopMatrix();
 		}else if(asa == 1){
-			glBegin(GL_POLYGON);
-				glVertex3f(0.0, this->raio/4, 0.0);
-				glVertex3f(0.0, this->raio/2, 0.0);
-				glVertex3f(-(this->raio/4)*3, this->raio/2, 0.0);
-				glVertex3f(-(this->raio/4)*3, 0.0, 0.0);
-			glEnd();
+			glPushMatrix();
+				glColor3f(0.0, 0.0, 0.0);
+
+				glScalef(2.0, 1.0, 0.1625);
+				glutSolidCube(this->raio/2);
+			glPopMatrix();
 		}
 }
 
@@ -432,12 +435,16 @@ void Inimigo::desenhaBase(GLuint textura){
 void Inimigo::desenhaAsas(int asa){
 	glPushMatrix();
 		if(asa == 0){
-			glTranslatef(-this->raio/2, -this->raio/3, 0);
-		}else if(asa == 1){
-			glTranslatef(this->raio, -this->raio/3, 0);
-		}
-		desenhaAsa(asa);
-		desenhaHelice(asa);
+            glTranslatef(-this->raio/2, -this->raio/3, 0);
+            desenhaHelice(asa);
+            glTranslatef(0, this->raio/3, 0);
+            desenhaAsa(asa);
+        }else if(asa == 1){
+            glTranslatef(this->raio, -this->raio/3, 0);
+            desenhaHelice(asa);
+            glTranslatef(-this->raio/2, this->raio/3, 0);
+            desenhaAsa(asa);
+        }
 	glPopMatrix();
 
 }
@@ -514,6 +521,7 @@ void Inimigo::desenhaInimigo(GLuint textura, GLuint texturaProjetil){
 		glTranslatef(this->x, this->y, this->z);
 		glRotatef(this->anguloInimigo, 0.0, 0.0, 1.0);
 		glRotatef(this->anguloInimigoVertical, 1.0, 0.0, 0.0);
+		glRotatef(-this->anguloInimigoCurva, 0.0, 1.0, 0.0);
 		desenhaAsas(0);
 		desenhaAsas(1);
 		desenhaCanhao();
@@ -538,6 +546,15 @@ void Inimigo::desenhaInimigo(GLuint textura, GLuint texturaProjetil){
 
 void Inimigo::moveX(GLfloat x){
 	this->anguloInimigo += x * this->tempoAjustador;
+	GLfloat anguloLimite = 45;
+	GLfloat novoAngulo = this->anguloInimigoCurva + x * this->tempoAjustador;
+
+	if(x > 0 && novoAngulo > anguloLimite)
+			novoAngulo = anguloLimite;
+	else if(x < 0 && novoAngulo < -anguloLimite)
+			novoAngulo = -anguloLimite;
+
+	this->anguloInimigoCurva = novoAngulo;
 }
 
 void Inimigo::moveY(GLfloat y){
@@ -578,6 +595,25 @@ void Inimigo::resetZ(GLfloat angSpeed){
 	this->anguloInimigoVertical = novoAngulo;
 }
 
+void Inimigo::resetX(GLfloat angSpeed){
+	if(this->anguloInimigoCurva == 0)
+		return;
+
+	GLfloat novoAngulo;
+	if(this->anguloInimigoCurva > 0){
+		novoAngulo = this->anguloInimigoCurva - angSpeed * this->tempoAjustador;
+		if(novoAngulo < 0)
+			novoAngulo = 0;
+	}else{
+		novoAngulo = this->anguloInimigoCurva + angSpeed * this->tempoAjustador;
+		if(novoAngulo > 0)
+			novoAngulo = 0;
+	}
+
+	this->anguloInimigoCurva = novoAngulo;
+}
+
+
 GLfloat calculaProbabilidadeGirar(){
 	return ((GLfloat) rand() / (RAND_MAX));
 }
@@ -590,6 +626,8 @@ void Inimigo::giraInimigo(GLfloat vel, GLfloat curva){
 		case DIREITA:
 			this->moveX((-1)*curva);
 			break;
+		default:
+			this->resetX(curva*this->getVelocidade()*this->getVelocidadeMultiplicadora()/103);
 	}
 
 	switch(this->estadoVertical){
@@ -606,6 +644,7 @@ void Inimigo::giraInimigo(GLfloat vel, GLfloat curva){
 				this->resetZ(curva*this->getVelocidade()*this->getVelocidadeMultiplicadora()/103);
 			break;
 		case RETO:
+			
 			this->resetZ(curva*this->getVelocidade()*this->getVelocidadeMultiplicadora()/103);
 			break;
 	}
