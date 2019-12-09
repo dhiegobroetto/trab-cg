@@ -218,7 +218,7 @@ void Arena::desenhaArena(bool modoNoturno){
 						glScalef(5, 1, 1);
 						glBindTexture(GL_TEXTURE_2D, this->getTexturaCeuTopo());
 					    obj = gluNewQuadric();
-					    gluQuadricOrientation(obj, GLU_INSIDE);
+					    gluQuadricOrientation(obj, GLU_OUTSIDE);
 					    gluQuadricTexture(obj, GLU_TRUE);
 					    gluQuadricDrawStyle(obj, GLU_FILL);
 					    gluQuadricNormals(obj, GLU_SMOOTH);

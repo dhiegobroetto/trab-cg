@@ -145,8 +145,8 @@ void mouseAction(int button, int state, int x, int y){
         }
     }
 
-    if(button == GLUT_RIGHT_BUTTON && flagCamera == 3 && teclaEspaco){
-        if(state == GLUT_DOWN){
+    if(button == GLUT_RIGHT_BUTTON && flagCamera == 3){
+        if(state == GLUT_DOWN && teclaEspaco){
           camera3IsMoving = true;
         }else if(state == GLUT_UP){
           camera3IsMoving = false;
