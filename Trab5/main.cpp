@@ -24,6 +24,7 @@ GLint flagCamera = 1;
 GLuint texturaJogador;
 GLuint texturaVoador;
 GLuint texturaTerrestre;
+GLuint texturaPista;
 
 bool modoNoturno = false;
 bool teclaEspaco = false;
@@ -356,7 +357,7 @@ void configCamera(){
   }
 }
 
-void drawArena(GLuint texturaJogador, GLuint texturaTerrestre, GLuint texturaVoador){
+void drawArena(GLuint texturaJogador, GLuint texturaTerrestre, GLuint texturaVoador, GLuint texturaPista){
   // Inicialização das variáveis
   Linha* linha = arena->getLinha();
   std::list<Inimigo*> inimigosAereos = arena->getInimigosAereos();
@@ -381,7 +382,7 @@ void drawArena(GLuint texturaJogador, GLuint texturaTerrestre, GLuint texturaVoa
   }
 
   if(linha != NULL){
-      linha->desenhaLinha();
+      linha->desenhaLinha(texturaPista);
   }
 
   for(std::list<Circulo*>::iterator c = inimigosTerrestres.begin(); c != inimigosTerrestres.end(); ++c){
@@ -414,7 +415,7 @@ void display(void){
         gluLookAt(bombaComCamera->getX(), bombaComCamera->getY(), bombaComCamera->getZ()-bombaComCamera->getRaio()-1,
                 bombaComCamera->getX(), bombaComCamera->getY(), 0,
                 0, 1, 0);
-        drawArena(texturaJogador, texturaTerrestre, texturaVoador);
+        drawArena(texturaJogador, texturaTerrestre, texturaVoador, texturaPista);
     }
     glViewport(0, 0, larguraDimensao, alturaDimensao);
 
@@ -440,7 +441,7 @@ void display(void){
     desenhaMinimapaCompleto();
 
     configCamera();
-    drawArena(texturaJogador, texturaTerrestre, texturaVoador);
+    drawArena(texturaJogador, texturaTerrestre, texturaVoador, texturaPista);
 
     glutSwapBuffers();
 }
@@ -578,6 +579,7 @@ void init(float fundoR, float fundoG, float fundoB){
     texturaJogador = LoadTextureRAW("texturas/jogador.bmp");
     texturaVoador = LoadTextureRAW("texturas/inimigo.bmp");
     texturaTerrestre = LoadTextureRAW("texturas/inimigoTerrestre.bmp");
+    texturaPista = LoadTextureRAW("texturas/pista.bmp");
 
     glColorMaterial(GL_FRONT, GL_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);

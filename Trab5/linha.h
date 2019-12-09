@@ -43,7 +43,7 @@ class Linha
         void setCorG(GLfloat& corG);
         GLfloat getCorB();
         void setCorB(GLfloat& corB);
-        void desenhaLinha();
+        void desenhaLinha(GLuint texturaPista);
         GLfloat getDistanciaX();
         GLfloat getDistanciaY();
 };
