@@ -538,6 +538,7 @@ void Jogador::desenhaJogador(GLuint textura, GLuint texturaProjetil){
 		glTranslatef(this->x, this->y, this->z);
 		glRotatef(this->anguloJogador, 0.0, 0.0, 1.0);
 		glRotatef(this->anguloJogadorVertical, 1.0, 0.0, 0.0);
+		glRotatef(-this->anguloJogadorCurva, 0.0, 1.0, 0.0);
 		desenhaAsas(0);
 		desenhaAsas(1);
 		desenhaCanhao();
@@ -561,6 +562,15 @@ void Jogador::desenhaJogador(GLuint textura, GLuint texturaProjetil){
 
 void Jogador::moveX(GLfloat x){
 	this->anguloJogador += x * this->tempoAjustador;
+	GLfloat anguloLimite = 45;
+	GLfloat novoAngulo = this->anguloJogadorCurva + x * this->tempoAjustador;
+
+	if(x > 0 && novoAngulo > anguloLimite)
+			novoAngulo = anguloLimite;
+	else if(x < 0 && novoAngulo < -anguloLimite)
+			novoAngulo = -anguloLimite;
+
+	this->anguloJogadorCurva = novoAngulo;
 }
 
 void Jogador::moveY(GLfloat y){
@@ -601,6 +611,24 @@ void Jogador::resetZ(GLfloat angSpeed){
 	}
 
 	this->anguloJogadorVertical = novoAngulo;
+}
+
+void Jogador::resetX(GLfloat angSpeed){
+	if(this->anguloJogadorCurva == 0)
+		return;
+
+	GLfloat novoAngulo;
+	if(this->anguloJogadorCurva > 0){
+		novoAngulo = this->anguloJogadorCurva - angSpeed * this->tempoAjustador;
+		if(novoAngulo < 0)
+			novoAngulo = 0;
+	}else{
+		novoAngulo = this->anguloJogadorCurva + angSpeed * this->tempoAjustador;
+		if(novoAngulo > 0)
+			novoAngulo = 0;
+	}
+
+	this->anguloJogadorCurva = novoAngulo;
 }
 
 void Jogador::voa(GLfloat velocidade){

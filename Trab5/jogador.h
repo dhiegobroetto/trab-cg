@@ -46,6 +46,7 @@ class Jogador
         std::vector<Bomba*> bombas;
         GLfloat anguloJogador;
         GLfloat anguloJogadorVertical;
+        GLfloat anguloJogadorCurva;
         GLfloat anguloCanhao;
         GLfloat anguloCanhaoVertical;
         GLfloat anguloHelice;
@@ -143,6 +144,7 @@ class Jogador
         void moveY(GLfloat y);
         void moveZ(GLfloat z);
         void resetZ(GLfloat angSpeed);
+        void resetX(GLfloat angSpeed);
         void voa(GLfloat velocidade);
         void voaProjeteis(GLfloat tempoAjustador);
         void voaBombas(GLfloat tempoAjustador);

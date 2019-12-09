@@ -353,7 +353,7 @@ void configCamera(){
         PrintText(0, 95, "Camera 2", 0, 0, 0);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        gluPerspective(70, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, arena->getRaio() * 3);
+        gluPerspective(60, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, arena->getRaio() * 3);
         glMatrixMode(GL_MODELVIEW);
         configCamera2();
         break;
@@ -533,6 +533,8 @@ void idle(void){
                 jogador->moveX(curva);
             }else if(teclasTeclado['d'] || teclasTeclado['D']){
                 jogador->moveX(-curva);
+            } else {
+              jogador->resetX(curva*jogador->getVelocidade()*jogador->getVelocidadeMultiplicadora()/103);
             }
             if((teclasTeclado['w'] || teclasTeclado['W']) && jogador->getZ() < arena->getRaio() - 105){
                 jogador->moveZ(curva);
