@@ -332,6 +332,11 @@ void Inimigo::desenhaAerodinamica(GLfloat tamanho, GLfloat corR, GLfloat corG, G
 		glScalef(2.0, 0.2, 0.1625);
 		glutSolidCube(tamanho);
 	glPopMatrix();
+	glPushMatrix();
+		glTranslatef(0, 0, 2);
+		glScalef(0.1625, 0.2, 1);
+		glutSolidCube(tamanho);
+	glPopMatrix();
 }
 
 
@@ -494,17 +499,17 @@ void Inimigo::desenhaCanhao(){
 	glPopMatrix();
 }
 
-void Inimigo::desenhaProjeteis(){
+void Inimigo::desenhaProjeteis(GLuint texturaProjetil){
 	for(int i = 0; i < projeteis.size(); i++){
 		if(this->verificaColisao(projeteis[i]->getX(), projeteis[i]->getY(), projeteis[i]->getZ(), true, projeteis[i]->getRaio())){
-			projeteis[i]->desenhaProjetil(this->corR, this->corG, this->corB);
+			projeteis[i]->desenhaProjetil(this->corR, this->corG, this->corB, texturaProjetil);
 		}else{
 			projeteis.erase(projeteis.begin() + i);
 		}
 	}
 }
 
-void Inimigo::desenhaInimigo(GLuint textura){
+void Inimigo::desenhaInimigo(GLuint textura, GLuint texturaProjetil){
 	glPushMatrix();
 		glTranslatef(this->x, this->y, this->z);
 		glRotatef(this->anguloInimigo, 0.0, 0.0, 1.0);
@@ -528,7 +533,7 @@ void Inimigo::desenhaInimigo(GLuint textura){
 			// desenhaElipseBorda(this->raio/4, this->raio/8, 1.0, 1.0, 1.0);
 		glPopMatrix();
 	glPopMatrix();
-	desenhaProjeteis();
+	desenhaProjeteis(texturaProjetil);
 }
 
 void Inimigo::moveX(GLfloat x){

@@ -144,9 +144,9 @@ class Inimigo
         void desenhaAerodinamica(GLfloat tamanho, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaHelice(int asa);
         void desenhaCanhao();
-        void desenhaProjeteis();
+        void desenhaProjeteis(GLuint texturaProjetil);
         void desenhaBombas();
-        void desenhaInimigo(GLuint textura);
+        void desenhaInimigo(GLuint textura, GLuint texturaProjetil);
         void moveX(GLfloat x);
         void moveY(GLfloat y);
         void moveZ(GLfloat z);

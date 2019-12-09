@@ -8,6 +8,7 @@
 #include "stdio.h"
 
 void defineCor(GLfloat corR, GLfloat corG, GLfloat corB);
+void trocaTextura(bool modoSemTextura);
 void habilitaIluminacao(bool iluminacao);
 bool lerXML(char* caminhoArquivo);
 GLuint LoadTextureRAW(const char * filename);

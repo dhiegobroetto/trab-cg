@@ -352,6 +352,11 @@ void Jogador::desenhaAerodinamica(GLfloat tamanho, GLfloat corR, GLfloat corG, G
 		glScalef(2.0, 0.2, 0.1625);
 		glutSolidCube(tamanho);
 	glPopMatrix();
+	glPushMatrix();
+		glTranslatef(0, 0, 2);
+		glScalef(0.1625, 0.2, 1);
+		glutSolidCube(tamanho);
+	glPopMatrix();
 }
 
 
@@ -507,20 +512,20 @@ void Jogador::desenhaCanhao(){
 	glPopMatrix();
 }
 
-void Jogador::desenhaProjeteis(){
+void Jogador::desenhaProjeteis(GLuint texturaProjetil){
 	for(int i = 0; i < projeteis.size(); i++){
 		if(this->verificaColisao(projeteis[i]->getX(), projeteis[i]->getY(), projeteis[i]->getZ(), true, projeteis[i]->getRaio())){
-			projeteis[i]->desenhaProjetil(this->corR, this->corG, this->corB);
+			projeteis[i]->desenhaProjetil(this->corR, this->corG, this->corB, texturaProjetil);
 		}else{
 			projeteis.erase(projeteis.begin() + i);
 		}
 	}
 }
 
-void Jogador::desenhaBombas(){
+void Jogador::desenhaBombas(GLuint texturaBomba){
 	for(int i = 0; i < bombas.size(); i++){
 		if(this->verificaColisao(bombas[i]->getX(), bombas[i]->getY(), bombas[i]->getZ(), true, bombas[i]->getRaio()) && !this->verificaColisaoBomba(bombas[i]->getX(), bombas[i]->getY(), bombas[i]->getZ(), bombas[i]->getRaio()) && bombas[i]->getZ() > bombas[i]->getRaio()){
-			bombas[i]->desenhaBomba();
+			bombas[i]->desenhaBomba(texturaBomba);
 		}else{
 			bombas[i]->explodeBomba();
 			bombas.erase(bombas.begin() + i);
@@ -528,7 +533,7 @@ void Jogador::desenhaBombas(){
 	}
 }
 
-void Jogador::desenhaJogador(GLuint textura){
+void Jogador::desenhaJogador(GLuint textura, GLuint texturaProjetil){
 	glPushMatrix();
 		glTranslatef(this->x, this->y, this->z);
 		glRotatef(this->anguloJogador, 0.0, 0.0, 1.0);
@@ -551,7 +556,7 @@ void Jogador::desenhaJogador(GLuint textura){
 			desenhaElipsoide(this->raio/4, this->raio/4, 0.0, 0.0, 0.0, 0);
 		glPopMatrix();
 	glPopMatrix();
-	desenhaProjeteis();
+	desenhaProjeteis(texturaProjetil);
 }
 
 void Jogador::moveX(GLfloat x){

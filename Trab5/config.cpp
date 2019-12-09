@@ -1,7 +1,10 @@
 #include "config.h"
-
+bool textura = false;
 void defineCor(GLfloat corR, GLfloat corG, GLfloat corB){
 	glColor3f(corR, corG, corB);
+    if(textura){
+        glDisable(GL_TEXTURE_2D);
+    }
 }
 
 void configuraIluminacao(){
@@ -37,6 +40,10 @@ void configuraIluminacao(){
     //glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+}
+
+void trocaTextura(bool modoSemTextura){
+    textura = modoSemTextura;
 }
 
 void habilitaIluminacao(bool iluminacao){

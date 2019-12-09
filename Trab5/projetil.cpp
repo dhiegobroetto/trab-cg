@@ -115,29 +115,44 @@ GLfloat Projetil::getAlturaCanhao(){
 	return this->alturaCanhao;
 }
 
-void Projetil::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB){
+void Projetil::desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB, GLuint texturaProjetil){
     float theta, px, py;
     defineCor(corR, corG, corB);
+	glEnable(GL_TEXTURE_2D);
+		defineCor(1.0, 1.0, 1.0);
+		glMatrixMode(GL_TEXTURE);
+			glPushMatrix();
+				glBindTexture(GL_TEXTURE_2D, texturaProjetil);
+				// Base da arena
+				GLUquadric* obj = gluNewQuadric();
+				gluQuadricOrientation(obj, GLU_OUTSIDE);
+				gluQuadricTexture(obj, GLU_TRUE);
+				gluQuadricDrawStyle(obj, GLU_FILL);
+				gluQuadricNormals(obj, GLU_SMOOTH);
+				gluSphere(obj, raio, 30, 30);
+				gluDeleteQuadric(obj);
+			glPopMatrix();
+		glMatrixMode(GL_MODELVIEW);
+	glDisable(GL_TEXTURE_2D);
+    
 
-    glutSolidSphere(raio, 30, 30);
-
-	defineCor(1.0, 1.0, 1.0);
-	glPointSize(0.5);
-	glBegin(GL_POINTS);
-        for (int i = 0; i < 360; i++) {
-			theta = (i * M_PI) / 180.0;
-			px = cos(theta) * raio;
-			py = sin(theta) * raio;
-			glVertex3f(px, 0, py);
-		}
-	glEnd();
+	// defineCor(1.0, 1.0, 1.0);
+	// glPointSize(0.5);
+	// glBegin(GL_POINTS);
+    //     for (int i = 0; i < 360; i++) {
+	// 		theta = (i * M_PI) / 180.0;
+	// 		px = cos(theta) * raio;
+	// 		py = sin(theta) * raio;
+	// 		glVertex3f(px, 0, py);
+	// 	}
+	// glEnd();
 }
 
-void Projetil::desenhaProjetil(GLfloat corR, GLfloat corG, GLfloat corB){
+void Projetil::desenhaProjetil(GLfloat corR, GLfloat corG, GLfloat corB, GLuint texturaProjetil){
 	glPushMatrix();
 		glTranslatef(this->x, this->y, this->z);
 		glRotatef(this->anguloProjetil, 0.0, 0.0, 1.0);
-		desenhaCirculo(this->raio, corR, corG, corB);
+		desenhaCirculo(this->raio, corR, corG, corB, texturaProjetil);
 	glPopMatrix();
 }
 

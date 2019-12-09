@@ -98,6 +98,7 @@ void Linha::desenhaLinha(GLuint texturaPista){
     GLfloat angulo = (180 / M_PI) * atan2(y2 - y1, x2 - x1);
     
     glEnable(GL_TEXTURE_2D);
+        defineCor(corR, corG, corB);
         glPushMatrix();
             glTranslatef(x1, y1, 0.0);
             glRotatef(angulo, 0.0, 0.0, 1.0);

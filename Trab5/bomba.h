@@ -53,8 +53,8 @@ class Bomba
         GLfloat getAnguloJogadorBase();
         GLfloat getVelocidade();
         void setVelocidade(GLfloat velocidade);
-        void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
-        void desenhaBomba();
+        void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB, GLuint textura);
+        void desenhaBomba(GLuint textura);
         void voa(GLfloat tempoAjustador);
         void cai(GLfloat tempoAjustador);
         void explodeBomba();

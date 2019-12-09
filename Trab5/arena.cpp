@@ -232,16 +232,6 @@ void Arena::desenhaArena(bool modoNoturno){
 		GLfloat mat_emission2[] = {0.0, 0.0, 0.0, 1.0};
     	glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission2);
 
-		    // Topo da arena
-			// glBegin(GL_POLYGON);
-		 //        for (int i = 0; i < 360; i++) {
-		 //            theta = (i * M_PI) / 180.0;
-		 //            px = cos(theta) * this->getRaio();
-		 //            py = sin(theta) * this->getRaio();
-		 //            glVertex3f(px, py, 4);
-		 //        }
-		 //    glEnd();
-
 	    // Desabilitando texturas pelo mesmo motivo de habilitar.
 	glPopMatrix();
 }
@@ -297,32 +287,32 @@ void Arena::desenhaCirculoBorda(GLfloat raio, GLfloat corR, GLfloat corG, GLfloa
 }
 
 void Arena::desenhaMinimapa(GLfloat raio){
-	glPushMatrix();
-		glScalef(0.25, 0.25, 0);
-		glTranslatef(raio*2, -raio*2, 0.0);
-		this->desenhaCirculoBorda(raio, 1, 1, 1);
-		for (auto e : this->getInimigosTerrestres()) {
-			glPushMatrix();
-				glTranslatef(e->getX(), e->getY(), 0);
-				e->desenhaCirculo(e->getRaio(), e->getCorR(), e->getCorG(), e->getCorB());
-			glPopMatrix();
-		}
-
-		for (auto e : this->getInimigosAereos()) {
-			glPushMatrix();
-				glTranslatef(e->getX(), e->getY(), 0);
-				e->desenhaCirculo(e->getRaio(), e->getCorR(), e->getCorG(), e->getCorB());
-			glPopMatrix();
-		}
+	glScalef(0.25, 0.25, 0);
+	glTranslatef(raio*2, -raio*2, 0.0);
+	this->desenhaCirculoBorda(raio, 1, 1, 1);
+	for (auto e : this->getInimigosTerrestres()) {
 		glPushMatrix();
-			glTranslatef(this->getJogador()->getX(), this->getJogador()->getY(), 0);
-			this->getJogador()->desenhaCirculo(
-				this->getJogador()->getRaio(),
-				this->getJogador()->getCorR(),
-				this->getJogador()->getCorG(),
-				this->getJogador()->getCorB());
+			glTranslatef(e->getX(), e->getY(), 0);
+			e->desenhaCirculo(e->getRaio(), e->getCorR(), e->getCorG(), e->getCorB());
 		glPopMatrix();
+	}
+
+	for (auto e : this->getInimigosAereos()) {
+		glPushMatrix();
+			glTranslatef(e->getX(), e->getY(), 0);
+			e->desenhaCirculo(e->getRaio(), e->getCorR(), e->getCorG(), e->getCorB());
+		glPopMatrix();
+	}
+	glPushMatrix();
+		glTranslatef(this->getJogador()->getX(), this->getJogador()->getY(), 0);
+		this->getJogador()->desenhaCirculo(
+			this->getJogador()->getRaio(),
+			this->getJogador()->getCorR(),
+			this->getJogador()->getCorG(),
+			this->getJogador()->getCorB());
 	glPopMatrix();
+	glTranslatef(-raio*2, raio*2, 0.0);
+	glScalef(-0.25, -0.25, 0);
 }
 
 void Arena::setCamera(bool status){

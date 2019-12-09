@@ -136,9 +136,9 @@ class Jogador
         void desenhaAerodinamica(GLfloat tamanho, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaHelice(int asa);
         void desenhaCanhao();
-        void desenhaProjeteis();
-        void desenhaBombas();
-        void desenhaJogador(GLuint textura);
+        void desenhaProjeteis(GLuint texturaProjetil);
+        void desenhaBombas(GLuint texturaBomba);
+        void desenhaJogador(GLuint textura, GLuint texturaProjetil);
         void moveX(GLfloat x);
         void moveY(GLfloat y);
         void moveZ(GLfloat z);

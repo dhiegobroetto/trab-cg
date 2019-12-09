@@ -57,8 +57,8 @@ class Projetil
         GLfloat getAnguloFinal();
         GLfloat getBaseCanhao();
         GLfloat getAlturaCanhao();
-        void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB);
-        void desenhaProjetil(GLfloat corR, GLfloat corG, GLfloat corB);
+        void desenhaCirculo(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB, GLuint texturaProjetil);
+        void desenhaProjetil(GLfloat corR, GLfloat corG, GLfloat corB, GLuint texturaProjetil);
         void voa(GLfloat tempoAjustador);
 };
 
