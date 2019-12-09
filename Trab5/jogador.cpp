@@ -426,8 +426,9 @@ void Jogador::desenhaElipsoide(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat cor
 	glutSolidSphere(cy, 30, 30);
 }
 
-void Jogador::desenhaBase(){
+void Jogador::desenhaBase(GLuint textura){
 	glPushMatrix();
+		glLoadIdentity();
 		glTranslatef(this->getRaio(), 0.0, 0);
 		glRotatef(90, 0.0, 1.0, 0.0);
 		glRotatef(-90, 1, 0, 0);
@@ -436,6 +437,23 @@ void Jogador::desenhaBase(){
 		glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
 	    glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1_direction);
 	glPopMatrix();
+	// glEnable(GL_TEXTURE_2D);
+	// 	defineCor(1.0, 1.0, 1.0);
+	// 	glMatrixMode(GL_TEXTURE);
+	// 		glPushMatrix();
+	// 			glScalef(3.0, 2.0, 1.0);
+	// 			glBindTexture(GL_TEXTURE_2D, textura);
+	// 			// Base da arena
+	// 			GLUquadric* obj = gluNewQuadric();
+	// 		    gluQuadricOrientation(obj, GLU_OUTSIDE);
+	// 		    gluQuadricTexture(obj, GLU_TRUE);
+	// 		    gluQuadricDrawStyle(obj, GLU_FILL);
+	// 		    gluQuadricNormals(obj, GLU_SMOOTH);
+	// 			desenhaElipsoide((this->getRaio()/3), this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB());
+	// 			gluDeleteQuadric(obj);
+	// 		glPopMatrix();
+	// 	glMatrixMode(GL_MODELVIEW);
+	// glDisable(GL_TEXTURE_2D);
 	glPushMatrix();
 		desenhaElipsoide((this->getRaio()/3), this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB());
 	glPopMatrix();
@@ -503,13 +521,12 @@ void Jogador::desenhaBombas(){
 		if(this->verificaColisao(bombas[i]->getX(), bombas[i]->getY(), bombas[i]->getZ(), true, bombas[i]->getRaio()) && !this->verificaColisaoBomba(bombas[i]->getX(), bombas[i]->getY(), bombas[i]->getZ(), bombas[i]->getRaio()) && bombas[i]->getZ() > bombas[i]->getRaio()){
 			bombas[i]->desenhaBomba();
 		}else{
-			bombas[i]->explodeBomba();
 			bombas.erase(bombas.begin() + i);
 		}
 	}
 }
 
-void Jogador::desenhaJogador(){
+void Jogador::desenhaJogador(GLuint textura){
 	glPushMatrix();
 		glTranslatef(this->x, this->y, this->z);
 		glRotatef(this->anguloJogador, 0.0, 0.0, 1.0);
@@ -522,7 +539,7 @@ void Jogador::desenhaJogador(){
 			glTranslatef(0.0, this->raio/16, 0.0);
 			desenhaAerodinamica(this->raio/2, 0.0, 0.0, 0.0);
 		glPopMatrix();
-		desenhaBase();
+		desenhaBase(textura);
 		glPushMatrix();
 			glTranslatef(0.0, -this->raio, 0.0);
 			desenhaQuadrado(this->raio/8, this->raio/3, 0.0, 0.0, 0.0);

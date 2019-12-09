@@ -130,7 +130,7 @@ class Jogador
         void desenhaElipse(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaElipsoide(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaElipseBorda(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB);
-        void desenhaBase();
+        void desenhaBase(GLuint textura);
         void desenhaAsas(int asa);
         void desenhaAsa(int asa);
         void desenhaAerodinamica(GLfloat tamanho, GLfloat corR, GLfloat corG, GLfloat corB);
@@ -138,7 +138,7 @@ class Jogador
         void desenhaCanhao();
         void desenhaProjeteis();
         void desenhaBombas();
-        void desenhaJogador();
+        void desenhaJogador(GLuint textura);
         void moveX(GLfloat x);
         void moveY(GLfloat y);
         void moveZ(GLfloat z);

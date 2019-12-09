@@ -69,14 +69,31 @@ void Circulo::setVelocidade(GLfloat& velocidade){
 	this->velocidade = velocidade;
 }
 
-void Circulo::desenha(){
+void Circulo::desenha(GLuint textura){
 	glPushMatrix();
 		GLfloat base = this->raio * 0.5;
 		glColor3f(this->corR, this->corG, this->corB);
 		// GLfloat tamanhoCilindro = base*0.6;
 		glTranslatef(this->x, this->y, 0);
 		// glTranslatef(base/2, base/2, 0);
-		glutSolidSphere(this->raio, 30, 30);
+		glEnable(GL_TEXTURE_2D);
+			defineCor(1.0, 1.0, 1.0);
+			glMatrixMode(GL_TEXTURE);
+				glPushMatrix();
+					glScalef(1.0, 2.0, 1.0);
+					glBindTexture(GL_TEXTURE_2D, textura);
+					// Base da arena
+					GLUquadric* obj = gluNewQuadric();
+				    gluQuadricOrientation(obj, GLU_OUTSIDE);
+				    gluQuadricTexture(obj, GLU_TRUE);
+				    gluQuadricDrawStyle(obj, GLU_FILL);
+				    gluQuadricNormals(obj, GLU_SMOOTH);
+					glutSolidSphere(this->raio, 30, 30);
+					gluDeleteQuadric(obj);
+				glPopMatrix();
+    		glMatrixMode(GL_MODELVIEW);
+		glDisable(GL_TEXTURE_2D);
+		
 		// GLUquadric* qobj = gluNewQuadric();
 	 //    gluQuadricOrientation(qobj, GLU_OUTSIDE);
 	 //    gluQuadricTexture(qobj, GLU_TRUE);

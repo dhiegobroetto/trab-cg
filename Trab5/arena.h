@@ -38,6 +38,7 @@ class Arena
         std::list<Circulo*> inimigosTerrestresMortos;
         GLuint texturaMar;
         GLuint texturaCeu;
+        GLuint texturaCeuTopo;
         GLfloat maiorRaioTerrestre;
         bool camera;
 
@@ -74,6 +75,8 @@ class Arena
         void setTexturaMar(GLuint texturaMar);
         GLuint getTexturaCeu();
         void setTexturaCeu(GLuint texturaCeu);
+        GLuint getTexturaCeuTopo();
+        void setTexturaCeuTopo(GLuint texturaCeuTopo);
         std::list<Inimigo*> getInimigosAereos();
         void mataInimigoAereo(Inimigo* inimigo);
         void mataInimigoTerrestre(Circulo* inimigo);

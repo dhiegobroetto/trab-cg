@@ -118,6 +118,13 @@ void Arena::setTexturaCeu(GLuint texturaCeu){
 	this->texturaCeu = texturaCeu;
 }
 
+GLuint Arena::getTexturaCeuTopo(){
+	return this->texturaCeuTopo;
+}
+
+void Arena::setTexturaCeuTopo(GLuint texturaCeuTopo){
+	this->texturaCeuTopo = texturaCeuTopo;
+}
 
 bool Arena::getIluminacao(){
 	return this->iluminacao;
@@ -155,54 +162,72 @@ void Arena::desenhaArena(bool modoNoturno){
 	    glTranslatef(this->x, this->y, 0);
 
 	    // Corpo da arena
-
-	    // Habilitando texturas aqui por não haver outros objs com textura.
-	    glEnable(GL_TEXTURE_2D);
-
-		defineCor(1.0, 1.0, 1.0);
-		glMatrixMode(GL_TEXTURE);
-		if(modoNoturno){
+	    if(modoNoturno){
 			GLfloat mat_emission[] = {0.0, 0.0, 0.0, 1.0};
 		    glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
 		    // this->setTexturaCeu(LoadTextureRAW("nightsky.bmp"));
 		}else{
 			GLfloat mat_emission[] = {1.0, 1.0, 1.0, 1.0};
 		    glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
-		    this->setTexturaCeu(LoadTextureRAW("sky.bmp"));
 		}
 
+	    // Habilitando texturas aqui por não haver outros objs com textura.
+	    glEnable(GL_TEXTURE_2D);
+			defineCor(1.0, 1.0, 1.0);
+			glMatrixMode(GL_TEXTURE);
+				glPushMatrix();
+					glScalef(2, 2, 1);
+					glBindTexture(GL_TEXTURE_2D, this->getTexturaMar());
+					// Base da arena
+					GLUquadric* obj = gluNewQuadric();
+				    gluQuadricOrientation(obj, GLU_OUTSIDE);
+				    gluQuadricTexture(obj, GLU_TRUE);
+				    gluQuadricDrawStyle(obj, GLU_FILL);
+				    gluQuadricNormals(obj, GLU_SMOOTH);
+					gluDisk(obj, 0, this->getRaio() + this->getJogador()->getRaio()*5, 150, 1);
+					gluDeleteQuadric(obj);
+				glPopMatrix();
+    		glMatrixMode(GL_MODELVIEW);
+		glDisable(GL_TEXTURE_2D);
 
-		glBindTexture(GL_TEXTURE_2D, this->getTexturaMar());
-		// Base da arena
-		GLUquadric* obj = gluNewQuadric();
-	    gluQuadricOrientation(obj, GLU_OUTSIDE);
-	    gluQuadricTexture(obj, GLU_TRUE);
-	    gluQuadricDrawStyle(obj, GLU_FILL);
-	    gluQuadricNormals(obj, GLU_SMOOTH);
-		gluDisk(obj, 0, this->getRaio() + this->getJogador()->getRaio()*5, 180, 1);
-		gluDeleteQuadric(obj);
-    	glMatrixMode(GL_MODELVIEW);
+		// Corpo da arena
+		glEnable(GL_TEXTURE_2D);
+			defineCor(1.0, 1.0, 1.0);
+			glMatrixMode(GL_TEXTURE);
+				glPushMatrix();
+					glScalef(5, 1, 1);
+					glBindTexture(GL_TEXTURE_2D, this->getTexturaCeu());
+				    GLUquadric* qobj = gluNewQuadric();
+				    gluQuadricOrientation(qobj, GLU_INSIDE);
+				    gluQuadricTexture(qobj, GLU_TRUE);
+				    gluQuadricDrawStyle(qobj, GLU_FILL);
+				    gluQuadricNormals(qobj, GLU_SMOOTH);
+				    gluCylinder(qobj, this->getRaio() + this->getJogador()->getRaio()*5, this->getRaio() + this->getJogador()->getRaio()*5, this->getRaio(), 150, 1);
+				    gluDeleteQuadric(qobj);
+				glPopMatrix();
+			glMatrixMode(GL_MODELVIEW);
+		glDisable(GL_TEXTURE_2D);
 
-		glBindTexture(GL_TEXTURE_2D, this->getTexturaCeu());
-
-	    GLUquadric* qobj = gluNewQuadric();
-	    gluQuadricOrientation(qobj, GLU_INSIDE);
-	    gluQuadricTexture(qobj, GLU_TRUE);
-	    gluQuadricDrawStyle(qobj, GLU_FILL);
-	    gluQuadricNormals(qobj, GLU_SMOOTH);
-	    gluCylinder(qobj, this->getRaio() + this->getJogador()->getRaio()*5, this->getRaio() + this->getJogador()->getRaio()*5, this->getRaio(), 180, 1);
-	    gluDeleteQuadric(qobj);
-
-	    glPushMatrix();
-		    obj = gluNewQuadric();
-		    gluQuadricOrientation(obj, GLU_INSIDE);
-		    gluQuadricTexture(obj, GLU_TRUE);
-		    gluQuadricDrawStyle(obj, GLU_FILL);
-		    gluQuadricNormals(obj, GLU_SMOOTH);
-		    glTranslatef(0.0, 0.0, this->getRaio());
-			gluDisk(obj, 0, this->getRaio() + this->getJogador()->getRaio()*5, 180, 1);
-			gluDeleteQuadric(obj);
-		glPopMatrix();
+		// Topo da arena
+		glEnable(GL_TEXTURE_2D);
+			defineCor(1.0, 1.0, 1.0);
+			glPushMatrix();
+			    glTranslatef(0.0, 0.0, this->getRaio());
+				glMatrixMode(GL_TEXTURE);
+					glPushMatrix();
+						glScalef(5, 1, 1);
+						glBindTexture(GL_TEXTURE_2D, this->getTexturaCeuTopo());
+					    obj = gluNewQuadric();
+					    gluQuadricOrientation(obj, GLU_INSIDE);
+					    gluQuadricTexture(obj, GLU_TRUE);
+					    gluQuadricDrawStyle(obj, GLU_FILL);
+					    gluQuadricNormals(obj, GLU_SMOOTH);
+						gluDisk(obj, 0, this->getRaio() + this->getJogador()->getRaio()*5, 150, 1);
+						gluDeleteQuadric(obj);
+					glPopMatrix();
+				glMatrixMode(GL_MODELVIEW);
+			glPopMatrix();
+		glDisable(GL_TEXTURE_2D);
 
 		GLfloat mat_emission2[] = {0.1, 0.1, 0.1, 1.0};
     	glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission2);
@@ -218,7 +243,6 @@ void Arena::desenhaArena(bool modoNoturno){
 		 //    glEnd();
 
 	    // Desabilitando texturas pelo mesmo motivo de habilitar.
-		glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 }
 

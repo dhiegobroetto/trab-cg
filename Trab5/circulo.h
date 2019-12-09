@@ -44,7 +44,7 @@ class Circulo
         void setCorB(GLfloat& corB);
         GLfloat getVelocidade();
         void setVelocidade(GLfloat& velocidade);
-        void desenha();
+        void desenha(GLuint textura);
         void desenhaQuadrado(GLfloat base, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaQuadradoLinha(GLfloat base, GLfloat corR, GLfloat corG, GLfloat corB);
         void desenhaCruz(GLfloat base, GLfloat corR, GLfloat corG, GLfloat corB);

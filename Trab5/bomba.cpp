@@ -10,7 +10,7 @@ Bomba::Bomba(GLfloat x, GLfloat y, GLfloat z, GLfloat raio, GLfloat corR, GLfloa
     this->corG = corG;
     this->corB = corB;
 	this->velocidade = velocidade;
-  this->velocidadeVertical = 10;
+  	this->velocidadeVertical = 10;
     this->anguloJogadorBase = anguloJogadorBase;
 	this->tempoInicial = (glutGet(GLUT_ELAPSED_TIME) / 1000.0);
 	this->explode = false;

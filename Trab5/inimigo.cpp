@@ -401,7 +401,7 @@ void Inimigo::desenhaElipsoide(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat cor
 	glutSolidSphere(cy, 30, 30);
 }
 
-void Inimigo::desenhaBase(){
+void Inimigo::desenhaBase(GLuint textura){
 	glPushMatrix();
 		desenhaElipsoide((this->getRaio()/3), this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB());
 		// desenhaElipse((this->getRaio()/3), this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB());
@@ -488,7 +488,7 @@ void Inimigo::desenhaProjeteis(){
 	}
 }
 
-void Inimigo::desenhaInimigo(){
+void Inimigo::desenhaInimigo(GLuint textura){
 	glPushMatrix();
 		glTranslatef(this->x, this->y, this->z);
 		glRotatef(this->anguloInimigo, 0.0, 0.0, 1.0);
@@ -501,7 +501,7 @@ void Inimigo::desenhaInimigo(){
 			glTranslatef(0.0, this->raio/16, 0.0);
 			desenhaAerodinamica(this->raio/2, 0.0, 0.0, 0.0);
 		glPopMatrix();
-		desenhaBase();
+		desenhaBase(textura);
 		glPushMatrix();
 			glTranslatef(0.0, -this->raio, 0.0);
 			desenhaQuadrado(this->raio/8, this->raio/3, 0.0, 0.0, 0.0);

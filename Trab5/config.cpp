@@ -16,7 +16,7 @@ void configuraIluminacao(){
     // GLfloat lightModel[] = {0.0, 0.0, 0.0, 1.0};
     // glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lightModel);
 
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
+    // glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
