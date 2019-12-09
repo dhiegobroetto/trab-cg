@@ -88,7 +88,7 @@ void Circulo::desenha(GLuint textura){
 				    gluQuadricTexture(obj, GLU_TRUE);
 				    gluQuadricDrawStyle(obj, GLU_FILL);
 				    gluQuadricNormals(obj, GLU_SMOOTH);
-					glutSolidSphere(this->raio, 30, 30);
+					gluSphere(obj, this->raio, 30, 30);
 					gluDeleteQuadric(obj);
 				glPopMatrix();
     		glMatrixMode(GL_MODELVIEW);

@@ -394,16 +394,32 @@ void Inimigo::desenhaElipse(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, 
 	glEnd();
 }
 
-void Inimigo::desenhaElipsoide(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB){
+void Inimigo::desenhaElipsoide(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB, GLuint textura){
 	defineCor(corR, corG, corB);
 	GLfloat raioMenor = cx/cy;
 	glScalef(raioMenor, 1, raioMenor);
-	glutSolidSphere(cy, 30, 30);
+	if(textura == 0){
+		glutSolidSphere(cy, 30, 30);
+	}else{
+		glEnable(GL_TEXTURE_2D);
+			defineCor(1.0, 1.0, 1.0);
+			glMatrixMode(GL_TEXTURE);
+				glBindTexture(GL_TEXTURE_2D, textura);
+				GLUquadric* obj = gluNewQuadric();
+			    gluQuadricOrientation(obj, GLU_OUTSIDE);
+			    gluQuadricTexture(obj, GLU_TRUE);
+			    gluQuadricDrawStyle(obj, GLU_FILL);
+			    gluQuadricNormals(obj, GLU_SMOOTH);
+				gluSphere(obj, cy, 30, 30);
+				gluDeleteQuadric(obj);
+			glMatrixMode(GL_MODELVIEW);
+		glDisable(GL_TEXTURE_2D);
+	}
 }
 
 void Inimigo::desenhaBase(GLuint textura){
 	glPushMatrix();
-		desenhaElipsoide((this->getRaio()/3), this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB());
+		desenhaElipsoide((this->getRaio()/3), this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB(), textura);
 		// desenhaElipse((this->getRaio()/3), this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB());
 	glPopMatrix();
 }
@@ -508,7 +524,7 @@ void Inimigo::desenhaInimigo(GLuint textura){
 		glPopMatrix();
 		glPushMatrix();
 			glTranslatef(0.0, this->raio/2, this->raio/this->raio);
-			desenhaElipsoide(this->raio/4, this->raio/4, 0.0, 0.0, 0.0);
+			desenhaElipsoide(this->raio/4, this->raio/4, 0.0, 0.0, 0.0, 0);
 			// desenhaElipseBorda(this->raio/4, this->raio/8, 1.0, 1.0, 1.0);
 		glPopMatrix();
 	glPopMatrix();

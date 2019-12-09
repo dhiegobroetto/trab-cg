@@ -426,8 +426,6 @@ void Jogador::desenhaElipsoide(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat cor
 	if(textura == 0){
 		glutSolidSphere(cy, 30, 30);
 	}else{
-		GLfloat mat_emission[] = {corR, corG, corB, 1.0};
-	    glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
 		glEnable(GL_TEXTURE_2D);
 			defineCor(1.0, 1.0, 1.0);
 			glMatrixMode(GL_TEXTURE);
@@ -441,8 +439,6 @@ void Jogador::desenhaElipsoide(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat cor
 				gluDeleteQuadric(obj);
 			glMatrixMode(GL_MODELVIEW);
 		glDisable(GL_TEXTURE_2D);
-		GLfloat mat_emission2[] = {0.0, 0.0, 0.0, 1.0};
-	    glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission2);
 	}
 }
 

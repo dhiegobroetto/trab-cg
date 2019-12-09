@@ -572,12 +572,12 @@ void init(float fundoR, float fundoG, float fundoB){
     //glEnable(GL_TEXTURE_2D);
 
     // arena->setTexturaCeu(LoadTextureRAW("sky2.bmp"));
-    arena->setTexturaMar(LoadTextureRAW("texturas/water3.bmp"));
-    arena->setTexturaCeu(LoadTextureRAW("texturas/sky3.bmp"));
-    arena->setTexturaCeuTopo(LoadTextureRAW("texturas/sky4.bmp"));
-    texturaJogador = LoadTextureRAW("texturas/jogador6.bmp");
-    texturaVoador = LoadTextureRAW("texturas/inimigo2.bmp");
-    texturaTerrestre = LoadTextureRAW("texturas/inimigosTerrestres.bmp");
+    arena->setTexturaMar(LoadTextureRAW("texturas/mar.bmp"));
+    arena->setTexturaCeu(LoadTextureRAW("texturas/ceu.bmp"));
+    arena->setTexturaCeuTopo(LoadTextureRAW("texturas/ceuTopo.bmp"));
+    texturaJogador = LoadTextureRAW("texturas/jogador.bmp");
+    texturaVoador = LoadTextureRAW("texturas/inimigo.bmp");
+    texturaTerrestre = LoadTextureRAW("texturas/inimigoTerrestre.bmp");
 
     glColorMaterial(GL_FRONT, GL_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);

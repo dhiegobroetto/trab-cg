@@ -229,7 +229,7 @@ void Arena::desenhaArena(bool modoNoturno){
 			glPopMatrix();
 		glDisable(GL_TEXTURE_2D);
 
-		GLfloat mat_emission2[] = {0.1, 0.1, 0.1, 1.0};
+		GLfloat mat_emission2[] = {0.0, 0.0, 0.0, 1.0};
     	glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission2);
 
 		    // Topo da arena
