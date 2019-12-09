@@ -39,6 +39,7 @@ class Arena
         GLuint texturaMar;
         GLuint texturaCeu;
         GLfloat maiorRaioTerrestre;
+        bool camera;
 
     public:
     	// ------------ Construtor ------------ //
@@ -85,6 +86,8 @@ class Arena
         void voaInimigosAereos(GLfloat curva, GLfloat tempoMultiplicador);
         void reseta();
         void desenhaMinimapa(GLfloat raio);
+        void setCamera(bool status);
+        bool hasCamera();
 };
 
 #endif /* ARENA_H */

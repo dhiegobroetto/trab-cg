@@ -11,6 +11,7 @@ Arena::Arena(GLint& id, GLfloat& raio, GLfloat& x, GLfloat& y, GLfloat& corR, GL
     this->corB = corB;
     this->iluminacao = true;
 	this->maiorRaioTerrestre = 0;
+	this->camera = false;
 }
 
 GLint Arena::getId(){
@@ -169,7 +170,7 @@ void Arena::desenhaArena(bool modoNoturno){
 		    glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
 		    this->setTexturaCeu(LoadTextureRAW("sky.bmp"));
 		}
-		
+
 
 		glBindTexture(GL_TEXTURE_2D, this->getTexturaMar());
 		// Base da arena
@@ -297,4 +298,11 @@ void Arena::desenhaMinimapa(GLfloat raio){
 				this->getJogador()->getCorB());
 		glPopMatrix();
 	glPopMatrix();
+}
+
+void Arena::setCamera(bool status){
+	this->camera = status;
+}
+bool Arena::hasCamera(){
+	return this->camera;
 }

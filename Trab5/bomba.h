@@ -10,6 +10,7 @@
 #include <iostream>
 #include <string>
 
+class Arena;
 
 class Bomba
 {
@@ -27,10 +28,12 @@ class Bomba
         GLfloat anguloJogadorBase;
         GLfloat tempoInicial;
         bool explode;
+        Arena *arena;
+        bool camera;
 
     public:
     	// ------------ Construtor ------------ //
-        Bomba(GLfloat x, GLfloat y, GLfloat z, GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB, GLfloat velocidade, GLfloat anguloJogadorBase);
+        Bomba(GLfloat x, GLfloat y, GLfloat z, GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB, GLfloat velocidade, GLfloat anguloJogadorBase, Arena *arena);
 
         // ------------ Getters e Setters ------------ //
         GLfloat getX();
@@ -56,6 +59,8 @@ class Bomba
         void cai(GLfloat tempoAjustador);
         void explodeBomba();
         bool explodiu();
+        void setCamera(bool status);
+        bool hasCamera();
 };
 
 #endif /* BOMBA_H */

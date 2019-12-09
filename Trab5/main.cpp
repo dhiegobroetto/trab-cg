@@ -22,6 +22,7 @@ GLfloat amarelo[] = {1.0, 1.0, 0.0};
 GLfloat preto[] = {0.0, 0.0, 0.0};
 GLint flagCamera = 1;
 bool modoNoturno = false;
+Bomba *bombaComCamera;
 
 // Variáveis globais de configuração
 Jogador* jogador;
@@ -120,9 +121,16 @@ void mouseAction(int button, int state, int x, int y){
                 (GLfloat) 0.0,
                 (GLfloat) 0.0,
                 jogador->getVelocidade() * jogador->getVelocidadeMultiplicadora(),
-                jogador->getAnguloJogador()
+                jogador->getAnguloJogador(),
+                arena
             );
             jogador->addBomba(b);
+
+            if(!arena->hasCamera()){
+                arena->setCamera(true);
+                b->setCamera(true);
+                bombaComCamera = b;
+            }
         }
     }
 
@@ -172,7 +180,7 @@ void desenhaMinimapaCompleto(){
         glDisable(GL_LIGHTING);
         glDisable(GL_TEXTURE_2D);
             arena->desenhaMinimapa(arena->getRaio());
-        glPopAttrib(); 
+        glPopAttrib();
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
 }
@@ -207,7 +215,7 @@ void PrintText(GLfloat x, GLfloat y, const char * text, double r, double g, doub
                 RasterChars(x, y, 0, text, r, g, b);
         glPopMatrix();
     glMatrixMode (GL_MODELVIEW);
-    
+
 }
 
 void exibePontuacao(GLfloat x, GLfloat y, GLfloat r, GLfloat g, GLfloat b){
@@ -314,26 +322,97 @@ void configCamera3(){
 void configCamera(){
   switch (flagCamera) {
     case 1:
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity();
+      gluPerspective(60, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, arena->getRaio() * 3);
+      glMatrixMode(GL_MODELVIEW);
       configCamera1();
       break;
     case 2:
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity();
+      gluPerspective(60, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, arena->getRaio() * 3);
+      glMatrixMode(GL_MODELVIEW);
       configCamera2();
       break;
     case 3:
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity();
+      gluPerspective(60, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, arena->getRaio() * 3);
+      glMatrixMode(GL_MODELVIEW);
       configCamera3();
       break;
   }
 }
 
+void drawArena(){
+  // Inicialização das variáveis
+  Linha* linha = arena->getLinha();
+  std::list<Inimigo*> inimigosAereos = arena->getInimigosAereos();
+  std::list<Circulo*> inimigosTerrestres = arena->getInimigosTerrestres();
+
+  if(modoNoturno){
+      glDisable(GL_LIGHT0);
+      glEnable(GL_LIGHT1);
+  }else{
+      glEnable(GL_LIGHT0);
+      glDisable(GL_LIGHT1);
+  }
+
+  configuraIluminacao();
+
+  if(arena != NULL){
+      arena->desenhaArena(modoNoturno);
+  }
+
+  if(jogador != NULL){
+      jogador->desenhaJogador();
+  }
+
+  if(linha != NULL){
+      linha->desenhaLinha();
+  }
+
+  for(std::list<Circulo*>::iterator c = inimigosTerrestres.begin(); c != inimigosTerrestres.end(); ++c){
+      (*c)->desenha();
+  }
+
+  if(jogador != NULL){
+      jogador->desenhaBombas();
+  }
+
+  for(std::list<Inimigo*>::iterator c = inimigosAereos.begin(); c != inimigosAereos.end(); ++c){
+      (*c)->desenhaInimigo();
+  }
+}
+
 void display(void){
-    // Inicialização das variáveis
-    float theta, px, py;
     jogador = arena->getJogador();
-    Linha* linha = arena->getLinha();
-    std::list<Inimigo*> inimigosAereos = arena->getInimigosAereos();
-    std::list<Circulo*> inimigosTerrestres = arena->getInimigosTerrestres();
     // Limpar todos os pixels
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glViewport(0,larguraDimensao,larguraDimensao,200);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(90, 5/2, 1, arena->getRaio() * 3);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    if(arena->hasCamera()){
+      gluLookAt(bombaComCamera->getX(), bombaComCamera->getY(), bombaComCamera->getZ()-bombaComCamera->getRaio()-1,
+                bombaComCamera->getX(), bombaComCamera->getY(), 0,
+                0, 1, 0);
+    }else{
+      if(jogador != NULL){
+        gluLookAt(jogador->getX(), jogador->getY(), jogador->getZ()-jogador->getRaio()/3-1,
+                  jogador->getX(), jogador->getY(), 0,
+                  0, 1, 0);
+      }
+    }
+    drawArena();
+    glViewport(0, 0, larguraDimensao, alturaDimensao);
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     exibePontuacao(57, 95, 0, 0, 0);
@@ -353,40 +432,9 @@ void display(void){
     }
 
     desenhaMinimapaCompleto();
-    if(modoNoturno){
-        glDisable(GL_LIGHT0);
-        glEnable(GL_LIGHT1);
-    }else{
-        glEnable(GL_LIGHT0);
-        glDisable(GL_LIGHT1);
-    }
+
     configCamera();
-    
-    configuraIluminacao();
-
-    if(arena != NULL){
-        arena->desenhaArena(modoNoturno);
-    }
-
-    if(jogador != NULL){
-        jogador->desenhaJogador();
-    }
-
-    if(linha != NULL){
-        linha->desenhaLinha();
-    }
-
-    for(std::list<Circulo*>::iterator c = inimigosTerrestres.begin(); c != inimigosTerrestres.end(); ++c){
-        (*c)->desenha();
-    }
-
-    if(jogador != NULL){
-        jogador->desenhaBombas();
-    }
-
-    for(std::list<Inimigo*>::iterator c = inimigosAereos.begin(); c != inimigosAereos.end(); ++c){
-        (*c)->desenhaInimigo();
-    }
+    drawArena();
 
     glutSwapBuffers();
 }
@@ -429,21 +477,13 @@ void idle(void){
         if(teclasTeclado['1']){
             if(flagCamera != 1){
               flagCamera = 1;
-              glMatrixMode(GL_PROJECTION);
-              glLoadIdentity();
-              gluPerspective(60, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, arena->getRaio() * 3);
               camera3IsMoving = false;
-              glMatrixMode(GL_MODELVIEW);
             }
         }
         if(teclasTeclado['2']){
             if(flagCamera != 2){
               flagCamera = 2;
-              glMatrixMode(GL_PROJECTION);
-              glLoadIdentity();
-              gluPerspective(60, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, arena->getRaio() * 3);
               camera3IsMoving = false;
-              glMatrixMode(GL_MODELVIEW);
             }
         }
         if(teclasTeclado['3']){
@@ -532,14 +572,14 @@ void init(float fundoR, float fundoG, float fundoB){
     glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_NORMALIZE);
 
-    
+
 
 
     // glOrtho(
-    //     arena->getX() - arena->getRaio() - arena->getJogador()->getRaio()*5, 
-    //     arena->getX() + arena->getRaio() + arena->getJogador()->getRaio()*5, 
-    //     arena->getY() - arena->getRaio() - arena->getJogador()->getRaio()*5, 
-    //     arena->getY() + arena->getRaio() + arena->getJogador()->getRaio()*5, 
+    //     arena->getX() - arena->getRaio() - arena->getJogador()->getRaio()*5,
+    //     arena->getX() + arena->getRaio() + arena->getJogador()->getRaio()*5,
+    //     arena->getY() - arena->getRaio() - arena->getJogador()->getRaio()*5,
+    //     arena->getY() + arena->getRaio() + arena->getJogador()->getRaio()*5,
     //     -arena->getRaio() + 80,
     //     1);
 
@@ -692,7 +732,7 @@ int main(int argc, char** argv){
             // Inicializa
             glutInit(&argc, argv);
             glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
-            glutInitWindowSize(larguraDimensao, alturaDimensao);
+            glutInitWindowSize(larguraDimensao, alturaDimensao+200);
             glutInitWindowPosition(50, 50);
             glutCreateWindow("Airplane Combat");
             init(fundoR, fundoG, fundoB);

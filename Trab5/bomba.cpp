@@ -1,6 +1,6 @@
 #include "bomba.h"
 
-Bomba::Bomba(GLfloat x, GLfloat y, GLfloat z, GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB, GLfloat velocidade, GLfloat anguloJogadorBase){
+Bomba::Bomba(GLfloat x, GLfloat y, GLfloat z, GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB, GLfloat velocidade, GLfloat anguloJogadorBase, Arena *arena){
     this->x = x;
     this->y = y;
     this->z = z;
@@ -14,6 +14,8 @@ Bomba::Bomba(GLfloat x, GLfloat y, GLfloat z, GLfloat raio, GLfloat corR, GLfloa
     this->anguloJogadorBase = anguloJogadorBase;
 	this->tempoInicial = (glutGet(GLUT_ELAPSED_TIME) / 1000.0);
 	this->explode = false;
+  this->camera = false;
+  this->arena = arena;
 }
 
 GLfloat Bomba::getX(){
@@ -129,8 +131,17 @@ void Bomba::cai(GLfloat tempoAjustador){
 
 void Bomba::explodeBomba(){
 	this->explode = true;
+  if(this->camera)
+    this->arena->setCamera(false);
 }
 
 bool Bomba::explodiu(){
 	return this->explode;
+}
+
+void Bomba::setCamera(bool status){
+	this->camera = status;
+}
+bool Bomba::hasCamera(){
+	return this->camera;
 }
