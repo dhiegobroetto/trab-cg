@@ -448,12 +448,14 @@ void Jogador::desenhaElipsoide(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat cor
 
 void Jogador::desenhaBase(GLuint textura){
 	glPushMatrix();
-		glLoadIdentity();
+		// glLoadIdentity();
+
+		glRotatef(90, 0.0, 0.0, 1.0);
 		glTranslatef(this->getRaio(), 0.0, 0);
-		glRotatef(90, 0.0, 1.0, 0.0);
-		glRotatef(-90, 1, 0, 0);
+		// glRotatef(90, 0.0, 1.0, 0.0);
+		// glRotatef(-90, 1, 0, 0);
 		GLfloat light1_position[] = {0.0, 0.0, 0.0, 1.0};
-	    GLfloat light1_direction[] = {0.0, 0.0, 1.0};
+	    GLfloat light1_direction[] = {1.0, 0.0, 0.0};
 		glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
 	    glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1_direction);
 	glPopMatrix();
