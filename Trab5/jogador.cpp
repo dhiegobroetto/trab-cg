@@ -521,6 +521,7 @@ void Jogador::desenhaBombas(){
 		if(this->verificaColisao(bombas[i]->getX(), bombas[i]->getY(), bombas[i]->getZ(), true, bombas[i]->getRaio()) && !this->verificaColisaoBomba(bombas[i]->getX(), bombas[i]->getY(), bombas[i]->getZ(), bombas[i]->getRaio()) && bombas[i]->getZ() > bombas[i]->getRaio()){
 			bombas[i]->desenhaBomba();
 		}else{
+			bombas[i]->explodeBomba();
 			bombas.erase(bombas.begin() + i);
 		}
 	}
