@@ -419,11 +419,31 @@ void Jogador::desenhaElipse(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, 
 	glEnd();
 }
 
-void Jogador::desenhaElipsoide(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB){
+void Jogador::desenhaElipsoide(GLfloat cx, GLfloat cy, GLfloat corR, GLfloat corG, GLfloat corB, GLuint textura){
 	defineCor(corR, corG, corB);
 	GLfloat raioMenor = cx/cy;
 	glScalef(raioMenor, 1, raioMenor);
-	glutSolidSphere(cy, 30, 30);
+	if(textura == 0){
+		glutSolidSphere(cy, 30, 30);
+	}else{
+		GLfloat mat_emission[] = {corR, corG, corB, 1.0};
+	    glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
+		glEnable(GL_TEXTURE_2D);
+			defineCor(1.0, 1.0, 1.0);
+			glMatrixMode(GL_TEXTURE);
+				glBindTexture(GL_TEXTURE_2D, textura);
+				GLUquadric* obj = gluNewQuadric();
+			    gluQuadricOrientation(obj, GLU_OUTSIDE);
+			    gluQuadricTexture(obj, GLU_TRUE);
+			    gluQuadricDrawStyle(obj, GLU_FILL);
+			    gluQuadricNormals(obj, GLU_SMOOTH);
+				gluSphere(obj, cy, 30, 30);
+				gluDeleteQuadric(obj);
+			glMatrixMode(GL_MODELVIEW);
+		glDisable(GL_TEXTURE_2D);
+		GLfloat mat_emission2[] = {0.0, 0.0, 0.0, 1.0};
+	    glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission2);
+	}
 }
 
 void Jogador::desenhaBase(GLuint textura){
@@ -437,25 +457,8 @@ void Jogador::desenhaBase(GLuint textura){
 		glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
 	    glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1_direction);
 	glPopMatrix();
-	// glEnable(GL_TEXTURE_2D);
-	// 	defineCor(1.0, 1.0, 1.0);
-	// 	glMatrixMode(GL_TEXTURE);
-	// 		glPushMatrix();
-	// 			glScalef(3.0, 2.0, 1.0);
-	// 			glBindTexture(GL_TEXTURE_2D, textura);
-	// 			// Base da arena
-	// 			GLUquadric* obj = gluNewQuadric();
-	// 		    gluQuadricOrientation(obj, GLU_OUTSIDE);
-	// 		    gluQuadricTexture(obj, GLU_TRUE);
-	// 		    gluQuadricDrawStyle(obj, GLU_FILL);
-	// 		    gluQuadricNormals(obj, GLU_SMOOTH);
-	// 			desenhaElipsoide((this->getRaio()/3), this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB());
-	// 			gluDeleteQuadric(obj);
-	// 		glPopMatrix();
-	// 	glMatrixMode(GL_MODELVIEW);
-	// glDisable(GL_TEXTURE_2D);
 	glPushMatrix();
-		desenhaElipsoide((this->getRaio()/3), this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB());
+		desenhaElipsoide((this->getRaio()/3), this->getRaio(), this->getCorR(), this->getCorG(), this->getCorB(), textura);
 	glPopMatrix();
 }
 
@@ -547,7 +550,7 @@ void Jogador::desenhaJogador(GLuint textura){
 		glPopMatrix();
 		glPushMatrix();
 			glTranslatef(0.0, this->raio/2, this->raio/this->raio);
-			desenhaElipsoide(this->raio/4, this->raio/4, 0.0, 0.0, 0.0);
+			desenhaElipsoide(this->raio/4, this->raio/4, 0.0, 0.0, 0.0, 0);
 		glPopMatrix();
 	glPopMatrix();
 	desenhaProjeteis();

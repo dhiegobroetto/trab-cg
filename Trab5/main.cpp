@@ -26,6 +26,7 @@ GLuint texturaVoador;
 GLuint texturaTerrestre;
 
 bool modoNoturno = false;
+bool teclaEspaco = false;
 Bomba *bombaComCamera;
 
 // Variáveis globais de configuração
@@ -69,10 +70,16 @@ void keyPress(unsigned char key, int x, int y){
     if(key == 'n'){
         modoNoturno = !modoNoturno;
     }
+    if(key == ' '){
+        teclaEspaco = true;
+    }
 }
 
 void keyup(unsigned char key, int x, int y){
     teclasTeclado[key] = 0;
+    if(key == ' '){
+        teclaEspaco = false;
+    }
 }
 
 void limpaTeclas(){
@@ -115,7 +122,7 @@ void mouseAction(int button, int state, int x, int y){
             );
             jogador->addProjetil(p);
         }
-        if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && jogador->getAnguloJogadorVertical() == 0){
+        if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && jogador->getAnguloJogadorVertical() == 0 && !teclaEspaco){
             Bomba *b = new Bomba(
                 jogador->getX(),
                 jogador->getY(),
@@ -138,7 +145,7 @@ void mouseAction(int button, int state, int x, int y){
         }
     }
 
-    if(button == GLUT_RIGHT_BUTTON && flagCamera == 3){
+    if(button == GLUT_RIGHT_BUTTON && flagCamera == 3 && teclaEspaco){
         if(state == GLUT_DOWN){
           camera3IsMoving = true;
         }else if(state == GLUT_UP){
@@ -399,7 +406,7 @@ void display(void){
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(90, 5/2, 1, arena->getRaio() * 3);
+    gluPerspective(60, 5/2, 1, arena->getRaio() * 3);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -422,6 +429,7 @@ void display(void){
         if(!jogador->isVivo()){
             PrintText(35, 60, "Game Over!", 0, 0, 0);
             PrintText(17, 55, "Pressione R para jogar novamente!", 0, 0, 0);
+            arena->setCamera(false);
         }
         if(jogador->isVivo() && arena->getInimigosTerrestres().size() == 0){
             PrintText(37, 60, "Voce venceu!", 0, 0, 0);
@@ -564,12 +572,12 @@ void init(float fundoR, float fundoG, float fundoB){
     //glEnable(GL_TEXTURE_2D);
 
     // arena->setTexturaCeu(LoadTextureRAW("sky2.bmp"));
-    arena->setTexturaMar(LoadTextureRAW("water4.bmp"));
-    arena->setTexturaCeu(LoadTextureRAW("sky3.bmp"));
-    arena->setTexturaCeuTopo(LoadTextureRAW("sky4.bmp"));
-    texturaJogador = LoadTextureRAW("jogador.bmp");
-    texturaVoador = LoadTextureRAW("inimigo.bmp");
-    texturaTerrestre = LoadTextureRAW("inimigosTerrestres.bmp");
+    arena->setTexturaMar(LoadTextureRAW("texturas/water3.bmp"));
+    arena->setTexturaCeu(LoadTextureRAW("texturas/sky3.bmp"));
+    arena->setTexturaCeuTopo(LoadTextureRAW("texturas/sky4.bmp"));
+    texturaJogador = LoadTextureRAW("texturas/jogador6.bmp");
+    texturaVoador = LoadTextureRAW("texturas/inimigo2.bmp");
+    texturaTerrestre = LoadTextureRAW("texturas/inimigosTerrestres.bmp");
 
     glColorMaterial(GL_FRONT, GL_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);

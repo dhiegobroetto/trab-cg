@@ -279,6 +279,7 @@ void Arena::reseta(){
 	for(Inimigo* i : this->inimigosAereos){
 		i->reseta();
 	}
+	this->setCamera(false);
 }
 
 void Arena::desenhaCirculoBorda(GLfloat raio, GLfloat corR, GLfloat corG, GLfloat corB) {
