@@ -94,7 +94,7 @@ void Linha::setCorB(GLfloat& corB){
 }
 
 void Linha::desenhaLinha(GLuint texturaPista){
-	GLfloat dist = getDistanciaX();
+	GLfloat dist = abs(getDistanciaX());
     GLfloat angulo = (180 / M_PI) * atan2(y2 - y1, x2 - x1);
     
     glEnable(GL_TEXTURE_2D);
