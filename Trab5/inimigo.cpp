@@ -345,31 +345,35 @@ void Inimigo::desenhaAerodinamica(GLfloat tamanho, GLfloat corR, GLfloat corG, G
 
 void Inimigo::desenhaHelice(int asa){
 	GLfloat angulo = this->anguloHelice;
-	glPushMatrix();
-		if(asa == 0){
-			glTranslatef(-this->raio/8, this->raio/2, 0);
-			angulo *= -1;
-		}else if (asa == 1){
-			glTranslatef((-(this->raio/4)*3)/2, this->raio/2, 0);
-		}
-		desenhaQuadrado(this->raio/6, this->raio/4, 0.0, 0.0, 0.0);
-		glTranslatef(0.0, this->raio/4, 0.0);
-			glRotatef(angulo, 0.0, 1.0, 0.0);
-			desenhaTriangulo(this->raio/4);
-			glRotatef(-angulo, 0.0, 1.0, 0.0);
+    glPushMatrix();
+        if(asa == 0){
+            glTranslatef(-this->raio/8, this->raio/2, 0);
+            angulo *= -1;
+        }else if (asa == 1){
+            glTranslatef((-(this->raio/4)*3)/2, this->raio/2, 0);
+        }
+        glPushMatrix();
+        	defineCor(0, 0, 0);
+            glScalef(0.3, 1.0, 0.0825);
+            glutSolidCube(this->raio/2);
+        glPopMatrix();
+        glTranslatef(0.0, this->raio/4, 0.0);
+            glRotatef(angulo, 0.0, 1.0, 0.0);
+            desenhaTriangulo(this->raio/4);
+            glRotatef(-angulo, 0.0, 1.0, 0.0);
 
-			glRotatef(angulo + 90, 0.0, 1.0, 0.0);
-			desenhaTriangulo(this->raio/4);
-			glRotatef(-(angulo + 90), 0.0, 1.0, 0.0);
+            glRotatef(angulo + 90, 0.0, 1.0, 0.0);
+            desenhaTriangulo(this->raio/4);
+            glRotatef(-(angulo + 90), 0.0, 1.0, 0.0);
 
-			glRotatef(angulo + 180, 0.0, 1.0, 0.0);
-			desenhaTriangulo(this->raio/4);
-			glRotatef(-(angulo + 180), 0.0, 1.0, 0.0);
+            glRotatef(angulo + 180, 0.0, 1.0, 0.0);
+            desenhaTriangulo(this->raio/4);
+            glRotatef(-(angulo + 180), 0.0, 1.0, 0.0);
 
-			glRotatef(angulo + 270, 0.0, 1.0, 0.0);
-			desenhaTriangulo(this->raio/4);
-			glRotatef(-(angulo + 270), 0.0, 1.0, 0.0);
-	glPopMatrix();
+            glRotatef(angulo + 270, 0.0, 1.0, 0.0);
+            desenhaTriangulo(this->raio/4);
+            glRotatef(-(angulo + 270), 0.0, 1.0, 0.0);
+    glPopMatrix();
 }
 
 
@@ -434,7 +438,7 @@ void Inimigo::desenhaBase(GLuint textura){
 
 void Inimigo::desenhaAsas(int asa){
 	glPushMatrix();
-		if(asa == 0){
+        if(asa == 0){
             glTranslatef(-this->raio/2, -this->raio/3, 0);
             desenhaHelice(asa);
             glTranslatef(0, this->raio/3, 0);
@@ -445,7 +449,7 @@ void Inimigo::desenhaAsas(int asa){
             glTranslatef(-this->raio/2, this->raio/3, 0);
             desenhaAsa(asa);
         }
-	glPopMatrix();
+    glPopMatrix();
 
 }
 
@@ -538,7 +542,6 @@ void Inimigo::desenhaInimigo(GLuint textura, GLuint texturaProjetil){
 		glPushMatrix();
 			glTranslatef(0.0, this->raio/2, this->raio/this->raio);
 			desenhaElipsoide(this->raio/4, this->raio/4, 0.0, 0.0, 0.0, 0);
-			// desenhaElipseBorda(this->raio/4, this->raio/8, 1.0, 1.0, 1.0);
 		glPopMatrix();
 	glPopMatrix();
 	desenhaProjeteis(texturaProjetil);
@@ -644,7 +647,6 @@ void Inimigo::giraInimigo(GLfloat vel, GLfloat curva){
 				this->resetZ(curva*this->getVelocidade()*this->getVelocidadeMultiplicadora()/103);
 			break;
 		case RETO:
-			
 			this->resetZ(curva*this->getVelocidade()*this->getVelocidadeMultiplicadora()/103);
 			break;
 	}

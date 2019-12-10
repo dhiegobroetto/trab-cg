@@ -93,38 +93,6 @@ void Circulo::desenha(GLuint textura){
 				glPopMatrix();
     		glMatrixMode(GL_MODELVIEW);
 		glDisable(GL_TEXTURE_2D);
-		
-		// GLUquadric* qobj = gluNewQuadric();
-	 //    gluQuadricOrientation(qobj, GLU_OUTSIDE);
-	 //    gluQuadricTexture(qobj, GLU_TRUE);
-	 //    gluQuadricDrawStyle(qobj, GLU_FILL);
-	 //    gluQuadricNormals(qobj, GLU_SMOOTH);
-	 //    glPushMatrix();
-	 //    	glTranslatef((this->x - this->raio + base), (this->y - base), 0);
-		// 	gluCylinder(qobj, tamanhoCilindro, tamanhoCilindro, tamanhoCilindro, 180, 1);
-		// glPopMatrix();
-		// glPushMatrix();
-	 //    	glTranslatef((this->x - this->raio + base), (this->y + base), 0);
-		// 	gluCylinder(qobj, tamanhoCilindro, tamanhoCilindro, tamanhoCilindro, 180, 1);
-		// glPopMatrix();
-		// glPushMatrix();
-	 //    	glTranslatef((this->x - this->raio - base), (this->y + base), 0);
-		// 	gluCylinder(qobj, tamanhoCilindro, tamanhoCilindro, tamanhoCilindro, 180, 1);
-		// glPopMatrix();
-		// glPushMatrix();
-	 //    	glTranslatef((this->x - this->raio - base), (this->y - base), 0);
-		// 	gluCylinder(qobj, tamanhoCilindro, tamanhoCilindro, tamanhoCilindro, 180, 1);
-		// glPopMatrix();
-		// desenhaCirculo(base, (this->x + base), (this->y - base), this->corR, this->corG, this->corB);
-		// desenhaCirculo(base, (this->x + base), (this->y + base), this->corR, this->corG, this->corB);
-		// desenhaCirculo(base, (this->x - base), (this->y + base), this->corR, this->corG, this->corB);
-		// desenhaCirculo(base, (this->x - base), (this->y - base), this->corR, this->corG, this->corB);
-		// glTranslatef(this->x, this->y, 0);
-		// desenhaQuadrado(this->raio * 0.8, 0.2, 0.2, 0.2);
-		// desenhaQuadradoLinha(this->raio * 0.6, this->corR, this->corG, this->corB);
-		// desenhaCirculoLinha(base * 0.6, this->corR, this->corG, this->corB);
-		// desenhaCruz(this->raio * 0.6, this->corR, this->corG, this->corB);
-		
 	glPopMatrix();
 }
 

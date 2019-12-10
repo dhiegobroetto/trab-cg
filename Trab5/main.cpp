@@ -21,6 +21,14 @@ GLfloat laranja[] = {1.0, 0.7, 0.0};
 GLfloat amarelo[] = {1.0, 1.0, 0.0};
 GLfloat preto[] = {0.0, 0.0, 0.0};
 GLint flagCamera = 1;
+GLfloat corTexto[] = {1, 1, 1};
+
+
+GLuint texturaMar;
+GLuint texturaMarNegro;
+GLuint ceu;
+GLuint texturaCeuTopo;
+GLuint texturaCeuNoite;
 GLuint texturaJogador;
 GLuint texturaVoador;
 GLuint texturaTerrestre;
@@ -98,7 +106,7 @@ void limpaTeclas(){
 }
 
 void mouseAction(int button, int state, int x, int y){
-    if(jogador->isVoando() && jogador->isVivo()){
+    if(jogador->isVoando() && jogador->isVivo() && arena->getInimigosTerrestres().size() > 0){
         GLfloat raio = jogador->getRaio();
         GLfloat anguloHorizontal = jogador->getAnguloJogador() *M_PI/180;
         GLfloat anguloVertical = jogador->getAnguloJogadorVertical() *M_PI/180;
@@ -342,7 +350,7 @@ void configCamera3(){
 void configCamera(){
   switch (flagCamera) {
     case 1:
-        PrintText(0, 95, "Camera 1", 0, 0, 0);
+        PrintText(0, 95, "Camera 1", corTexto[0], corTexto[1], corTexto[2]);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         gluPerspective(60, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, arena->getRaio() * 3);
@@ -350,7 +358,7 @@ void configCamera(){
         configCamera1();
         break;
     case 2:
-        PrintText(0, 95, "Camera 2", 0, 0, 0);
+        PrintText(0, 95, "Camera 2", corTexto[0], corTexto[1], corTexto[2]);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         gluPerspective(60, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, arena->getRaio() * 3);
@@ -358,7 +366,7 @@ void configCamera(){
         configCamera2();
         break;
     case 3:
-        PrintText(0, 95, "Camera 3", 0, 0, 0);
+        PrintText(0, 95, "Camera 3", corTexto[0], corTexto[1], corTexto[2]);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         gluPerspective(60, (arena->getRaio() * 2) / (arena->getRaio() * 2), 1, arena->getRaio() * 3);
@@ -368,54 +376,58 @@ void configCamera(){
   }
 }
 
-void drawArena(GLuint texturaJogador, GLuint texturaTerrestre, GLuint texturaVoador, GLuint texturaPista, GLuint texturaBomba, GLuint texturaProjetilJogador, GLuint texturaProjetilInimigo){
-  // Inicialização das variáveis
-  Linha* linha = arena->getLinha();
-  std::list<Inimigo*> inimigosAereos = arena->getInimigosAereos();
-  std::list<Circulo*> inimigosTerrestres = arena->getInimigosTerrestres();
+void drawArena(GLuint texturaMar, GLuint texturaMarNegro, GLuint texturaJogador, GLuint texturaTerrestre, GLuint texturaVoador, GLuint texturaPista, GLuint texturaBomba, GLuint texturaProjetilJogador, GLuint texturaProjetilInimigo, GLuint ceu, GLuint texturaCeuTopo, GLuint texturaCeuNoite){
+	// Inicialização das variáveis
+	Linha* linha = arena->getLinha();
+	std::list<Inimigo*> inimigosAereos = arena->getInimigosAereos();
+	std::list<Circulo*> inimigosTerrestres = arena->getInimigosTerrestres();
 
-  if(modoNoturno){
-      glDisable(GL_LIGHT0);
-      glEnable(GL_LIGHT1);
-  }else{
-      glEnable(GL_LIGHT0);
-      glDisable(GL_LIGHT1);
-  }
+	if(modoNoturno){
+		corTexto[0] = 1;
+		corTexto[1] = 1;
+		corTexto[2] = 1;
+		glDisable(GL_LIGHT0);
+		glEnable(GL_LIGHT1);
+	}else{
+		corTexto[0] = 0;
+		corTexto[1] = 0;
+		corTexto[2] = 0;
+		glEnable(GL_LIGHT0);
+		glDisable(GL_LIGHT1);
+	}
 
-  configuraIluminacao();
+	configuraIluminacao();
 
-  if(arena != NULL){
-      arena->desenhaArena(modoNoturno);
-  }
+	if(arena != NULL){
+	  arena->desenhaArena(modoNoturno, ceu, texturaCeuTopo, texturaCeuNoite, texturaMar, texturaMarNegro);
+	}
 
-  if(jogador != NULL){
-      jogador->desenhaJogador(texturaJogador, texturaProjetilJogador);
-  }
+	if(jogador != NULL){
+	  jogador->desenhaJogador(texturaJogador, texturaProjetilJogador);
+	}
 
-  if(linha != NULL){
-      linha->desenhaLinha(texturaPista);
-  }
+	if(linha != NULL){
+	  linha->desenhaLinha(texturaPista);
+	}
 
-  for(std::list<Circulo*>::iterator c = inimigosTerrestres.begin(); c != inimigosTerrestres.end(); ++c){
-      (*c)->desenha(texturaTerrestre);
-  }
+	for(std::list<Circulo*>::iterator c = inimigosTerrestres.begin(); c != inimigosTerrestres.end(); ++c){
+	  (*c)->desenha(texturaTerrestre);
+	}
 
-  if(jogador != NULL){
-      jogador->desenhaBombas(texturaBomba);
-  }
+	if(jogador != NULL){
+	  jogador->desenhaBombas(texturaBomba);
+	}
 
-  for(std::list<Inimigo*>::iterator c = inimigosAereos.begin(); c != inimigosAereos.end(); ++c){
-      (*c)->desenhaInimigo(texturaVoador, texturaProjetilInimigo);
-  }
+	for(std::list<Inimigo*>::iterator c = inimigosAereos.begin(); c != inimigosAereos.end(); ++c){
+	  (*c)->desenhaInimigo(texturaVoador, texturaProjetilInimigo);
+	}
 }
 
 void display(void){
     jogador = arena->getJogador();
     // Limpar todos os pixels
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     glViewport(0,larguraDimensao,larguraDimensao,200);
-
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(60, 5/2, 1, arena->getRaio() * 3);
@@ -426,33 +438,33 @@ void display(void){
         gluLookAt(bombaComCamera->getX(), bombaComCamera->getY(), bombaComCamera->getZ()-bombaComCamera->getRaio()-1,
                 bombaComCamera->getX(), bombaComCamera->getY(), 0,
                 0, 1, 0);
-        drawArena(texturaJogador, texturaTerrestre, texturaVoador, texturaPista, texturaBomba, texturaProjetilJogador, texturaProjetilInimigo);
+        drawArena(texturaMar, texturaMarNegro, texturaJogador, texturaTerrestre, texturaVoador, texturaPista, texturaBomba, texturaProjetilJogador, texturaProjetilInimigo, ceu, texturaCeuTopo, texturaCeuNoite);
     }
     glViewport(0, 0, larguraDimensao, alturaDimensao);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    exibePontuacao(57, 95, 0, 0, 0);
+    exibePontuacao(57, 95, corTexto[0], corTexto[1], corTexto[2]);
 
     if(jogador != NULL){
         if(!jogador->isLigado() && !jogador->isVoando()){
-            PrintText(27, 55, "Pressione U para decolar.", 0, 0, 0);
+            PrintText(27, 55, "Pressione U para decolar.", corTexto[0], corTexto[1], corTexto[2]);
         }
         if(!jogador->isVivo()){
-            PrintText(35, 60, "Game Over!", 0, 0, 0);
-            PrintText(17, 55, "Pressione R para jogar novamente!", 0, 0, 0);
+            PrintText(35, 60, "Game Over!", corTexto[0], corTexto[1], corTexto[2]);
+            PrintText(17, 55, "Pressione R para jogar novamente!", corTexto[0], corTexto[1], corTexto[2]);
             arena->setCamera(false);
         }
         if(jogador->isVivo() && arena->getInimigosTerrestres().size() == 0){
-            PrintText(37, 60, "Voce venceu!", 0, 0, 0);
-            PrintText(17, 55, "Pressione R para jogar novamente!", 0, 0, 0);
+            PrintText(37, 60, "Voce venceu!", corTexto[0], corTexto[1], corTexto[2]);
+            PrintText(17, 55, "Pressione R para jogar novamente!", corTexto[0], corTexto[1], corTexto[2]);
         }
     }
 
     desenhaMinimapaCompleto();
 
     configCamera();
-    drawArena(texturaJogador, texturaTerrestre, texturaVoador, texturaPista, texturaBomba, texturaProjetilJogador, texturaProjetilInimigo);
+    drawArena(texturaMar, texturaMarNegro, texturaJogador, texturaTerrestre, texturaVoador, texturaPista, texturaBomba, texturaProjetilJogador, texturaProjetilInimigo, ceu, texturaCeuTopo, texturaCeuNoite);
 
     glutSwapBuffers();
 }
@@ -570,24 +582,21 @@ void init(float fundoR, float fundoG, float fundoB){
     glShadeModel(GL_SMOOTH);
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
-    // glEnable(GL_TEXTURE_2D);
     glDepthFunc(GL_LEQUAL);
     glMatrixMode(GL_TEXTURE);
     glLoadIdentity();
-
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-
 
     // Iniciar sistema de visão
     gluPerspective(60, (arena->getRaio() * 2) / (arena->getRaio() * 2), arena->getJogador()->getRaio()*0.3, arena->getRaio() * 3);
     glMatrixMode(GL_MODELVIEW);
 
-    //glEnable(GL_TEXTURE_2D);
-
-    arena->setTexturaMar(LoadTextureRAW("texturas/mar.bmp"));
-    arena->setTexturaCeu(LoadTextureRAW("texturas/ceu.bmp"));
-    arena->setTexturaCeuTopo(LoadTextureRAW("texturas/ceuTopo.bmp"));
+    texturaMar = LoadTextureRAW("texturas/mar.bmp");
+    texturaMarNegro = LoadTextureRAW("texturas/marNegro.bmp");
+    ceu = LoadTextureRAW("texturas/ceu.bmp");
+    texturaCeuTopo = LoadTextureRAW("texturas/ceuTopo.bmp");
+    texturaCeuNoite = LoadTextureRAW("texturas/ceuNoite.bmp");
     texturaJogador = LoadTextureRAW("texturas/jogador.bmp");
     texturaVoador = LoadTextureRAW("texturas/inimigo.bmp");
     texturaTerrestre = LoadTextureRAW("texturas/inimigoTerrestre.bmp");
@@ -596,23 +605,9 @@ void init(float fundoR, float fundoG, float fundoB){
     texturaProjetilJogador = LoadTextureRAW("texturas/tiro.bmp");
     texturaProjetilInimigo = LoadTextureRAW("texturas/tiroInimigo.bmp");
     
-
     glColorMaterial(GL_FRONT, GL_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_NORMALIZE);
-
-
-
-
-    // glOrtho(
-    //     arena->getX() - arena->getRaio() - arena->getJogador()->getRaio()*5,
-    //     arena->getX() + arena->getRaio() + arena->getJogador()->getRaio()*5,
-    //     arena->getY() - arena->getRaio() - arena->getJogador()->getRaio()*5,
-    //     arena->getY() + arena->getRaio() + arena->getJogador()->getRaio()*5,
-    //     -arena->getRaio() + 80,
-    //     1);
-
-
 }
 
 bool lerXML(char* caminhoArquivo){

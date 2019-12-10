@@ -155,7 +155,7 @@ std::list<Circulo*> Arena::getInimigosTerrestresMortos(){
 	return this->inimigosTerrestresMortos;
 }
 
-void Arena::desenhaArena(bool modoNoturno){
+void Arena::desenhaArena(bool modoNoturno, GLuint ceu, GLuint texturaCeuTopo, GLuint texturaCeuNoite, GLuint texturaMar, GLuint texturaMarNegro){
 	float theta, px, py;
 
 	glPushMatrix();
@@ -163,12 +163,17 @@ void Arena::desenhaArena(bool modoNoturno){
 
 	    // Corpo da arena
 	    if(modoNoturno){
-			GLfloat mat_emission[] = {0.0, 0.0, 0.0, 1.0};
+			GLfloat mat_emission[] = {0.3, 0.3, 0.3, 1.0};
 		    glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
-		    // this->setTexturaCeu(LoadTextureRAW("nightsky.bmp"));
+		    this->setTexturaCeu(texturaCeuNoite);
+		    this->setTexturaCeuTopo(texturaCeuNoite);
+		    this->setTexturaMar(texturaMarNegro);
 		}else{
 			GLfloat mat_emission[] = {1.0, 1.0, 1.0, 1.0};
 		    glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
+		    this->setTexturaCeu(ceu);
+		    this->setTexturaCeuTopo(texturaCeuTopo);
+		    this->setTexturaMar(texturaMar);
 		}
 
 	    // Habilitando texturas aqui por não haver outros objs com textura.
@@ -176,7 +181,7 @@ void Arena::desenhaArena(bool modoNoturno){
 			defineCor(1.0, 1.0, 1.0);
 			glMatrixMode(GL_TEXTURE);
 				glPushMatrix();
-					glScalef(2, 2, 1);
+					glScalef(3, 3, 1);
 					glBindTexture(GL_TEXTURE_2D, this->getTexturaMar());
 					// Base da arena
 					GLUquadric* obj = gluNewQuadric();
